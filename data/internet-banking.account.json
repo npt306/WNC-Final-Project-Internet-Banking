@@ -1,0 +1,70 @@
+[{
+  "_id": {
+    "$oid": "675db7c4cb2b0bf8ef4ffbf3"
+  },
+  "customer_id": "675babee10466a57086768eb",
+  "account_number": "112233445566",
+  "balance": 20000000,
+  "account_type": "payment",
+  "bank": "default"
+},
+{
+  "_id": {
+    "$oid": "675db7c4cb2b0bf8ef4ffbf5"
+  },
+  "customer_id": "675babee10466a57086768ec",
+  "account_number": "112233445566",
+  "balance": 10000000,
+  "account_type": "payment",
+  "bank": "default"
+},
+{
+  "_id": {
+    "$oid": "675db7c4cb2b0bf8ef4ffbf6"
+  },
+  "customer_id": "675babee10466a57086768ec",
+  "account_number": "556677889900",
+  "balance": 7500000,
+  "account_type": "linked",
+  "bank": "Bank_A"
+},
+{
+  "_id": {
+    "$oid": "675db7c4cb2b0bf8ef4ffbf7"
+  },
+  "customer_id": "675babee10466a57086768ec",
+  "account_number": "998877665544",
+  "balance": 3000000,
+  "account_type": "linked",
+  "bank": "Bank_B"
+},
+{
+  "_id": {
+    "$oid": "675db7c4cb2b0bf8ef4ffbf8"
+  },
+  "customer_id": "675babee10466a57086768ed",
+  "account_number": "334455667788",
+  "balance": 8500000,
+  "account_type": "payment",
+  "bank": "default"
+},
+{
+  "_id": {
+    "$oid": "675db7c4cb2b0bf8ef4ffbf9"
+  },
+  "customer_id": "675babee10466a57086768ed",
+  "account_number": "667788990011",
+  "balance": 15000000,
+  "account_type": "linked",
+  "bank": "Bank_A"
+},
+{
+  "_id": {
+    "$oid": "675db7c4cb2b0bf8ef4ffbfa"
+  },
+  "customer_id": "675babee10466a57086768ed",
+  "account_number": "445566778899",
+  "balance": 12000000,
+  "account_type": "linked",
+  "bank": "Bank_C"
+}]

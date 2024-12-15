@@ -1,0 +1,80 @@
+[{
+  "_id": {
+    "$oid": "675d4eb275dbca583a7a3570"
+  },
+  "username": "employee1",
+  "full_name": "Jane Smith",
+  "email": "employee2@example.com",
+  "password": "12345",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675d4eb275dbca583a7a3571"
+  },
+  "username": "employee2",
+  "full_name": "Jane Smith",
+  "email": "employee2@example.com",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675d4eb275dbca583a7a3572"
+  },
+  "username": "employee3",
+  "full_name": "Michael Johnson",
+  "email": "employee3@example.com",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675d4eb275dbca583a7a3573"
+  },
+  "username": "employee4",
+  "full_name": "Emily Davis",
+  "email": "employee4@example.com",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675d4eb275dbca583a7a3574"
+  },
+  "username": "employee5",
+  "full_name": "Chris Brown",
+  "email": "employee5@example.com",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675d4eb275dbca583a7a3575"
+  },
+  "username": "employee6",
+  "full_name": "Jessica Wilson",
+  "email": "employee6@example.com",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675d4eb275dbca583a7a3576"
+  },
+  "username": "employee7",
+  "full_name": "David Moore",
+  "email": "employee7@example.com",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675d4eb275dbca583a7a3577"
+  },
+  "username": "employee8",
+  "full_name": "Sophia Taylor",
+  "email": "employee8@example.com",
+  "password": "123",
+  "refresh_token": null
+}]

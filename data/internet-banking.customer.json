@@ -1,0 +1,99 @@
+[{
+  "_id": {
+    "$oid": "675babee10466a57086768eb"
+  },
+  "full_name": "Nguyễn Văn A",
+  "email": "nguyenvana@example.com",
+  "username": "nguyenvana",
+  "phone": "0901234567",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675babee10466a57086768ec"
+  },
+  "full_name": "Trần Thị B",
+  "email": "tranthib@example.com",
+  "username": "tranthib",
+  "phone": "0912345678",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675babee10466a57086768ed"
+  },
+  "full_name": "Lê Văn C",
+  "email": "levanc@example.com",
+  "username": "levanc",
+  "phone": "0923456789",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675babee10466a57086768ee"
+  },
+  "full_name": "Phạm Thị D",
+  "email": "phamthid@example.com",
+  "username": "phamthid",
+  "phone": "0934567890",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675babee10466a57086768ef"
+  },
+  "full_name": "Đỗ Văn E",
+  "email": "dovane@example.com",
+  "username": "dovane",
+  "phone": "0945678901",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675babee10466a57086768f0"
+  },
+  "full_name": "Hoàng Thị F",
+  "email": "hoangthif@example.com",
+  "username": "hoangthif",
+  "phone": "0956789012",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675babee10466a57086768f1"
+  },
+  "full_name": "Vũ Văn G",
+  "email": "vuvang@example.com",
+  "username": "vuvang",
+  "phone": "0967890123",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675babee10466a57086768f2"
+  },
+  "full_name": "Bùi Thị H",
+  "email": "buithih@example.com",
+  "username": "buithih",
+  "phone": "0978901234",
+  "password": "123",
+  "refresh_token": null
+},
+{
+  "_id": {
+    "$oid": "675dd123321befa10aeec5f1"
+  },
+  "username": "nguyenvanx",
+  "full_name": "Nguyễn Văn X",
+  "email": "nguyenvana@example.com",
+  "phone": "0901234567",
+  "password": "123456",
+  "refresh_token": null
+}]
