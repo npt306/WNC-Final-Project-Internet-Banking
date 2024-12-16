@@ -7,6 +7,7 @@ import { Customer } from './entities/customer.entity';
 import { ObjectId } from 'mongodb';
 import { ConflictException } from '@nestjs/common';
 import { AccountService } from 'src/modules/account/account.service';
+import { hashPasswordHelper } from '@/helpers/utils';
 
 @Injectable()
 export class CustomerService {
@@ -17,11 +18,20 @@ export class CustomerService {
     private readonly accountService: AccountService,
   ) { }
 
+  async findByUsername(username: string) {
+    return await this.customerRepository.findOneBy({ username: username });
+  }
+
   async createCustomer(createCustomerDto: CreateCustomerDto) {
     if (await this.customerRepository.findOneBy({ username: createCustomerDto.username })) {
       throw new ConflictException('Username already exists');
     }
-    const newCustomer = this.customerRepository.create(createCustomerDto);
+    const hashedPassword = await hashPasswordHelper(createCustomerDto.password);
+
+    const newCustomer = this.customerRepository.create({
+      ...createCustomerDto,
+      password: hashedPassword
+    });
     const savedCustomer = await this.customerRepository.save(newCustomer);
     try {
       await this.accountService.createAccount({ 
