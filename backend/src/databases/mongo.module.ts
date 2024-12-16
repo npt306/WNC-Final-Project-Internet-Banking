@@ -17,8 +17,8 @@ import { getMetadataArgsStorage } from 'typeorm';
 
         return {
           type: 'mongodb',
-          url: configService.get('MONGODB_CONNECTION_STRING'),
-          database: configService.get('MONGODB_DB'),
+          url: configService.get<string>('MONGODB_CONNECTION_STRING'),
+          database: configService.get<string>('MONGODB_DB'),
           entities,
           logging: true,
           autoLoadEntities: true,

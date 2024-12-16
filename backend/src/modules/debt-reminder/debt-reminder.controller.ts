@@ -4,7 +4,7 @@ import { CreateDebtReminderDto } from './dto/create-debt-reminder.dto';
 import { UpdateDebtReminderDto } from './dto/update-debt-reminder.dto';
 import  { DebtReminder } from './entities/debt-reminder.entity';
 
-@Controller('debt-reminder')
+@Controller('debt-reminders')
 export class DebtReminderController {
   constructor(private readonly debtReminderService: DebtReminderService) {}
 

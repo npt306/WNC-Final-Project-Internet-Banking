@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { Customer } from './entities/customer.entity';
 import { ObjectId } from 'mongodb';
 import { ConflictException } from '@nestjs/common';
-import { AccountService } from 'src/account/account.service';
+import { AccountService } from 'src/modules/account/account.service';
 
 @Injectable()
 export class CustomerService {

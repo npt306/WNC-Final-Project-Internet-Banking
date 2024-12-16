@@ -4,7 +4,7 @@ import { CreateRecipientDto } from './dto/create-recipient.dto';
 import { UpdateRecipientDto } from './dto/update-recipient.dto';
 import { Recipient } from './entities/recipient.entity';
 
-@Controller('recipient')
+@Controller('recipients')
 export class RecipientController {
   constructor(private readonly recipientService: RecipientService) {}
 

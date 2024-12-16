@@ -28,3 +28,7 @@ export class Customer extends BaseEntity {
 }
 
 
+function Prop(): (target: Customer, propertyKey: "_id") => void {
+    throw new Error('Function not implemented.');
+}
+
