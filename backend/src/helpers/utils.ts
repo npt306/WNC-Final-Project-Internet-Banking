@@ -1,4 +1,5 @@
 const bcryptjs = require('bcryptjs')
+const argon2 = require('argon2')
 
 const saltRounds = 10;
 
@@ -18,5 +19,16 @@ export const comparePasswordHelper = async (plainPassword: string, hashPassword:
         // return plainPassword === hashPassword;
     }catch (error) {
         console.log(error);
+    }
+}
+
+export const compareRefreshToken = async (token: string, receivedToken: string) => {
+    try {
+        return await argon2.verify(
+            receivedToken,
+            token,
+          );
+    }catch (error) {
+        // console.log(error);
     }
 }

@@ -1,9 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from '@/auth/passport/local-auth.guard';
 import { PublicRoute } from '@/decorator/public-route';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ResponseMessage } from '@/decorator/response-message';
+import { JwtAccessGuard } from './guards/jwt-access.guard';
+import { LoginAuthDto } from './dto/login-auth.dto';
+import { Request } from 'express';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+
 
 @Controller('auth')
 export class AuthController {
@@ -13,15 +17,27 @@ export class AuthController {
 
   @PublicRoute()
   @Post("login")
-  @UseGuards(LocalAuthGuard)
   @ResponseMessage("Fetch login")
-  handleLogin(@Request() req) {
-    return this.authService.login(req.user);
+  handleLogin(@Body() loginDto: LoginAuthDto) {
+    return this.authService.login(loginDto);
   }
 
   @PublicRoute()
   @Post("register")
   register(@Body() registerDto: CreateAuthDto) {
     return this.authService.handleRegister(registerDto);
+  }
+
+  @Get('logout')
+  logout(@Req() req: Request) {
+    this.authService.logout(req['user']['sub']);
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Get('refresh')
+  refreshTokens(@Req() req: Request) {
+    const userId = req['user']['sub'];
+    const refreshToken = req['user']['refreshToken'];
+    return this.authService.refreshTokens(userId, refreshToken);
   }
 }

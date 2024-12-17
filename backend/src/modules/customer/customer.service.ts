@@ -7,7 +7,7 @@ import { Customer } from './entities/customer.entity';
 import { ObjectId } from 'mongodb';
 import { ConflictException } from '@nestjs/common';
 import { AccountService } from 'src/modules/account/account.service';
-import { hashPasswordHelper } from '@/helpers/utils';
+import { comparePasswordHelper, hashPasswordHelper } from '@/helpers/utils';
 
 @Injectable()
 export class CustomerService {
@@ -18,8 +18,17 @@ export class CustomerService {
     private readonly accountService: AccountService,
   ) { }
 
-  async findByUsername(username: string) {
-    return await this.customerRepository.findOneBy({ username: username });
+  async findById(id: string) {
+    return await this.customerRepository.findOneBy({ _id: new ObjectId(id) });
+  }
+
+  async validateUser(username: string, pass: string) {
+    const user = await this.customerRepository.findOneBy({ username: username });
+    if(!user) return null;
+    const isValidPassword = await comparePasswordHelper(pass, user.password);
+  
+    if(!user || !isValidPassword) return null;
+    return user;
   }
 
   async createCustomer(createCustomerDto: CreateCustomerDto) {
