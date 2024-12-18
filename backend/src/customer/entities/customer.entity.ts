@@ -1,11 +1,4 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  ObjectIdColumn,
-  Unique,
-  Index,
-} from 'typeorm';
+import { BaseEntity, Column, Entity, ObjectIdColumn, Unique } from 'typeorm';
 import { ObjectId } from 'mongodb';
 
 @Entity()

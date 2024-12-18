@@ -2,12 +2,11 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CustomerService } from 'src/customer/customer.service';
 import { ObjectId } from 'mongodb';
 import { NotFoundException, Inject, forwardRef } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class AccountService {
@@ -98,12 +97,12 @@ export class AccountService {
     const thisAccount = await this.findOneAccount(id);
 
     // Manual validation
-    let amount = Number(depositAmount);
+    const amount = Number(depositAmount);
     if (amount) {
       thisAccount.balance += amount;
     }
 
-    let result = this.accountRepository.save(thisAccount);
+    const result = this.accountRepository.save(thisAccount);
     return result;
   }
 

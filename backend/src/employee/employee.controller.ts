@@ -11,7 +11,6 @@ import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Employee } from './entities/employee.entity';
-import { ObjectId } from 'mongodb';
 
 @Controller('employee')
 export class EmployeeController {
