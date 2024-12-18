@@ -74,4 +74,21 @@ export class AccountService {
     await this.accountRepository.delete({ _id: new ObjectId(id) });
     return removeAccount;
   }
+
+  async deposit(id: string, depositAmount: string): Promise<any> {
+    // TODO: catch error
+    const thisAccount = await this.findOneAccount(id);
+    let result = await this.accountRepository.increment({ _id: new ObjectId(id) }, "balance", depositAmount);
+
+    return result;
+  }
+
+  async transfer(sender_id: string, receiver_id:string, amount: string): Promise<any> {
+    // TODO: catch error
+    let result = await this.accountRepository.decrement({ _id: new ObjectId(sender_id) }, "balance", amount);
+    
+    result = await this.deposit(receiver_id, amount);
+
+    return "Success";
+  }
 }

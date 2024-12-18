@@ -32,4 +32,14 @@ export class AccountController {
   async remove(@Param('id') id: string): Promise<Account> {
     return await this.accountService.removeAccount(id);
   }
+
+  @Post('deposit')
+  async deposit(@Body() body: any): Promise<any> {
+    return await this.accountService.deposit(body.id, body.amount);
+  }
+
+  @Post('transfer')
+  async transfer(@Body() body: any): Promise<any> {
+    return await this.accountService.transfer(body.receiver_id, body.sender_id, body.amount);
+  }
 }
