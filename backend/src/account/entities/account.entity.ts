@@ -2,22 +2,21 @@ import { Entity, Column, BaseEntity, ObjectIdColumn } from 'typeorm';
 import { ObjectId } from 'mongodb';
 @Entity()
 export class Account extends BaseEntity {
-    @ObjectIdColumn()
-    _id: ObjectId;
-    
-    @Column()
-    customer_id: string;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
-    @Column()
-    account_number: string;
+  @Column()
+  customer_id: string;
 
-    @Column()
-    account_type: string;
+  @Column()
+  account_number: string;
 
-    @Column()
-    balance: number;
+  @Column()
+  account_type: string;
 
-    @Column()
-    bank: string;
+  @Column()
+  balance: number;
 
+  @Column()
+  bank: string;
 }

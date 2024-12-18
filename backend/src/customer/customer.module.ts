@@ -8,10 +8,10 @@ import { AccountModule } from 'src/account/account.module';
 
 @Module({
   imports: [
-    MongoModule, 
+    MongoModule,
     TypeOrmModule.forFeature([Customer]),
-    forwardRef(() => AccountModule), 
-    ],
+    forwardRef(() => AccountModule),
+  ],
   controllers: [CustomerController],
   providers: [CustomerService],
   exports: [CustomerService],

@@ -4,9 +4,7 @@ import { RecipientController } from './recipient.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Recipient } from './entities/recipient.entity';
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Recipient]),
-  ],
+  imports: [TypeOrmModule.forFeature([Recipient])],
   controllers: [RecipientController],
   providers: [RecipientService],
 })

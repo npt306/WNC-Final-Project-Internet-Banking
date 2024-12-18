@@ -1,30 +1,34 @@
-import { BaseEntity, Column, Entity, ObjectIdColumn, Unique, Index } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ObjectIdColumn,
+  Unique,
+  Index,
+} from 'typeorm';
 import { ObjectId } from 'mongodb';
 
 @Entity()
-@Unique(["username"])
+@Unique(['username'])
 export class Customer extends BaseEntity {
-    @ObjectIdColumn()
-    _id?: ObjectId;
+  @ObjectIdColumn()
+  _id?: ObjectId;
 
-    @Column()
-    username: string;
+  @Column()
+  username: string;
 
-    @Column()
-    full_name: string;
+  @Column()
+  full_name: string;
 
-    @Column()
-    email: string;
+  @Column()
+  email: string;
 
-    @Column()
-    phone: string;
+  @Column()
+  phone: string;
 
-    @Column()
-    password: string;
+  @Column()
+  password: string;
 
-    @Column({ nullable: true })
-    refresh_token: string | null;
-
+  @Column({ nullable: true })
+  refresh_token: string | null;
 }
-
-

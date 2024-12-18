@@ -1,8 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { DebtReminderService } from './debt-reminder.service';
 import { CreateDebtReminderDto } from './dto/create-debt-reminder.dto';
 import { UpdateDebtReminderDto } from './dto/update-debt-reminder.dto';
-import  { DebtReminder } from './entities/debt-reminder.entity';
+import { DebtReminder } from './entities/debt-reminder.entity';
 
 @Controller('debt-reminder')
 export class DebtReminderController {
@@ -33,7 +41,10 @@ export class DebtReminderController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateDebtReminderDto: UpdateDebtReminderDto): Promise<DebtReminder> {
+  async update(
+    @Param('id') id: string,
+    @Body() updateDebtReminderDto: UpdateDebtReminderDto,
+  ): Promise<DebtReminder> {
     return this.debtReminderService.update(id, updateDebtReminderDto);
   }
 

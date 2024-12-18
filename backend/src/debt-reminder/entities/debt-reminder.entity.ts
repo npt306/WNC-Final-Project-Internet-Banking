@@ -3,24 +3,24 @@ import { ObjectId } from 'mongodb';
 
 @Entity('debt-reminder')
 export class DebtReminder extends BaseEntity {
-    @ObjectIdColumn()
-    _id: ObjectId;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
-    @Column()
-    creditor: string; 
+  @Column()
+  creditor: string;
 
-    @Column()
-    debtor: string; 
+  @Column()
+  debtor: string;
 
-    @Column()
-    amount: number; 
+  @Column()
+  amount: number;
 
-    @Column()
-    message: string; 
+  @Column()
+  message: string;
 
-    @Column()
-    createdAt: Date; 
+  @Column()
+  createdAt: Date;
 
-    @Column()
-    status: string; 
+  @Column()
+  status: string;
 }
