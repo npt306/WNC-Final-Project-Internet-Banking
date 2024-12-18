@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -40,6 +48,10 @@ export class AccountController {
 
   @Post('transfer')
   async transfer(@Body() body: any): Promise<any> {
-    return await this.accountService.transfer(body.receiver_id, body.sender_id, body.amount);
+    return await this.accountService.transfer(
+      body.sender_id,
+      body.receiver_id,
+      body.amount,
+    );
   }
 }
