@@ -19,7 +19,7 @@ import { DebtReminderModule } from './debt-reminder/debt-reminder.module';
     RecipientModule,
     DebtReminderModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  // controllers: [AppController],
+  // providers: [AppService],
 })
 export class AppModule {}

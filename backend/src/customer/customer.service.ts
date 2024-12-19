@@ -12,6 +12,7 @@ import { Customer } from './entities/customer.entity';
 import { ObjectId } from 'mongodb';
 import { ConflictException } from '@nestjs/common';
 import { AccountService } from 'src/account/account.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class CustomerService {
@@ -30,7 +31,8 @@ export class CustomerService {
     ) {
       throw new ConflictException('Username already exists');
     }
-    const newCustomer = this.customerRepository.create(createCustomerDto);
+    const hashedPassword = await bcrypt.hash(createCustomerDto.password, 10);
+    const newCustomer = this.customerRepository.create({...createCustomerDto,password: hashedPassword});
     const savedCustomer = await this.customerRepository.save(newCustomer);
     try {
       await this.accountService.createAccount({
@@ -60,6 +62,7 @@ export class CustomerService {
     }
     return customer;
   }
+  
 
   async update(
     id: string,

@@ -67,6 +67,16 @@ export class AccountService {
     return account;
   }
 
+  async findAccountByAccountNumber(accountNumber: string): Promise<Account> {
+    const account = await this.accountRepository.findOneBy({
+      account_number: accountNumber,
+    });
+    if (!account) {
+      throw new NotFoundException(`Account not found`);
+    }
+    return account;
+  }
+
   async updateUserAccount(
     id: string,
     updateAccountDto: UpdateAccountDto,
