@@ -2,7 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { PublicRouteCustomer } from '@/decorator/public-route-customer';
+import { PublicRouteEmployee } from '@/decorator/public-route-employee';
 
+@PublicRouteCustomer()
+@PublicRouteEmployee()
 @Controller('customers')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
