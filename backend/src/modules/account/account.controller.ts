@@ -3,11 +3,8 @@ import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
-import { PublicRouteEmployee } from '@/decorator/public-route-employee';
-import { PublicRouteCustomer } from '@/decorator/public-route-customer';
+import { PublicRouteEmployee } from '@/decorator/public-route';
 
-@PublicRouteCustomer()
-@PublicRouteEmployee()
 @Controller('accounts')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}

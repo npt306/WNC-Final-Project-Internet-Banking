@@ -4,10 +4,10 @@ import { AuthEmployeeController } from './auth_employee.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './strategies/local.strategy';
-import { JwtAccessStrategyEmployee } from './strategies/jwt-access.strategy';
-import { JwtRefreshStrategyEmployee } from './strategies/jwt-refresh.strategy';
 import { EmployeeModule } from '@/modules/employee/employee.module';
+import { LocalStrategy } from '@/jwt/strategies/local.strategy';
+import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
+import { JwtRefreshGuard } from '@/jwt/guards/jwt-refresh.guard';
 
 @Module({
   controllers: [AuthEmployeeController],
@@ -16,6 +16,6 @@ import { EmployeeModule } from '@/modules/employee/employee.module';
     JwtModule.register({}),
     PassportModule
   ],
-  providers: [AuthEmployeeService, LocalStrategy, JwtAccessStrategyEmployee, JwtRefreshStrategyEmployee],
+  providers: [AuthEmployeeService, JwtAccessGuard, JwtRefreshGuard],
 })
 export class AuthEmployeeModule {}

@@ -1,16 +1,16 @@
-import { IS_PUBLIC_KEY_EMPLOYEE } from '@/decorator/public-route-employee';
+import { IS_PUBLIC_KEY } from '@/decorator/public-route';
 import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class JwtAccessGuardEmployee extends AuthGuard('jwt') {
+export class JwtRefreshGuard extends AuthGuard('jwt-refresh') {
     constructor(private reflector: Reflector){
         super();
     }
     
     canActivate(context: ExecutionContext) {
-        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY_EMPLOYEE, [
+        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
             context.getHandler(),
             context.getClass(),
           ]);
@@ -25,7 +25,7 @@ export class JwtAccessGuardEmployee extends AuthGuard('jwt') {
     handleRequest(err, user, info) {
         // You can throw an exception based on either "info" or "err" arguments
         if (err || !user) {
-            throw err || new UnauthorizedException("Invalid employee access token !!!");
+            throw err || new UnauthorizedException("Invalid refresh token !!!");
         }
         return user;
     }

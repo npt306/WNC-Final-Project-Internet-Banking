@@ -4,11 +4,7 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Employee } from './entities/employee.entity';
 import { ObjectId } from 'mongodb';
-import { PublicRouteCustomer } from '@/decorator/public-route-customer';
-import { PublicRouteEmployee } from '@/decorator/public-route-employee';
 
-@PublicRouteCustomer()
-@PublicRouteEmployee()
 @Controller('employees')
 export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}

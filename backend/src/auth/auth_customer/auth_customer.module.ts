@@ -4,10 +4,10 @@ import { AuthCustomerController } from './auth_customer.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './strategies/local.strategy';
-import { JwtAccessStrategyCustomer } from './strategies/jwt-access.strategy';
-import { JwtRefreshStrategyCustomer } from './strategies/jwt-refresh.strategy';
+import { LocalStrategy } from '../../jwt/strategies/local.strategy';
 import { CustomerModule } from '@/modules/customer/customer.module';
+import { JwtAccessStrategy } from '@/jwt/strategies/jwt-access.strategy';
+import { JwtRefreshStrategy } from '@/jwt/strategies/jwt-refresh.strategy';
 
 @Module({
   controllers: [AuthCustomerController],
@@ -16,6 +16,6 @@ import { CustomerModule } from '@/modules/customer/customer.module';
     JwtModule.register({}),
     PassportModule
   ],
-  providers: [AuthCustomerService, LocalStrategy, JwtAccessStrategyCustomer, JwtRefreshStrategyCustomer],
+  providers: [AuthCustomerService, LocalStrategy, JwtAccessStrategy, JwtRefreshStrategy],
 })
 export class AuthCustomerModule {}

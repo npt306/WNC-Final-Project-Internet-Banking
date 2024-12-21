@@ -11,8 +11,6 @@ import { RecipientModule } from './modules/recipient/recipient.module';
 import { DebtReminderModule } from './modules/debt-reminder/debt-reminder.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './core/transform.interceptor';
-import { JwtAccessGuardCustomer } from './auth/auth_customer/guards/jwt-access.guard';
-import { JwtAccessGuardEmployee } from './auth/auth_employee/guards/jwt-access.guard';
 import { AuthEmployeeModule } from './auth/auth_employee/auth_employee.module';
 
 @Module({
@@ -30,14 +28,6 @@ import { AuthEmployeeModule } from './auth/auth_employee/auth_employee.module';
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAccessGuardEmployee,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: JwtAccessGuardCustomer,
-    },
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,

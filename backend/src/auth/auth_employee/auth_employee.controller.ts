@@ -1,15 +1,16 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { AuthEmployeeService } from './auth_employee.service';
-import { PublicRouteEmployee } from '@/decorator/public-route-employee';
+import { PublicRouteEmployee } from '@/decorator/public-route';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ResponseMessage } from '@/decorator/response-message';
-import { JwtAccessGuardEmployee } from './guards/jwt-access.guard';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { Request } from 'express';
-import { JwtRefreshGuardEmployee } from './guards/jwt-refresh.guard';
-import { PublicRouteCustomer } from '@/decorator/public-route-customer';
+import { Roles } from '@/constants/roles.enum';
+import { AssignRoles } from '@/decorator/assign-role';
+import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
+import { RolesGuard } from '@/jwt/guards/role.guard';
+import { JwtRefreshGuard } from '@/jwt/guards/jwt-refresh.guard';
 
-@PublicRouteCustomer()
 @Controller('auth/employees')
 export class AuthEmployeeController {
   constructor(
@@ -17,25 +18,26 @@ export class AuthEmployeeController {
   ) {}
   
   // Employee auth
-  @PublicRouteEmployee()
   @Post("login")
   @ResponseMessage("Fetch login")
   handleLoginEmployee(@Body() loginDto: LoginAuthDto) {
     return this.authService.login(loginDto);
   }
 
-  @PublicRouteEmployee()
   @Post("register")
   registerEmployee(@Body() registerDto: CreateAuthDto) {
     return this.authService.handleRegister(registerDto);
   }
 
+  @AssignRoles(Roles.Employee)
+  @UseGuards(JwtRefreshGuard, RolesGuard)
   @Get('logout')
   logoutEmployee(@Req() req: Request) {
     this.authService.logout(req['user']['sub']);
   }
 
-  @UseGuards(JwtRefreshGuardEmployee)
+  @AssignRoles(Roles.Employee)
+  @UseGuards(JwtRefreshGuard, RolesGuard)
   @Get('refresh')
   refreshTokensEmployee(@Req() req: Request) {
     const userId = req['user']['sub'];

@@ -3,11 +3,7 @@ import { RecipientService } from './recipient.service';
 import { CreateRecipientDto } from './dto/create-recipient.dto';
 import { UpdateRecipientDto } from './dto/update-recipient.dto';
 import { Recipient } from './entities/recipient.entity';
-import { PublicRouteCustomer } from '@/decorator/public-route-customer';
-import { PublicRouteEmployee } from '@/decorator/public-route-employee';
 
-@PublicRouteCustomer()
-@PublicRouteEmployee()
 @Controller('recipients')
 export class RecipientController {
   constructor(private readonly recipientService: RecipientService) {}

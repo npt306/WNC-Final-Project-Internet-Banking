@@ -3,11 +3,7 @@ import { DebtReminderService } from './debt-reminder.service';
 import { CreateDebtReminderDto } from './dto/create-debt-reminder.dto';
 import { UpdateDebtReminderDto } from './dto/update-debt-reminder.dto';
 import  { DebtReminder } from './entities/debt-reminder.entity';
-import { PublicRouteCustomer } from '@/decorator/public-route-customer';
-import { PublicRouteEmployee } from '@/decorator/public-route-employee';
 
-@PublicRouteCustomer()
-@PublicRouteEmployee()
 @Controller('debt-reminders')
 export class DebtReminderController {
   constructor(private readonly debtReminderService: DebtReminderService) {}

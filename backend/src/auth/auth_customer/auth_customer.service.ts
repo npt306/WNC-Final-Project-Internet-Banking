@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { compareRefreshToken } from '@/helpers/utils';
 import { CustomerService } from '@/modules/customer/customer.service';
+import { Roles } from '@/constants/roles.enum';
 
 @Injectable()
 export class AuthCustomerService {
@@ -61,20 +62,22 @@ export class AuthCustomerService {
         {
           sub: userId,
           username,
+          role: Roles.Customer
         },
         {
-          secret: this.configService.get<string>('JWT_ACCESS_SECRET_CUSTOMER'),
-          expiresIn: this.configService.get("JWT_ACCESS_TOKEN_EXPIRED_CUSTOMER"),
+          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+          expiresIn: this.configService.get("JWT_ACCESS_TOKEN_EXPIRED"),
         },
       ),
       this.jwtService.signAsync(
         {
           sub: userId,
           username,
+          role: Roles.Customer
         },
         {
-          secret: this.configService.get<string>('JWT_REFRESH_SECRET_CUSTOMER'),
-          expiresIn: this.configService.get("JWT_REFRESH_TOKEN_EXPIRED_CUSTOMER"),
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+          expiresIn: this.configService.get("JWT_REFRESH_TOKEN_EXPIRED"),
         },
       ),
     ]);
