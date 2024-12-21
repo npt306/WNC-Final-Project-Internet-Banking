@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { Employee } from './entities/employee.entity';
@@ -12,7 +16,7 @@ export class EmployeeService {
   constructor(
     @InjectRepository(Employee)
     private employeeRepository: Repository<Employee>,
-  ) { }
+  ) {}
 
   async findById(id: string) {
       return await this.employeeRepository.findOneBy({ _id: new ObjectId(id) });
@@ -49,18 +53,26 @@ export class EmployeeService {
   }
 
   async findOne(id: string): Promise<Employee> {
-    const findEmployee = await this.employeeRepository.findOneBy({ _id: new ObjectId(id) });
+    const findEmployee = await this.employeeRepository.findOneBy({
+      _id: new ObjectId(id),
+    });
     if (!findEmployee) {
       throw new NotFoundException(`Employee not found`);
     }
     return findEmployee;
   }
 
-  async update(id: string, updateEmployeeDto: UpdateEmployeeDto): Promise<Employee> {
+  async update(
+    id: string,
+    updateEmployeeDto: UpdateEmployeeDto,
+  ): Promise<Employee> {
     await this.findOne(id);
-    await this.employeeRepository.update({ _id: new ObjectId(id) }, updateEmployeeDto);
+    await this.employeeRepository.update(
+      { _id: new ObjectId(id) },
+      updateEmployeeDto,
+    );
     const updatedEmployee = await this.findOne(id);
-    
+
     return updatedEmployee;
   }
 

@@ -5,9 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DebtReminder } from './entities/debt-reminder.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([DebtReminder])
-  ],
+  imports: [TypeOrmModule.forFeature([DebtReminder])],
   controllers: [DebtReminderController],
   providers: [DebtReminderService],
 })

@@ -1,34 +1,57 @@
-import { BaseEntity, Column, Entity, ObjectIdColumn, Unique, Index } from 'typeorm';
+import { BaseEntity, Column, Entity, ObjectIdColumn, Unique } from 'typeorm';
 import { ObjectId } from 'mongodb';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-@Unique(["username"])
+@Unique(['username'])
 export class Customer extends BaseEntity {
-    @ObjectIdColumn()
-    _id?: ObjectId;
+  @ObjectIdColumn()
+  _id?: ObjectId;
 
-    @Column()
-    username: string;
+  @ApiProperty({
+    example: 'john_doe',
+    description: 'Username of the customer',
+    required: true,
+  })
+  @Column()
+  username: string;
 
-    @Column()
-    full_name: string;
+  @ApiProperty({
+    example: 'John Doe',
+    description: 'Full name of the customer',
+    required: true,
+  })
+  @Column()
+  full_name: string;
 
-    @Column()
-    email: string;
+  @ApiProperty({
+    example: 'johndoe@example.com',
+    description: 'Email address of the customer',
+    required: true,
+  })
+  @Column()
+  email: string;
 
-    @Column()
-    phone: string;
+  @ApiProperty({
+    example: '08012345678',
+    description: 'Phone number of the customer',
+    required: true,
+  })
+  @Column()
+  phone: string;
 
-    @Column()
-    password: string;
+  @ApiProperty({
+    example: '$2b$10$zvh7k8z6OJidFxoLV4d/mOKBkMMNc0H8IQz5QeTPt5ztXWa1LpCXa',
+    description: 'Hashed password of the customer',
+    required: true,
+  })
+  @Column()
+  password: string;
 
-    @Column({ nullable: true })
-    refresh_token: string | null;
-
+  @ApiProperty({
+    example: '$2b$10$zvh7k8z6OJidFxoLV4d/mOKBkMMNc0H8IQz5QeTPt5ztXWa1LpCXa',
+    description: 'Hashed refresh token of the customer',
+  })
+  @Column({ nullable: true })
+  refresh_token: string | null;
 }
-
-
-function Prop(): (target: Customer, propertyKey: "_id") => void {
-    throw new Error('Function not implemented.');
-}
-

@@ -1,26 +1,56 @@
 import { Entity, Column, BaseEntity, ObjectIdColumn } from 'typeorm';
 import { ObjectId } from 'mongodb';
+import { ApiProperty } from '@nestjs/swagger';
+
 
 @Entity('debt-reminder')
 export class DebtReminder extends BaseEntity {
-    @ObjectIdColumn()
-    _id: ObjectId;
+  @ApiProperty({
+    example: '675db7c4cb2b0bf8ef4ffbf3',
+    required: true
+  })
+  @ObjectIdColumn()
+  _id: ObjectId;
 
-    @Column()
-    creditor: string; 
+  @ApiProperty({
+    example: '675db7c4cb2b0bf8ef4ffbf3',
+    required: true,
+  })
+  @Column()
+  creditor: string;
 
-    @Column()
-    debtor: string; 
+  @ApiProperty({
+    example: '675babee10466a57086768eb',
+    required: true,
+  })
+  @Column()
+  debtor: string;
 
-    @Column()
-    amount: number; 
+  @ApiProperty({
+    example: '10000000',
+    required: true,
+  })
+  @Column()
+  amount: number;
 
-    @Column()
-    message: string; 
+  @ApiProperty({
+    example: 'You owe me money',
+    required: true,
+  })
+  @Column()
+  message: string;
 
-    @Column()
-    createdAt: Date; 
+  @ApiProperty({
+    example: '2021-09-01T00:00:00.000Z',
+    required: true,
+  })
+  @Column()
+  createdAt: Date;
 
-    @Column()
-    status: string; 
+  @ApiProperty({
+    example: 'Pending',
+    required: true,
+  })
+  @Column()
+  status: string;
 }

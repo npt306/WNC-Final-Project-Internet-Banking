@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, Inject, forwardRef } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +12,7 @@ import { Customer } from './entities/customer.entity';
 import { ObjectId } from 'mongodb';
 import { ConflictException } from '@nestjs/common';
 import { AccountService } from 'src/modules/account/account.service';
+import * as bcrypt from 'bcrypt';
 import { comparePasswordHelper, hashPasswordHelper } from '@/helpers/utils';
 
 @Injectable()
@@ -14,9 +20,9 @@ export class CustomerService {
   constructor(
     @InjectRepository(Customer)
     private customerRepository: Repository<Customer>,
-    @Inject(forwardRef(() => AccountService)) 
+    @Inject(forwardRef(() => AccountService))
     private readonly accountService: AccountService,
-  ) { }
+  ) {}
 
   async findById(id: string) {
     return await this.customerRepository.findOneBy({ _id: new ObjectId(id) });
@@ -32,7 +38,11 @@ export class CustomerService {
   }
 
   async createCustomer(createCustomerDto: CreateCustomerDto) {
-    if (await this.customerRepository.findOneBy({ username: createCustomerDto.username })) {
+    if (
+      await this.customerRepository.findOneBy({
+        username: createCustomerDto.username,
+      })
+    ) {
       throw new ConflictException('Username already exists');
     }
     const hashedPassword = await hashPasswordHelper(createCustomerDto.password);
@@ -43,15 +53,14 @@ export class CustomerService {
     });
     const savedCustomer = await this.customerRepository.save(newCustomer);
     try {
-      await this.accountService.createAccount({ 
+      await this.accountService.createAccount({
         customer_id: savedCustomer._id.toString(),
         balance: 0,
         bank: 'default',
         account_type: 'payment',
         account_number: 'none',
       });
-    }
-    catch (error) {
+    } catch (error) {
       await this.customerRepository.delete({ _id: savedCustomer._id });
       throw error;
     }
@@ -71,8 +80,12 @@ export class CustomerService {
     }
     return customer;
   }
+  
 
-  async update(id: string, updateCustomerDto: UpdateCustomerDto): Promise<Customer> {
+  async update(
+    id: string,
+    updateCustomerDto: UpdateCustomerDto,
+  ): Promise<Customer> {
     const objectId = new ObjectId(id);
     const customer = await this.customerRepository.findOneBy({ _id: objectId });
     if (!customer) {
@@ -80,7 +93,9 @@ export class CustomerService {
     }
 
     await this.customerRepository.update({ _id: objectId }, updateCustomerDto);
-    const updatedCustomer = await this.customerRepository.findOneBy({ _id: objectId });
+    const updatedCustomer = await this.customerRepository.findOneBy({
+      _id: objectId,
+    });
 
     return updatedCustomer;
   }
@@ -96,5 +111,4 @@ export class CustomerService {
     await this.customerRepository.delete({ _id: objectId });
     return customer;
   }
-
 }
