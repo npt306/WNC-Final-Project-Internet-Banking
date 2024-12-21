@@ -3,5 +3,5 @@ export class CreateEmployeeDto {
     full_name: string;
     email: string;
     password: string;
-    refresh_token: string;
+    refresh_token?: string | null;
 }

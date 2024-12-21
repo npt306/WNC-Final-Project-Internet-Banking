@@ -5,6 +5,7 @@ import { Employee } from './entities/employee.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
+import { comparePasswordHelper, hashPasswordHelper } from '@/helpers/utils';
 
 @Injectable()
 export class EmployeeService {
@@ -13,13 +14,34 @@ export class EmployeeService {
     private employeeRepository: Repository<Employee>,
   ) { }
 
-  async create(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
+  async findById(id: string) {
+      return await this.employeeRepository.findOneBy({ _id: new ObjectId(id) });
+    }
+  
+    async validateUser(username: string, pass: string) {
+      const user = await this.employeeRepository.findOneBy({ username: username });
+      if(!user) return null;
+      const isValidPassword = await comparePasswordHelper(pass, user.password);
+    
+      if(!user || !isValidPassword) return null;
+      return user;
+    }
+
+  async createEmployee(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
     if (await this.employeeRepository.findOneBy({ username: createEmployeeDto.username })) {
       throw new ConflictException('Username already exists');
     }
-    const newEmployee = this.employeeRepository.create(createEmployeeDto);
-    await this.employeeRepository.save(newEmployee);
-    return newEmployee;
+
+    const hashedPassword = await hashPasswordHelper(createEmployeeDto.password);
+
+    const newEmployee = this.employeeRepository.create({
+      ...createEmployeeDto,
+      password: hashedPassword
+    });
+
+    const savedEmployee = await this.employeeRepository.save(newEmployee);
+    
+    return savedEmployee;
   }
 
   async findAll(): Promise<Employee[]> {

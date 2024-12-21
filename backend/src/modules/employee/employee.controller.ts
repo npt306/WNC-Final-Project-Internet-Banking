@@ -11,7 +11,7 @@ export class EmployeeController {
 
   @Post()
   async create(@Body() createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
-    const newEmployee = await this.employeeService.create(createEmployeeDto);
+    const newEmployee = await this.employeeService.createEmployee(createEmployeeDto);
     return newEmployee;
   }
 

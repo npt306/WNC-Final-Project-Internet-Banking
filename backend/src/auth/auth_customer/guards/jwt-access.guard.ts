@@ -1,16 +1,16 @@
-import { IS_PUBLIC_KEY } from '@/decorator/public-route';
+import { IS_PUBLIC_KEY_CUSTOMER } from '@/decorator/public-route-customer';
 import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class JwtAccessGuard extends AuthGuard('jwt') {
+export class JwtAccessGuardCustomer extends AuthGuard('jwt') {
     constructor(private reflector: Reflector){
         super();
     }
     
     canActivate(context: ExecutionContext) {
-        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY_CUSTOMER, [
             context.getHandler(),
             context.getClass(),
           ]);
@@ -25,7 +25,7 @@ export class JwtAccessGuard extends AuthGuard('jwt') {
     handleRequest(err, user, info) {
         // You can throw an exception based on either "info" or "err" arguments
         if (err || !user) {
-            throw err || new UnauthorizedException("Invalid access token !!!");
+            throw err || new UnauthorizedException("Invalid customer access token !!!");
         }
         return user;
     }
