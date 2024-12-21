@@ -12,7 +12,6 @@ import { Customer } from './entities/customer.entity';
 import { ObjectId } from 'mongodb';
 import { ConflictException } from '@nestjs/common';
 import { AccountService } from 'src/modules/account/account.service';
-import * as bcrypt from 'bcrypt';
 import { comparePasswordHelper, hashPasswordHelper } from '@/helpers/utils';
 
 @Injectable()

@@ -33,5 +33,5 @@ export class CreateEmployeeDto {
     example: '$argon2id$v=19$m=65536,t=3,p=4$5cfw5/j7oOZMEeKXKKRLOQ$riPb/Mf5HZKqNQpAyjCFAgQzRxK16H4QlFQCuMFjKQA',
     description: 'Refresh token of the employee',
   })
-  refresh_token: string;
+  refresh_token?: string | null;
 }

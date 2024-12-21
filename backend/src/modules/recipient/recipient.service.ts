@@ -5,10 +5,10 @@ import { Recipient } from './entities/recipient.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ObjectId } from 'mongodb';
-import { AccountService } from 'src/account/account.service';
-import { CustomerService } from 'src/customer/customer.service';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
+import { AccountService } from '../account/account.service';
+import { CustomerService } from '../customer/customer.service';
 
 @Injectable()
 export class RecipientService {
