@@ -35,7 +35,7 @@ export class AuthEmployeeService {
   }
 
   async logout(userId: string) {
-    // return this.customerService.update(userId, { refresh_token: null });
+    return this.employeeService.update(userId, { refresh_token: null });
   }
 
   async handleRegister(registerDto: CreateAuthDto) {
