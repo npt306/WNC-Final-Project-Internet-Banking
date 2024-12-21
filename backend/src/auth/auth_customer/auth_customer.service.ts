@@ -1,10 +1,10 @@
 import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { CustomerService } from "@/modules/customer/customer.service"
 import { JwtService } from '@nestjs/jwt';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ConfigService } from '@nestjs/config';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { compareRefreshToken } from '@/helpers/utils';
+import { CustomerService } from '@/modules/customer/customer.service';
 
 @Injectable()
 export class AuthCustomerService {
@@ -39,11 +39,11 @@ export class AuthCustomerService {
   }
 
   async handleRegister(registerDto: CreateAuthDto) {
-    const newUser = await this.customerService.createCustomer(registerDto);
-    const tokens = await this.getTokens(newUser._id as unknown as string, newUser.username);
-    await this.updateRefreshToken(newUser._id as unknown as string, tokens.refreshToken);
+    const newCustomer = await this.customerService.createCustomer(registerDto);
+    const tokens = await this.getTokens(newCustomer._id as unknown as string, newCustomer.username);
+    await this.updateRefreshToken(newCustomer._id as unknown as string, tokens.refreshToken);
     return {
-      ...newUser,
+      ...newCustomer,
       tokens
     }
   }
