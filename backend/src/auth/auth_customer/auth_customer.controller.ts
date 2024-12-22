@@ -10,7 +10,7 @@ import { RolesGuard } from '@/jwt/guards/role.guard';
 import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
 import { JwtRefreshGuard } from '@/jwt/guards/jwt-refresh.guard';
 
-@Controller('auth/customers')
+@Controller('auth/customer')
 export class AuthCustomerController {
   constructor(
     private readonly authService: AuthCustomerService

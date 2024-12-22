@@ -11,7 +11,7 @@ import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
 import { RolesGuard } from '@/jwt/guards/role.guard';
 import { JwtRefreshGuard } from '@/jwt/guards/jwt-refresh.guard';
 
-@Controller('auth/employees')
+@Controller('auth/employee')
 export class AuthEmployeeController {
   constructor(
     private readonly authService: AuthEmployeeService
