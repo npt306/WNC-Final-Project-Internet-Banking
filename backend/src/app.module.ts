@@ -12,6 +12,7 @@ import { DebtReminderModule } from './modules/debt-reminder/debt-reminder.module
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { AuthEmployeeModule } from './auth/auth_employee/auth_employee.module';
+import { MailerCustomModule } from './mail/mailer.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthEmployeeModule } from './auth/auth_employee/auth_employee.module';
     AccountModule,
     RecipientModule,
     DebtReminderModule,
+    MailerCustomModule,
   ],
   controllers: [AppController],
   providers: [

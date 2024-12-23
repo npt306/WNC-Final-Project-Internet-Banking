@@ -8,13 +8,15 @@ import { LocalStrategy } from '../../jwt/strategies/local.strategy';
 import { CustomerModule } from '@/modules/customer/customer.module';
 import { JwtAccessStrategy } from '@/jwt/strategies/jwt-access.strategy';
 import { JwtRefreshStrategy } from '@/jwt/strategies/jwt-refresh.strategy';
+import { MailerCustomModule } from '@/mail/mailer.module';
 
 @Module({
   controllers: [AuthCustomerController],
   imports: [
     CustomerModule,
     JwtModule.register({}),
-    PassportModule
+    PassportModule,
+    MailerCustomModule
   ],
   providers: [AuthCustomerService, LocalStrategy, JwtAccessStrategy, JwtRefreshStrategy],
 })

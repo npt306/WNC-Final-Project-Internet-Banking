@@ -23,6 +23,10 @@ export class CustomerService {
     private readonly accountService: AccountService,
   ) {}
 
+  async findByUsername(username: string) {
+    return await this.customerRepository.findOneBy({ username: username });
+  }
+
   async findById(id: string) {
     return await this.customerRepository.findOneBy({ _id: new ObjectId(id) });
   }

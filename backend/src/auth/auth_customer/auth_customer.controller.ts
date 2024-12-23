@@ -9,6 +9,8 @@ import { Roles } from '@/constants/roles.enum';
 import { RolesGuard } from '@/jwt/guards/role.guard';
 import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
 import { JwtRefreshGuard } from '@/jwt/guards/jwt-refresh.guard';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { SendEmailDto } from './dto/send-email.dto';
 
 @Controller('auth/customer')
 export class AuthCustomerController {
@@ -42,5 +44,10 @@ export class AuthCustomerController {
     const userId = req['user']['sub'];
     const refreshToken = req['user']['refreshToken'];
     return this.authService.refreshTokens(userId, refreshToken);
+  }
+
+  @Post('forgot-password')
+  forgotPasswordCustomer(@Body() sendEmailDto: SendEmailDto) {
+    return this.authService.sendEmail(sendEmailDto);
   }
 }

@@ -1,3 +1,4 @@
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -6,6 +7,9 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { compareRefreshToken } from '@/helpers/utils';
 import { CustomerService } from '@/modules/customer/customer.service';
 import { Roles } from '@/constants/roles.enum';
+import { SendEmailDto } from './dto/send-email.dto';
+import { send } from 'process';
+import { MailerCustomService } from '@/mail/mailer.service';
 
 @Injectable()
 export class AuthCustomerService {
@@ -13,6 +17,7 @@ export class AuthCustomerService {
     private customerService: CustomerService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private mailerCustomService: MailerCustomService
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -99,5 +104,9 @@ export class AuthCustomerService {
     const tokens = await this.getTokens(userId, user.username);
     await this.updateRefreshToken(userId, tokens.refreshToken);
     return tokens;
+  }
+
+  async sendEmail(sendEmailDto: SendEmailDto) {
+    return this.mailerCustomService.sendMailCustomer(sendEmailDto);
   }
 }
