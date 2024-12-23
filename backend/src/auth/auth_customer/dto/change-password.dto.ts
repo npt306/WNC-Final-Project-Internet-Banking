@@ -11,5 +11,5 @@ export class ChangePasswordDto {
     password: string;
 
     @IsNotEmpty({message: "Empty confirm password !!!"})
-    confirmPassword: string;
+    confirm_password: string;
 }

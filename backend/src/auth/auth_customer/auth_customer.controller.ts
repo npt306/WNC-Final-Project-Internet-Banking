@@ -50,4 +50,9 @@ export class AuthCustomerController {
   forgotPasswordCustomer(@Body() sendEmailDto: SendEmailDto) {
     return this.authService.sendEmail(sendEmailDto);
   }
+
+  @Post('reset-password')
+  changePasswordCustomer(@Body() changePasswordDto: ChangePasswordDto) {
+    return this.authService.changePassword(changePasswordDto);
+  }
 }

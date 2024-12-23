@@ -109,4 +109,8 @@ export class AuthCustomerService {
   async sendEmail(sendEmailDto: SendEmailDto) {
     return this.mailerCustomService.sendMailCustomer(sendEmailDto);
   }
+
+  async changePassword(changePasswordDto: ChangePasswordDto) {
+    return this.customerService.changePassword(changePasswordDto);
+  }
 }

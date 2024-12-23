@@ -32,3 +32,16 @@ export const compareRefreshToken = async (token: string, receivedToken: string) 
         // console.log(error);
     }
 }
+
+export const randomSequence = (length: number) => {
+    if (length <= 0) {
+        return "";      
+    }
+    
+    let result = '';
+    for (let i = 0; i < length; i++) {
+    result += Math.floor(Math.random() * 10); 
+    }
+
+    return result;
+}
