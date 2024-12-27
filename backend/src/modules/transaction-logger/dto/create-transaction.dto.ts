@@ -39,6 +39,14 @@ export class CreateTransactionDto {
   content: string;
 
   @ApiProperty({
+    example: '10000000',
+    required: true,
+  })
+  @IsNumber()
+  @Min(0)
+  balance: number;
+
+  @ApiProperty({
     example: 'sender id',
     required: true,
   })
@@ -58,11 +66,4 @@ export class CreateTransactionDto {
   })
   @IsString()
   type: string;
-
-  @ApiProperty({
-    example: 'TRANSFER',
-    required: true,
-  })
-  @IsBoolean()
-  isPaid?: boolean | null;
 }

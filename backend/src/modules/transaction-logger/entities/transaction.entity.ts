@@ -4,7 +4,6 @@ import { ObjectId } from 'mongodb';
 // RECEIVE LOG:     query receiver = thisAcc
 // TRANSFER LOG:    query sender = thisAcc
 // DEPOSIT LOG:     sender == null
-// UNPAID LOAN:     query receiver = thisAcc, isPaid != null
 // DEBT:            query sender = thisAcc, isPaid !=  null
 
 @Entity()
@@ -28,6 +27,9 @@ export class Transaction extends BaseEntity {
   @Column()
   content: string;
 
+  @Column()
+  balance: number;
+
   @Column({ nullable: true })
   payer?: string; // NULL if from employee
 
@@ -35,8 +37,5 @@ export class Transaction extends BaseEntity {
   timestamp: string;
 
   @Column()
-  type: string; // RECEIVE, TRANSFER, DEPOSIT, DEBT
-
-  @Column({ nullable: true })
-  isPaid?: boolean; // !NULL if is DEBT
+  type: string; // TRANSFER, DEPOSIT, DEBT
 }
