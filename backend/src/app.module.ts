@@ -12,7 +12,7 @@ import { DebtReminderModule } from './modules/debt-reminder/debt-reminder.module
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { AuthEmployeeModule } from './auth/auth_employee/auth_employee.module';
-
+import AppGateway from './socket/AppGetWay';
 @Module({
   imports: [
     MongoModule,
@@ -28,6 +28,7 @@ import { AuthEmployeeModule } from './auth/auth_employee/auth_employee.module';
   controllers: [AppController],
   providers: [
     AppService,
+    AppGateway,
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
