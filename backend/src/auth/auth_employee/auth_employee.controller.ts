@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { AuthEmployeeService } from './auth_employee.service';
 import { PublicRouteEmployee } from '@/decorator/public-route';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -13,18 +23,16 @@ import { JwtRefreshGuard } from '@/jwt/guards/jwt-refresh.guard';
 
 @Controller('auth/employee')
 export class AuthEmployeeController {
-  constructor(
-    private readonly authService: AuthEmployeeService
-  ) {}
-  
+  constructor(private readonly authService: AuthEmployeeService) {}
+
   // Employee auth
-  @Post("login")
-  @ResponseMessage("Fetch login")
+  @Post('login')
+  @ResponseMessage('Fetch login')
   handleLoginEmployee(@Body() loginDto: LoginAuthDto) {
     return this.authService.login(loginDto);
   }
 
-  @Post("register")
+  @Post('register')
   registerEmployee(@Body() registerDto: CreateAuthDto) {
     return this.authService.handleRegister(registerDto);
   }

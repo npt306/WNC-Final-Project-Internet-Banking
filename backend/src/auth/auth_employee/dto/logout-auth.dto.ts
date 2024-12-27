@@ -1,10 +1,9 @@
-import { IsNotEmpty, IsOptional } from "class-validator";
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class LogoutAuthDto {
-    @IsNotEmpty({message: "Empty username !!!"})
-    username: string;
+  @IsNotEmpty({ message: 'Empty username !!!' })
+  username: string;
 
-    @IsNotEmpty()
-    refresh_token?: string | null;
+  @IsNotEmpty()
+  refresh_token?: string | null;
 }
-

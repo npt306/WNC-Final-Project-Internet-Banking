@@ -31,6 +31,7 @@ import { AuthEmployeeModule } from './auth/auth_employee/auth_employee.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
-    },],
+    },
+  ],
 })
 export class AppModule {}

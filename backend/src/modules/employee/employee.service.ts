@@ -19,20 +19,28 @@ export class EmployeeService {
   ) {}
 
   async findById(id: string) {
-      return await this.employeeRepository.findOneBy({ _id: new ObjectId(id) });
-    }
-  
-    async validateUser(username: string, pass: string) {
-      const user = await this.employeeRepository.findOneBy({ username: username });
-      if(!user) return null;
-      const isValidPassword = await comparePasswordHelper(pass, user.password);
-    
-      if(!user || !isValidPassword) return null;
-      return user;
-    }
+    return await this.employeeRepository.findOneBy({ _id: new ObjectId(id) });
+  }
 
-  async createEmployee(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
-    if (await this.employeeRepository.findOneBy({ username: createEmployeeDto.username })) {
+  async validateUser(username: string, pass: string) {
+    const user = await this.employeeRepository.findOneBy({
+      username: username,
+    });
+    if (!user) return null;
+    const isValidPassword = await comparePasswordHelper(pass, user.password);
+
+    if (!user || !isValidPassword) return null;
+    return user;
+  }
+
+  async createEmployee(
+    createEmployeeDto: CreateEmployeeDto,
+  ): Promise<Employee> {
+    if (
+      await this.employeeRepository.findOneBy({
+        username: createEmployeeDto.username,
+      })
+    ) {
       throw new ConflictException('Username already exists');
     }
 
@@ -40,11 +48,11 @@ export class EmployeeService {
 
     const newEmployee = this.employeeRepository.create({
       ...createEmployeeDto,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     const savedEmployee = await this.employeeRepository.save(newEmployee);
-    
+
     return savedEmployee;
   }
 

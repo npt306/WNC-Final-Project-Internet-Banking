@@ -11,11 +11,7 @@ import { JwtRefreshGuard } from '@/jwt/guards/jwt-refresh.guard';
 
 @Module({
   controllers: [AuthEmployeeController],
-  imports: [
-    EmployeeModule,
-    JwtModule.register({}),
-    PassportModule
-  ],
+  imports: [EmployeeModule, JwtModule.register({}), PassportModule],
   providers: [AuthEmployeeService, JwtAccessGuard, JwtRefreshGuard],
 })
 export class AuthEmployeeModule {}

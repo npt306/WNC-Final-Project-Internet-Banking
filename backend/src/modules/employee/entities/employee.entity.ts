@@ -10,15 +10,15 @@ export class Employee extends BaseEntity {
   @ApiProperty({
     example: 'john_doe',
     description: 'Username of the employee',
-    required: true
+    required: true,
   })
-  @Column()
+  @Column({})
   username: string;
 
   @ApiProperty({
     example: 'John Doe',
     description: 'Full name of the employee',
-    required: true
+    required: true,
   })
   @Column()
   full_name: string;
@@ -26,21 +26,23 @@ export class Employee extends BaseEntity {
   @ApiProperty({
     example: 'employee2@example.com',
     description: 'Email address of the employee',
-    required: true
+    required: true,
   })
   @Column()
   email: string;
 
   @ApiProperty({
-    example: '$argon2id$v=19$m=65536,t=3,p=4$5cfw5/j7oOZMEeKXKKRLOQ$riPb/Mf5HZKqNQpAyjCFAgQzRxK16H4QlFQCuMFjKQA',
+    example:
+      '$argon2id$v=19$m=65536,t=3,p=4$5cfw5/j7oOZMEeKXKKRLOQ$riPb/Mf5HZKqNQpAyjCFAgQzRxK16H4QlFQCuMFjKQA',
     description: 'Password of the employee',
-    required: true
+    required: true,
   })
   @Column()
   password: string;
 
   @ApiProperty({
-    example: '$argon2id$v=19$m=65536,t=3,p=4$5cfw5/j7oOZMEeKXKKRLOQ$riPb/Mf5HZKqNQpAyjCFAgQzRxK16H4QlFQCuMFjKQA',
+    example:
+      '$argon2id$v=19$m=65536,t=3,p=4$5cfw5/j7oOZMEeKXKKRLOQ$riPb/Mf5HZKqNQpAyjCFAgQzRxK16H4QlFQCuMFjKQA',
     description: 'Refresh token of the employee',
   })
   @Column({ nullable: true })

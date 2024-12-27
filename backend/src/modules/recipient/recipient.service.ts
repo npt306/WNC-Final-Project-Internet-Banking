@@ -18,7 +18,7 @@ export class RecipientService {
     private readonly accountService: AccountService,
     private readonly customerService: CustomerService,
     private httpService: HttpService,
-  ) { }
+  ) {}
 
   private async getNameFromBankA(accountNumber: string): Promise<any> {
     const apiUrl = `https://bank-a.com/api/user/${accountNumber}`;
@@ -40,8 +40,10 @@ export class RecipientService {
     }
   }
 
-  private async getUserInfoFromLinkedBank(linkedBank: string, accountNumber: string): Promise<any> {
-
+  private async getUserInfoFromLinkedBank(
+    linkedBank: string,
+    accountNumber: string,
+  ): Promise<any> {
     switch (linkedBank) {
       case '1':
         return await this.getNameFromBankA(accountNumber);
@@ -50,7 +52,6 @@ export class RecipientService {
       default:
         throw new Error('Invalid linked bank');
     }
-
   }
 
   async create(createRecipientDto: CreateRecipientDto): Promise<Recipient> {
@@ -59,21 +60,24 @@ export class RecipientService {
     // When nickname is not provided, we will get the name from the bank
     if (!nickname) {
       if (bank === 'default') {
-        const { customer_id } = await this.accountService.findAccountByAccountNumber(account_number);
+        const { customer_id } =
+          await this.accountService.findAccountByAccountNumber(account_number);
         const { full_name } = await this.customerService.findOne(customer_id);
         createRecipientDto.nickname = full_name;
       } else {
-        const full_name = await this.getUserInfoFromLinkedBank(bank, createRecipientDto.account_number);
+        const full_name = await this.getUserInfoFromLinkedBank(
+          bank,
+          createRecipientDto.account_number,
+        );
         createRecipientDto.nickname = full_name;
         if (!full_name) {
           throw new Error('Cannot get username from bank');
         }
-      } 
+      }
     }
     const newRecipient = this.recipientRepository.create(createRecipientDto);
     return await this.recipientRepository.save(newRecipient);
   }
-
 
   async findAll(): Promise<Recipient[]> {
     return await this.recipientRepository.find();

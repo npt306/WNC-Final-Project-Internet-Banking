@@ -11,7 +11,13 @@ import { RecipientService } from './recipient.service';
 import { CreateRecipientDto } from './dto/create-recipient.dto';
 import { UpdateRecipientDto } from './dto/update-recipient.dto';
 import { Recipient } from './entities/recipient.entity';
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+} from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @ApiTags('recipient')
@@ -20,7 +26,11 @@ export class RecipientController {
   constructor(private readonly recipientService: RecipientService) {}
 
   @ApiOperation({ summary: '1.3: Create a recipient' })
-  @ApiResponse({ status: 201, description: 'The recipient has been successfully created.', type: Recipient })
+  @ApiResponse({
+    status: 201,
+    description: 'The recipient has been successfully created.',
+    type: Recipient,
+  })
   @ApiBody({
     type: CreateRecipientDto,
     description: 'Json structure for recipient creation',
@@ -38,14 +48,22 @@ export class RecipientController {
   // }
 
   @ApiOperation({ summary: '1.3: Get list recipient by id' })
-  @ApiResponse({ status: 200, description: 'Return recipient by id.', type: [Recipient] })
+  @ApiResponse({
+    status: 200,
+    description: 'Return recipient by id.',
+    type: [Recipient],
+  })
   @Get(':id')
   async findCustomerRecipient(@Param('id') id: string): Promise<Recipient[]> {
     return this.recipientService.findCustomerRecipient(id);
   }
 
   @ApiOperation({ summary: '1.3 Update a recipient' })
-  @ApiResponse({ status: 200, description: 'Return updated recipient.', type: Recipient })
+  @ApiResponse({
+    status: 200,
+    description: 'Return updated recipient.',
+    type: Recipient,
+  })
   @ApiBody({
     type: CreateRecipientDto,
     description: 'Json structure for recipient update',
@@ -59,7 +77,11 @@ export class RecipientController {
   }
 
   @ApiOperation({ summary: '1.3 Delete a recipient' })
-  @ApiResponse({ status: 200, description: 'Return deleted recipient.', type: Recipient })
+  @ApiResponse({
+    status: 200,
+    description: 'Return deleted recipient.',
+    type: Recipient,
+  })
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<Recipient> {
     return this.recipientService.remove(id);

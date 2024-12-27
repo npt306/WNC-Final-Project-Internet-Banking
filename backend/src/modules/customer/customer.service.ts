@@ -28,11 +28,13 @@ export class CustomerService {
   }
 
   async validateUser(username: string, pass: string) {
-    const user = await this.customerRepository.findOneBy({ username: username });
-    if(!user) return null;
+    const user = await this.customerRepository.findOneBy({
+      username: username,
+    });
+    if (!user) return null;
     const isValidPassword = await comparePasswordHelper(pass, user.password);
-  
-    if(!user || !isValidPassword) return null;
+
+    if (!user || !isValidPassword) return null;
     return user;
   }
 
@@ -48,7 +50,7 @@ export class CustomerService {
 
     const newCustomer = this.customerRepository.create({
       ...createCustomerDto,
-      password: hashedPassword
+      password: hashedPassword,
     });
     const savedCustomer = await this.customerRepository.save(newCustomer);
     try {
@@ -79,7 +81,6 @@ export class CustomerService {
     }
     return customer;
   }
-  
 
   async update(
     id: string,

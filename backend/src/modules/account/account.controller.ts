@@ -9,7 +9,7 @@ import { ApiResponse, ApiBody, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 @ApiBearerAuth()
 @Controller('account')
 export class AccountController {
-  constructor(private readonly accountService: AccountService) { }
+  constructor(private readonly accountService: AccountService) {}
 
   // @Post()
   // async create(@Body() createAccountDto: CreateAccountDto) {
@@ -25,8 +25,17 @@ export class AccountController {
   }
 
   @ApiOperation({ summary: '1.2: List customer accounts with id' })
-  @ApiParam({ name: 'id', type: String, description: 'The ID of the account', example: '675babee10466a57086768ed' })
-  @ApiResponse({ status: 200, description: 'Return account by id.', type: [Account] })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'The ID of the account',
+    example: '675babee10466a57086768ed',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Return account by id.',
+    type: [Account],
+  })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Get(':id')
   async findAccountsUser(@Param('id') id: string): Promise<Account[]> {

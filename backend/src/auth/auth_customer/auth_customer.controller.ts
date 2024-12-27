@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { AuthCustomerService } from './auth_customer.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ResponseMessage } from '@/decorator/response-message';
@@ -12,18 +22,16 @@ import { JwtRefreshGuard } from '@/jwt/guards/jwt-refresh.guard';
 
 @Controller('auth/customer')
 export class AuthCustomerController {
-  constructor(
-    private readonly authService: AuthCustomerService
-  ) {}
-  
+  constructor(private readonly authService: AuthCustomerService) {}
+
   // Customer auth
-  @Post("login")
-  @ResponseMessage("Fetch login")
+  @Post('login')
+  @ResponseMessage('Fetch login')
   handleLoginCustomer(@Body() loginDto: LoginAuthDto) {
     return this.authService.login(loginDto);
   }
 
-  @Post("register")
+  @Post('register')
   registerCustomer(@Body() registerDto: CreateAuthDto) {
     return this.authService.handleRegister(registerDto);
   }

@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ConfigService } from '@nestjs/config';
@@ -20,18 +25,27 @@ export class AuthEmployeeService {
   }
 
   async login(data: LoginAuthDto) {
-    const user = await this.employeeService.validateUser(data.username, data.password);
+    const user = await this.employeeService.validateUser(
+      data.username,
+      data.password,
+    );
     if (!user) throw new BadRequestException('Cannot validate employee');
 
-    const tokens = await this.getTokens(user._id as unknown as string, user.username);
-    await this.updateRefreshToken(user._id as unknown as string, tokens.refreshToken);
+    const tokens = await this.getTokens(
+      user._id as unknown as string,
+      user.username,
+    );
+    await this.updateRefreshToken(
+      user._id as unknown as string,
+      tokens.refreshToken,
+    );
     return {
       user: {
         email: user.email,
         _id: user._id,
-        username: user.username
+        username: user.username,
       },
-      tokens
+      tokens,
     };
   }
 
@@ -41,12 +55,18 @@ export class AuthEmployeeService {
 
   async handleRegister(registerDto: CreateAuthDto) {
     const newEmployee = await this.employeeService.createEmployee(registerDto);
-    const tokens = await this.getTokens(newEmployee._id as unknown as string, newEmployee.username);
-    await this.updateRefreshToken(newEmployee._id as unknown as string, tokens.refreshToken);
+    const tokens = await this.getTokens(
+      newEmployee._id as unknown as string,
+      newEmployee.username,
+    );
+    await this.updateRefreshToken(
+      newEmployee._id as unknown as string,
+      tokens.refreshToken,
+    );
     return {
       ...newEmployee,
-      tokens
-    }
+      tokens,
+    };
   }
 
   async updateRefreshToken(userId: string, refreshToken: string) {
@@ -62,22 +82,22 @@ export class AuthEmployeeService {
         {
           sub: userId,
           username,
-          role: Roles.Employee
+          role: Roles.Employee,
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-          expiresIn: this.configService.get("JWT_ACCESS_TOKEN_EXPIRED"),
+          expiresIn: this.configService.get('JWT_ACCESS_TOKEN_EXPIRED'),
         },
       ),
       this.jwtService.signAsync(
         {
           sub: userId,
           username,
-          role: Roles.Employee
+          role: Roles.Employee,
         },
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-          expiresIn: this.configService.get("JWT_REFRESH_TOKEN_EXPIRED"),
+          expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRED'),
         },
       ),
     ]);
@@ -93,8 +113,12 @@ export class AuthEmployeeService {
     if (!user || !user.refresh_token)
       throw new ForbiddenException('Access for employee denied');
 
-    const refreshTokenMatches = compareRefreshToken(user.refresh_token, refreshToken);
-    if (!refreshTokenMatches) throw new ForbiddenException('Access for employee Denied');
+    const refreshTokenMatches = compareRefreshToken(
+      user.refresh_token,
+      refreshToken,
+    );
+    if (!refreshTokenMatches)
+      throw new ForbiddenException('Access for employee Denied');
 
     const tokens = await this.getTokens(userId, user.username);
     await this.updateRefreshToken(userId, tokens.refreshToken);

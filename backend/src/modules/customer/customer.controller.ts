@@ -10,7 +10,13 @@ import {
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { ApiBearerAuth, ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+} from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @ApiTags('customer')
@@ -19,7 +25,10 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @ApiOperation({ summary: '2.1: Create customer' })
-  @ApiResponse({ status: 201, description: 'The customer has been successfully created.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The customer has been successfully created.',
+  })
   @ApiBody({
     description: 'Json structure for customer creation',
     schema: {
@@ -30,14 +39,14 @@ export class CustomerController {
         email: { type: 'string', example: 'johndoe@example.com' },
         phone: { type: 'string', example: '08012345678' },
         password: { type: 'string', example: '123456' },
-        refresh_token: { type: 'string', example: 'none' }, 
+        refresh_token: { type: 'string', example: 'none' },
+      },
     },
-  }})
+  })
   @Post()
   create(@Body() createCustomerDto: CreateCustomerDto) {
     return this.customerService.createCustomer(createCustomerDto);
   }
-
 
   // @Get()
   // findAll() {

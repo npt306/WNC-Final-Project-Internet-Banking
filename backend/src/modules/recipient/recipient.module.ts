@@ -9,10 +9,10 @@ import { CustomerModule } from '../customer/customer.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Recipient]), 
-    AccountModule, 
+    TypeOrmModule.forFeature([Recipient]),
+    AccountModule,
     CustomerModule,
-    HttpModule 
+    HttpModule,
   ],
   controllers: [RecipientController],
   providers: [RecipientService],

@@ -9,6 +9,6 @@ import { Employee } from './entities/employee.entity';
   imports: [MongoModule, TypeOrmModule.forFeature([Employee])],
   controllers: [EmployeeController],
   providers: [EmployeeService],
-  exports: [EmployeeService]
+  exports: [EmployeeService],
 })
 export class EmployeeModule {}

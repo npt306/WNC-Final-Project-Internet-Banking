@@ -14,17 +14,15 @@ async function bootstrap() {
   //   forbidNonWhitelisted: true
   // }));
 
-  app.setGlobalPrefix('api', {exclude: ['/'] });
+  app.setGlobalPrefix('api', { exclude: ['/'] });
 
   //config cors
-  app.enableCors(
-    {
-      "origin": true,
-      "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-      "preflightContinue": false,
-      credentials: true
-    }
-  );
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    credentials: true,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Internet Banking API')
@@ -33,7 +31,10 @@ async function bootstrap() {
     .addTag('account', 'Endpoints for managing bank accounts')
     .addTag('employee', 'Endpoints for managing employees')
     .addTag('customer', 'Endpoints for managing customers')
-    .addTag('debt-reminder', 'Endpoints for managing debt reminders. 2 status: Pending, Completed')
+    .addTag(
+      'debt-reminder',
+      'Endpoints for managing debt reminders. 2 status: Pending, Completed',
+    )
     .addTag('recipient', 'Endpoints for managing recipients')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);

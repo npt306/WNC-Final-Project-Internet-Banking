@@ -2,12 +2,11 @@ import { Entity, Column, BaseEntity, ObjectIdColumn } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { ApiProperty } from '@nestjs/swagger';
 
-
 @Entity('debt-reminder')
 export class DebtReminder extends BaseEntity {
   @ApiProperty({
     example: '675db7c4cb2b0bf8ef4ffbf3',
-    required: true
+    required: true,
   })
   @ObjectIdColumn()
   _id: ObjectId;

@@ -11,11 +11,12 @@ import { JwtRefreshStrategy } from '@/jwt/strategies/jwt-refresh.strategy';
 
 @Module({
   controllers: [AuthCustomerController],
-  imports: [
-    CustomerModule,
-    JwtModule.register({}),
-    PassportModule
+  imports: [CustomerModule, JwtModule.register({}), PassportModule],
+  providers: [
+    AuthCustomerService,
+    LocalStrategy,
+    JwtAccessStrategy,
+    JwtRefreshStrategy,
   ],
-  providers: [AuthCustomerService, LocalStrategy, JwtAccessStrategy, JwtRefreshStrategy],
 })
 export class AuthCustomerModule {}
