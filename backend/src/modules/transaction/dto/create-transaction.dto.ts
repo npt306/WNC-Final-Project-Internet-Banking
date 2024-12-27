@@ -17,11 +17,18 @@ export class CreateTransactionDto {
   receiver: string;
 
   @ApiProperty({
-    example: 'bank id',
+    example: 'bank A',
     required: true,
   })
   @IsString()
-  bank: string;
+  sender_bank: string;
+
+  @ApiProperty({
+    example: 'bank B',
+    required: true,
+  })
+  @IsString()
+  receiver_bank: string;
 
   @ApiProperty({
     example: '100000',
@@ -44,7 +51,15 @@ export class CreateTransactionDto {
   })
   @IsNumber()
   @Min(0)
-  balance: number;
+  sender_balance: number;
+
+  @ApiProperty({
+    example: '10000000',
+    required: true,
+  })
+  @IsNumber()
+  @Min(0)
+  receiver_balance: number;
 
   @ApiProperty({
     example: 'sender id',
