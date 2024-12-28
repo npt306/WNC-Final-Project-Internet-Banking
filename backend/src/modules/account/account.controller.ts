@@ -1,9 +1,21 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AccountService } from './account.service';
 import { Account } from './entities/account.entity';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { ApiResponse, ApiBody, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import { TransferDto } from '../transaction/dto/transfer.dto';
+import { DepositDto } from '../transaction/dto/deposit.dto';
+import { transferExample, depositExample } from './schema/account.schema';
 
 @ApiTags('account')
 @ApiBearerAuth()
@@ -52,17 +64,25 @@ export class AccountController {
     return await this.accountService.removeAccount(id);
   }
 
+  @ApiBody({
+    type: DepositDto,
+    description: 'Json structure for deposit transaction creation',
+  })
+  @ApiCreatedResponse({ example: depositExample })
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Post('deposit')
-  async deposit(@Body() body: any): Promise<any> {
-    return await this.accountService.deposit(body.id, body.amount);
+  async deposit(@Body() depositDto: DepositDto): Promise<any> {
+    return await this.accountService.deposit(depositDto);
   }
 
+  @ApiBody({
+    type: TransferDto,
+    description: 'Json structure for transfer transaction creation',
+  })
+  @ApiCreatedResponse({ example: transferExample })
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Post('transfer')
-  async transfer(@Body() body: any): Promise<any> {
-    return await this.accountService.transfer(
-      body.sender_id,
-      body.receiver_id,
-      body.amount,
-    );
+  async transfer(@Body() transferDto: TransferDto): Promise<any> {
+    return await this.accountService.transfer(transferDto);
   }
 }

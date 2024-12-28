@@ -7,6 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CustomerService } from 'src/modules/customer/customer.service';
 import { ObjectId } from 'mongodb';
 import { NotFoundException, Inject, forwardRef } from '@nestjs/common';
+import { TransactionService } from '../transaction/transaction.services';
+import { DepositDto } from '../transaction/dto/deposit.dto';
+import { TransferDto } from '../transaction/dto/transfer.dto';
 
 @Injectable()
 export class AccountService {
@@ -15,6 +18,8 @@ export class AccountService {
     private accountRepository: Repository<Account>,
     @Inject(forwardRef(() => CustomerService))
     private readonly customerService: CustomerService,
+    @Inject(forwardRef(() => TransactionService))
+    private readonly transactionService: TransactionService,
   ) {}
 
   private async generateUniqueAccountNumber(): Promise<string> {
@@ -103,29 +108,30 @@ export class AccountService {
     return removeAccount;
   }
 
-  async deposit(id: string, depositAmount: string): Promise<any> {
-    const thisAccount = await this.findOneAccount(id);
+  async deposit(depositDto: DepositDto): Promise<any> {
+    const thisAccount = await this.findOneAccount(depositDto.receiver);
 
-    // Manual validation
-    const amount = Number(depositAmount);
-    if (amount) {
-      thisAccount.balance += amount;
-    }
+    thisAccount.balance += depositDto.amount;
+    this.accountRepository.save(thisAccount);
 
-    const result = this.accountRepository.save(thisAccount);
+    depositDto.receiver_balance = thisAccount.balance;
+    const result = this.transactionService.create(depositDto);
     return result;
   }
 
-  async transfer(
-    sender_id: string,
-    receiver_id: string,
-    amount: string,
-  ): Promise<any> {
-    // TODO: handle validation
-    let result = await this.deposit(sender_id, '-' + amount);
-    console.log(result);
-    result = await this.deposit(receiver_id, amount);
-    console.log(result);
-    return 'Success';
+  async transfer(transferDto: TransferDto): Promise<any> {
+    const senderAccount = await this.findOneAccount(transferDto.sender);
+    senderAccount.balance -= transferDto.amount;
+    transferDto.sender_balance = senderAccount.balance;
+
+    const receiverAccount = await this.findOneAccount(transferDto.receiver);
+    receiverAccount.balance += transferDto.amount;
+    transferDto.receiver_balance = receiverAccount.balance;
+
+    this.accountRepository.save(senderAccount);
+    this.accountRepository.save(receiverAccount);
+
+    const result = this.transactionService.create(transferDto);
+    return result;
   }
 }

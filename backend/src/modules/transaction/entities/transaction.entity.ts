@@ -17,11 +17,11 @@ export class Transaction extends BaseEntity {
   @Column()
   receiver: string;
 
-  @Column()
-  sender_bank: string;
+  @Column({ nullable: true })
+  sender_bank?: string;
 
-  @Column()
-  receiver_bank: string;
+  @Column({ nullable: true })
+  receiver_bank?: string;
 
   @Column()
   amount: number;
@@ -30,8 +30,8 @@ export class Transaction extends BaseEntity {
   @Column()
   content: string;
 
-  @Column()
-  sender_balance: number;
+  @Column({ nullable: true })
+  sender_balance?: number;
 
   @Column()
   receiver_balance: number;
@@ -40,7 +40,7 @@ export class Transaction extends BaseEntity {
   payer?: string; // NULL if from employee
 
   @Column()
-  timestamp: string;
+  timestamp: Date;
 
   @Column()
   type: string; // TRANSFER, DEPOSIT, DEBT

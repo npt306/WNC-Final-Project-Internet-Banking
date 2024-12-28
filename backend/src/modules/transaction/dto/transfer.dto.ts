@@ -1,13 +1,14 @@
-import { IsString, IsNumber, Min, IsBoolean } from 'class-validator';
+import { IsString, IsNumber, Min, IsDate, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { TransactionDto } from './transaction.dto';
 
-export class CreateTransactionDto {
+export class TransferDto implements TransactionDto {
   @ApiProperty({
     example: '675db7c4cb2b0bf8ef4ffbf3',
     required: true,
   })
   @IsString()
-  sender?: string | null;
+  sender: string;
 
   @ApiProperty({
     example: '675babee10466a57086768eb',
@@ -45,20 +46,12 @@ export class CreateTransactionDto {
   @IsString()
   content: string;
 
-  @ApiProperty({
-    example: '10000000',
-    required: true,
-  })
   @IsNumber()
-  @Min(0)
+  @IsOptional()
   sender_balance: number;
 
-  @ApiProperty({
-    example: '10000000',
-    required: true,
-  })
   @IsNumber()
-  @Min(0)
+  @IsOptional()
   receiver_balance: number;
 
   @ApiProperty({
@@ -66,19 +59,12 @@ export class CreateTransactionDto {
     required: true,
   })
   @IsString()
-  payer?: string | null;
+  @IsOptional()
+  payer: string | null;
 
-  @ApiProperty({
-    example: '2024-12-25T20:30:00.000Z',
-    required: true,
-  })
-  @IsString()
-  timestamp: string;
+  @IsDate()
+  timestamp: Date = new Date(Date.now());
 
-  @ApiProperty({
-    example: 'TRANSFER',
-    required: true,
-  })
   @IsString()
-  type: string;
+  type: string = 'TRANSFER';
 }
