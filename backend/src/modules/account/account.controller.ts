@@ -16,6 +16,7 @@ import { ApiResponse, ApiBody, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { TransferDto } from '../transaction/dto/transfer.dto';
 import { DepositDto } from '../transaction/dto/deposit.dto';
 import { transferExample, depositExample } from './schema/account.schema';
+import { Customer } from '../customer/entities/customer.entity';
 import { DebtDto } from '../transaction/dto/debt.dto';
 
 @ApiTags('account')
@@ -53,6 +54,22 @@ export class AccountController {
   @Get(':id')
   async findAccountsUser(@Param('id') id: string): Promise<Account[]> {
     return await this.accountService.findAccountsUser(id);
+  }
+
+  @ApiOperation({ summary: '1.4: Get customer information with account number' })
+  @ApiParam({
+    name: 'accountNumber',
+    type: String,
+    description: 'The account number of the customer',
+    example: '112233445566',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Return customer username and full by account number.',
+  })
+  @Get('/customer-information/:accountNumber')
+  async findOne(@Param('accountNumber') accountNumber: string): Promise<Customer> {
+    return await this.accountService.findCustomerByAccountNumber(accountNumber);
   }
 
   // @Patch(':id')

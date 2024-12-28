@@ -10,6 +10,7 @@ import { NotFoundException, Inject, forwardRef } from '@nestjs/common';
 import { TransactionService } from '../transaction/transaction.services';
 import { DepositDto } from '../transaction/dto/deposit.dto';
 import { TransferDto } from '../transaction/dto/transfer.dto';
+import { Customer } from '../customer/entities/customer.entity';
 import { DebtDto } from '../transaction/dto/debt.dto';
 
 const TRANSFER_FEE = 0.02;
@@ -23,7 +24,7 @@ export class AccountService {
     private readonly customerService: CustomerService,
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
-  ) {}
+  ) { }
 
   private async generateUniqueAccountNumber(): Promise<string> {
     let accountNumber: string;
@@ -63,6 +64,21 @@ export class AccountService {
       where: { customer_id: id },
     });
     return accounts;
+  }
+
+  async findCustomerByAccountNumber(accountNumber: string): Promise<any> {
+    const account = await this.accountRepository.findOneBy({
+      account_number: accountNumber,
+    });
+    if (!account) {
+      throw new NotFoundException(`Account not found`);
+    }
+    const customer = await this.customerService.findOne(account.customer_id);
+    if (!customer) {
+      throw new NotFoundException(`Customer not found`);
+    }
+    const { password, refresh_token,phone, email, ...filteredCustomer } = customer;
+    return filteredCustomer;
   }
 
   async findOneAccount(id: string): Promise<Account> {
