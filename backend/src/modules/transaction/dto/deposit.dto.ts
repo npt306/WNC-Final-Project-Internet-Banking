@@ -4,7 +4,7 @@ import { TransactionDto } from './transaction.dto';
 
 export class DepositDto implements TransactionDto {
   @ApiProperty({
-    example: '675db7c4cb2b0bf8ef4ffbf3',
+    example: '112233445566',
     required: true,
   })
   @IsString()

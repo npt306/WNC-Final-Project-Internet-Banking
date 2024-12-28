@@ -16,6 +16,7 @@ import { ApiResponse, ApiBody, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { TransferDto } from '../transaction/dto/transfer.dto';
 import { DepositDto } from '../transaction/dto/deposit.dto';
 import { transferExample, depositExample } from './schema/account.schema';
+import { DebtDto } from '../transaction/dto/debt.dto';
 
 @ApiTags('account')
 @ApiBearerAuth()
@@ -76,13 +77,13 @@ export class AccountController {
   }
 
   @ApiBody({
-    type: TransferDto,
-    description: 'Json structure for transfer transaction creation',
+    type: TransferDto || DebtDto,
+    description: 'Json structure for transfer/debt transaction creation',
   })
   @ApiCreatedResponse({ example: transferExample })
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('transfer')
-  async transfer(@Body() transferDto: TransferDto): Promise<any> {
+  async transfer(@Body() transferDto: TransferDto | DebtDto): Promise<any> {
     return await this.accountService.transfer(transferDto);
   }
 }

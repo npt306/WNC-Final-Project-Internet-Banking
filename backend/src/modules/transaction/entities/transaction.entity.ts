@@ -25,7 +25,9 @@ export class Transaction extends BaseEntity {
 
   @Column()
   amount: number;
-  // transaction fee = amound*2%
+  
+  @Column()
+  fee?: number;
 
   @Column()
   content: string;

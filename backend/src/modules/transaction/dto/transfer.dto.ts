@@ -4,14 +4,14 @@ import { TransactionDto } from './transaction.dto';
 
 export class TransferDto implements TransactionDto {
   @ApiProperty({
-    example: '675db7c4cb2b0bf8ef4ffbf3',
+    example: '112233445566',
     required: true,
   })
   @IsString()
   sender: string;
 
   @ApiProperty({
-    example: '675babee10466a57086768eb',
+    example: '556677889900',
     required: true,
   })
   @IsString()
@@ -39,6 +39,10 @@ export class TransferDto implements TransactionDto {
   @Min(0)
   amount: number;
 
+  @IsNumber()
+  @IsOptional()
+  fee: number;
+
   @ApiProperty({
     example: 'Transfer money',
     required: true,
@@ -55,7 +59,7 @@ export class TransferDto implements TransactionDto {
   receiver_balance: number;
 
   @ApiProperty({
-    example: 'sender id',
+    example: '112233445566',
     required: true,
   })
   @IsString()
