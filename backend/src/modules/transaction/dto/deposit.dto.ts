@@ -1,6 +1,13 @@
-import { IsString, IsNumber, Min, IsDate, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  Min,
+  IsDate,
+  IsOptional,
+  IsEnum,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { TransactionDto } from './transaction.dto';
+import { TransactionDto, TransactionType } from './transaction.dto';
 
 export class DepositDto implements TransactionDto {
   @ApiProperty({
@@ -29,5 +36,6 @@ export class DepositDto implements TransactionDto {
   timestamp: Date = new Date(Date.now());
 
   @IsString()
+  @IsEnum(TransactionType)
   type: string = 'DEPOSIT';
 }

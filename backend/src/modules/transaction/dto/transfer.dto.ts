@@ -1,6 +1,13 @@
-import { IsString, IsNumber, Min, IsDate, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  Min,
+  IsDate,
+  IsOptional,
+  IsEnum,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { TransactionDto } from './transaction.dto';
+import { TransactionDto, TransactionType } from './transaction.dto';
 
 export class TransferDto implements TransactionDto {
   @ApiProperty({
@@ -22,6 +29,7 @@ export class TransferDto implements TransactionDto {
     required: true,
   })
   @IsString()
+  @IsOptional()
   sender_bank: string;
 
   @ApiProperty({
@@ -29,6 +37,7 @@ export class TransferDto implements TransactionDto {
     required: true,
   })
   @IsString()
+  @IsOptional()
   receiver_bank: string;
 
   @ApiProperty({
@@ -69,6 +78,11 @@ export class TransferDto implements TransactionDto {
   @IsDate()
   timestamp: Date = new Date(Date.now());
 
+  @ApiProperty({
+    example: 'TRANSFER',
+    required: true,
+  })
   @IsString()
-  type: string = 'TRANSFER';
+  @IsEnum(TransactionType)
+  type: string;
 }

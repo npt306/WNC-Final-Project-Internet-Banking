@@ -25,7 +25,7 @@ export class Transaction extends BaseEntity {
 
   @Column()
   amount: number;
-  
+
   @Column()
   fee?: number;
 

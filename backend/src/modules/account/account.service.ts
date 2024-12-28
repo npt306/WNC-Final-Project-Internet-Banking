@@ -1,4 +1,8 @@
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
@@ -11,7 +15,6 @@ import { TransactionService } from '../transaction/transaction.services';
 import { DepositDto } from '../transaction/dto/deposit.dto';
 import { TransferDto } from '../transaction/dto/transfer.dto';
 import { Customer } from '../customer/entities/customer.entity';
-import { DebtDto } from '../transaction/dto/debt.dto';
 
 const TRANSFER_FEE = 0.02;
 
@@ -24,7 +27,7 @@ export class AccountService {
     private readonly customerService: CustomerService,
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
-  ) { }
+  ) {}
 
   private async generateUniqueAccountNumber(): Promise<string> {
     let accountNumber: string;
@@ -77,7 +80,8 @@ export class AccountService {
     if (!customer) {
       throw new NotFoundException(`Customer not found`);
     }
-    const { password, refresh_token,phone, email, ...filteredCustomer } = customer;
+    const { password, refresh_token, phone, email, ...filteredCustomer } =
+      customer;
     return filteredCustomer;
   }
 
@@ -128,7 +132,9 @@ export class AccountService {
   }
 
   async deposit(depositDto: DepositDto): Promise<any> {
-    const thisAccount = await this.findAccountByAccountNumber(depositDto.receiver);
+    const thisAccount = await this.findAccountByAccountNumber(
+      depositDto.receiver,
+    );
 
     thisAccount.balance += depositDto.amount;
     this.accountRepository.save(thisAccount);
@@ -138,22 +144,22 @@ export class AccountService {
     return result;
   }
 
-  private isTransferDto(transferDto: TransferDto | DebtDto): transferDto is TransferDto {
-    return (transferDto as TransferDto).payer !== undefined;
-  }
-
-  async transfer(transferDto: TransferDto | DebtDto): Promise<any> {
+  async transfer(transferDto: TransferDto): Promise<any> {
     let amount = transferDto.amount;
 
     // Get current balances
-    const senderAccount = await this.findAccountByAccountNumber(transferDto.sender);
+    const senderAccount = await this.findAccountByAccountNumber(
+      transferDto.sender,
+    );
     let senderNewBalance = senderAccount.balance - amount;
 
-    const receiverAccount = await this.findAccountByAccountNumber(transferDto.receiver);
+    const receiverAccount = await this.findAccountByAccountNumber(
+      transferDto.receiver,
+    );
     let receiverNewBalance = receiverAccount.balance + amount;
 
     // Fee handling
-    if (this.isTransferDto(transferDto)) {      
+    if (transferDto.payer) {
       transferDto.fee = amount * TRANSFER_FEE; // 2%
 
       if (transferDto.payer == transferDto.sender) {
@@ -166,7 +172,7 @@ export class AccountService {
     // Checking balance for case sender pay the fee,
     // the only case would make the balance drop below zero
     if (senderNewBalance < 0) {
-      throw new BadRequestException("Sender does not have enough balance");
+      throw new BadRequestException('Sender does not have enough balance');
     }
 
     // Update sender's balance

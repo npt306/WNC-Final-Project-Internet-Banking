@@ -1,3 +1,9 @@
+export enum TransactionType {
+  TRANSFER = 'TRANSFER',
+  DEBT = 'DEBT',
+  DEPOSIT = 'DEPOSIT',
+}
+
 export interface TransactionDto {
   sender?: string | null;
   receiver: string;
