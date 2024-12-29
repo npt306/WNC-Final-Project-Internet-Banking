@@ -27,9 +27,10 @@ export class AuthEmployeeService {
     await this.updateRefreshToken(user._id as unknown as string, tokens.refreshToken);
     return {
       user: {
+        username: user.username,
+        full_name: user.full_name,
         email: user.email,
         _id: user._id,
-        username: user.username
       },
       tokens
     };
@@ -44,7 +45,9 @@ export class AuthEmployeeService {
     const tokens = await this.getTokens(newEmployee._id as unknown as string, newEmployee.username);
     await this.updateRefreshToken(newEmployee._id as unknown as string, tokens.refreshToken);
     return {
-      ...newEmployee,
+      username: newEmployee.username,
+      full_name: newEmployee.full_name,
+      email: newEmployee.email,
       tokens
     }
   }

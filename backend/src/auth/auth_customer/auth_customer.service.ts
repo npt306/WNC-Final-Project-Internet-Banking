@@ -32,9 +32,11 @@ export class AuthCustomerService {
     await this.updateRefreshToken(user._id as unknown as string, tokens.refreshToken);
     return {
       user: {
+        username: user.username,
+        full_name: user.full_name,
         email: user.email,
+        phone: user.phone,
         _id: user._id,
-        username: user.username
       },
       tokens
     };
@@ -49,7 +51,11 @@ export class AuthCustomerService {
     const tokens = await this.getTokens(newCustomer._id as unknown as string, newCustomer.username);
     await this.updateRefreshToken(newCustomer._id as unknown as string, tokens.refreshToken);
     return {
-      ...newCustomer,
+      username: newCustomer.username,
+      full_name: newCustomer.full_name,
+      email: newCustomer.email,
+      phone: newCustomer.phone,
+      _id: newCustomer._id,
       tokens
     }
   }
