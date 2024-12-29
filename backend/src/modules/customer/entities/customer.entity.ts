@@ -54,4 +54,11 @@ export class Customer extends BaseEntity {
   })
   @Column({ nullable: true })
   refresh_token: string | null;
+
+  @ApiProperty({
+    example: '951753',
+    description: 'Code for reset password ',
+  })
+  @Column({ nullable: true })
+  code: string | null;
 }

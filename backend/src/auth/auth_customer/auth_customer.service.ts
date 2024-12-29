@@ -1,3 +1,4 @@
+import { ChangePasswordDto } from './dto/change-password.dto';
 import {
   BadRequestException,
   ForbiddenException,
@@ -11,6 +12,9 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { compareRefreshToken } from '@/helpers/utils';
 import { CustomerService } from '@/modules/customer/customer.service';
 import { Roles } from '@/constants/roles.enum';
+import { SendEmailDto } from './dto/send-email.dto';
+import { send } from 'process';
+import { MailerCustomService } from '@/mail/mailer.service';
 
 @Injectable()
 export class AuthCustomerService {
@@ -18,6 +22,7 @@ export class AuthCustomerService {
     private customerService: CustomerService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private mailerCustomService: MailerCustomService
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -41,9 +46,11 @@ export class AuthCustomerService {
     );
     return {
       user: {
-        email: user.email,
-        _id: user._id,
         username: user.username,
+        full_name: user.full_name,
+        email: user.email,
+        phone: user.phone,
+        _id: user._id,
       },
       tokens,
     };
@@ -64,9 +71,13 @@ export class AuthCustomerService {
       tokens.refreshToken,
     );
     return {
-      ...newCustomer,
-      tokens,
-    };
+      username: newCustomer.username,
+      full_name: newCustomer.full_name,
+      email: newCustomer.email,
+      phone: newCustomer.phone,
+      _id: newCustomer._id,
+      tokens
+    }
   }
 
   async updateRefreshToken(userId: string, refreshToken: string) {

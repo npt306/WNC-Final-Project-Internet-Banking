@@ -41,9 +41,10 @@ export class AuthEmployeeService {
     );
     return {
       user: {
+        username: user.username,
+        full_name: user.full_name,
         email: user.email,
         _id: user._id,
-        username: user.username,
       },
       tokens,
     };
@@ -64,9 +65,11 @@ export class AuthEmployeeService {
       tokens.refreshToken,
     );
     return {
-      ...newEmployee,
-      tokens,
-    };
+      username: newEmployee.username,
+      full_name: newEmployee.full_name,
+      email: newEmployee.email,
+      tokens
+    }
   }
 
   async updateRefreshToken(userId: string, refreshToken: string) {

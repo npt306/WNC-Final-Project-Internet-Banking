@@ -1,8 +1,10 @@
+import { ChangePasswordDto } from './../../auth/auth_customer/dto/change-password.dto';
 import {
   Injectable,
   NotFoundException,
   Inject,
   forwardRef,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -12,7 +14,7 @@ import { Customer } from './entities/customer.entity';
 import { ObjectId } from 'mongodb';
 import { ConflictException } from '@nestjs/common';
 import { AccountService } from 'src/modules/account/account.service';
-import { comparePasswordHelper, hashPasswordHelper } from '@/helpers/utils';
+import { comparePasswordHelper, hashPasswordHelper, randomSequence } from '@/helpers/utils';
 
 @Injectable()
 export class CustomerService {
@@ -22,6 +24,24 @@ export class CustomerService {
     @Inject(forwardRef(() => AccountService))
     private readonly accountService: AccountService,
   ) {}
+
+  async addResetPasswordCode(userId: string) {
+    const foundUser = await this.findById(userId);
+    const resetPasswordCode = randomSequence(6);
+    await this.customerRepository.update({ _id: new ObjectId(userId) }, {
+      ...foundUser,
+      code: resetPasswordCode
+    });
+    return {
+      email: foundUser.email,
+      username: foundUser.username,
+      resetPasswordCode
+    };
+  }
+
+  async findByUsername(username: string) {
+    return await this.customerRepository.findOneBy({ username: username });
+  }
 
   async findById(id: string) {
     return await this.customerRepository.findOneBy({ _id: new ObjectId(id) });
@@ -110,5 +130,30 @@ export class CustomerService {
 
     await this.customerRepository.delete({ _id: objectId });
     return customer;
+  }
+
+  async changePassword(changePasswordDto: ChangePasswordDto) {
+    const {username, code, password, confirm_password} = changePasswordDto;
+    if(password !== confirm_password) {
+      throw new BadRequestException("Passwords are not matched !!!");
+    }else {
+      const foundCustomer = await this.findByUsername(username);
+      if(!foundCustomer) {
+        throw new BadRequestException("User not existed !!!");
+      }
+      if(code !== foundCustomer.code) {
+        throw new BadRequestException("Wrong reset code !!!");
+      }
+
+      const hashedPassword = await hashPasswordHelper(password);
+      await this.customerRepository.update({ _id: foundCustomer._id }, {
+        ...foundCustomer,
+        code: null,
+        password: hashedPassword
+      });
+      return {
+        _id: foundCustomer._id
+      }
+    }
   }
 }
