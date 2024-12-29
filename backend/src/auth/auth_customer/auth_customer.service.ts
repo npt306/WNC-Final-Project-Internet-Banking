@@ -135,4 +135,12 @@ export class AuthCustomerService {
     await this.updateRefreshToken(userId, tokens.refreshToken);
     return tokens;
   }
+
+  async sendEmail(sendEmailDto: SendEmailDto) {
+    return this.mailerCustomService.sendMailCustomer(sendEmailDto);
+  }
+
+  async changePassword(changePasswordDto: ChangePasswordDto) {
+    return this.customerService.changePassword(changePasswordDto);
+  }
 }
