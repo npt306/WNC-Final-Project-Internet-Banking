@@ -17,12 +17,17 @@ async function bootstrap() {
   app.setGlobalPrefix('api', { exclude: ['/'] });
 
   //config cors
-  app.enableCors({
-    origin: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    credentials: true,
-  });
+ app.enableCors({
+   origin: '*',
+   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+   preflightContinue: false,
+   credentials: true,
+   allowedHeaders: [
+     'Content-Type',
+     'Authorization',
+     'X-Custom-Header', 
+   ],
+ });
 
   const config = new DocumentBuilder()
     .setTitle('Internet Banking API')
