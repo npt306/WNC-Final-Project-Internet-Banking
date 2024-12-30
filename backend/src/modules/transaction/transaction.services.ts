@@ -20,13 +20,21 @@ export class TransactionService {
   }
 
   async getList(accountNumber: string): Promise<Transaction[]> {
-    // const thirtyDaysAgo = new Date();
-    // thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    // console.log(accountNumber)
     const transactionList = await this.transactionRepository.find({
-      where: {sender: accountNumber}
-        // {timestamp: MoreThanOrEqual(thirtyDaysAgo)}  
+      where: { 
+        timestamp: { 
+          // @ts-ignore
+          $gte: thirtyDaysAgo 
+        },
+        // @ts-ignore
+        $or: [
+          {sender: accountNumber},
+          {receiver:accountNumber}
+        ]
+      }
     });
     return transactionList;
   }
