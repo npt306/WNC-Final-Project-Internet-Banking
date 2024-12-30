@@ -51,6 +51,7 @@ export class AuthCustomerService {
         email: user.email,
         phone: user.phone,
         _id: user._id,
+        role : "customer"
       },
       tokens,
     };
