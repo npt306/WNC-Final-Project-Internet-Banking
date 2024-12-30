@@ -64,7 +64,7 @@ export class TransactionController {
     @Query('bank') bank?: string,
     @Query('from') from?: Date,
     @Query('to') to?: Date,
-  ): Promise<Transaction[]> {
+  ): Promise<{ transactions: Transaction[], totalAmount : number }> {
     if (!(from && to)) {
       throw new BadRequestException(
         "Must declare both 'from' and 'to' query for period querying",
@@ -72,6 +72,9 @@ export class TransactionController {
     }
     return await this.transactionService.getListForChecking(bank, from, to);
   }
+
+  
+
 
   @ApiOperation({ summary: 'Deposit money to an account' })
   @ApiBody({

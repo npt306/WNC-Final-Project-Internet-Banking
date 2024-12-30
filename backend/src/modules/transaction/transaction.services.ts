@@ -124,15 +124,15 @@ export class TransactionService {
       const transferTransactions = await this.transferTransactionHistory(accountNumber);
       const receiverTransactions = await this.receiverTransactionHistory(accountNumber);
       const debtPaymentTransactions = await this.debtPaymentTransactionHistory(accountNumber);
-  
+
       const allTransactions = [
         ...transferTransactions,
         ...receiverTransactions,
         ...debtPaymentTransactions,
       ];
-  
+
       allTransactions.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  
+
       return allTransactions;
     } catch (error) {
       throw new Error(`Failed to fetch all transaction history: ${error.message}`);
@@ -143,7 +143,7 @@ export class TransactionService {
     bank?: string,
     from?: Date,
     to?: Date,
-  ): Promise<Transaction[]> {
+  ): Promise<{ transactions: Transaction[], totalAmount: number }> {
     let whereCondition: any = {
       type: 'TRANSFER',
     };
@@ -151,8 +151,16 @@ export class TransactionService {
       console.log(bank);
       whereCondition.$or = [{ sender_bank: bank }, { receiver_bank: bank }];
     }
-    return await this.transactionRepository.find({ where: whereCondition });
+    const transactions = await this.transactionRepository.find({ where: whereCondition });
+
+    const totalAmount = transactions.reduce((sum, transaction) => {
+      return sum + (transaction.amount || 0); // Nếu transaction.amount là undefined, cộng vào 0
+    }, 0);
+
+    return { transactions, totalAmount };
   }
+
+  
 
   async deposit(depositDto: DepositDto): Promise<any> {
     const thisAccount = await this.accountService.findAccountByAccountNumber(
