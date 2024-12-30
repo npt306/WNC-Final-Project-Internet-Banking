@@ -9,25 +9,23 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get('PORT');
 
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   app.setGlobalPrefix('api', { exclude: ['/'] });
 
   //config cors
- app.enableCors({
-   origin: '*',
-   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-   preflightContinue: false,
-   credentials: true,
-   allowedHeaders: [
-     'Content-Type',
-     'Authorization',
-     'X-Custom-Header', 
-   ],
- });
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Custom-Header'],
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Internet Banking API')
@@ -41,6 +39,7 @@ async function bootstrap() {
       'Endpoints for managing debt reminders. 2 status: Pending, Completed',
     )
     .addTag('recipient', 'Endpoints for managing recipients')
+    .addTag('transaction', 'Endpoints for transaction')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

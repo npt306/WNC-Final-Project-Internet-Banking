@@ -1,27 +1,14 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
   Param,
   Delete,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { Account } from './entities/account.entity';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { ApiResponse, ApiBody, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
-import { TransferDto } from '../transaction/dto/transfer.dto';
-import { DepositDto } from '../transaction/dto/deposit.dto';
-import {
-  LocalTransferBodyExample,
-  InterbankTransferBodyExample,
-  DebtBodyExample,
-  DepositExample,
-  TransferExample,
-} from '../transaction/schema/transaction.schema';
 import { Customer } from '../customer/entities/customer.entity';
 
 @ApiTags('account')
@@ -89,46 +76,5 @@ export class AccountController {
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<Account> {
     return await this.accountService.removeAccount(id);
-  }
-
-  @ApiBody({
-    type: DepositDto,
-    description: 'Json structure for deposit transaction creation',
-  })
-  @ApiCreatedResponse({ example: DepositExample })
-  @UsePipes(new ValidationPipe({ transform: true }))
-  @Post('deposit')
-  async deposit(@Body() depositDto: DepositDto): Promise<any> {
-    return await this.accountService.deposit(depositDto);
-  }
-
-  @ApiBody({
-    type: TransferDto,
-    description: 'Json structure for transfer transaction creation',
-    examples: {
-      example1: {
-        summary: 'Local Transfer type transaction example',
-        value: LocalTransferBodyExample,
-      },
-      example2: {
-        summary: 'Interbank Transfer type transaction example',
-        value: InterbankTransferBodyExample,
-      },
-      example3: {
-        summary: 'Debt type transaction example',
-        value: DebtBodyExample,
-      },
-    },
-  })
-  @ApiCreatedResponse({ example: TransferExample })
-  @UsePipes(new ValidationPipe({ transform: true }))
-  @Post('transfer')
-  async transfer(@Body() transferDto: TransferDto): Promise<any> {
-    return await this.accountService.transfer(transferDto);
-  }
-
-  @Get('transfer/history/:id')
-  async transferHistory(@Param('id') id: string): Promise<any> {
-    return await this.accountService.transactionHistory(id);
   }
 }
