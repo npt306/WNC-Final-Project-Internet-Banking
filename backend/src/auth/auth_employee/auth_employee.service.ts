@@ -45,6 +45,7 @@ export class AuthEmployeeService {
         full_name: user.full_name,
         email: user.email,
         _id: user._id,
+        role : "employee"
       },
       tokens,
     };
