@@ -73,6 +73,7 @@ export class TransactionController {
     return await this.transactionService.getListForChecking(bank, from, to);
   }
 
+  @ApiOperation({ summary: 'Deposit money to an account' })
   @ApiBody({
     type: DepositDto,
     description: 'Json structure for deposit transaction creation',
@@ -84,6 +85,7 @@ export class TransactionController {
     return await this.transactionService.deposit(depositDto);
   }
 
+  @ApiOperation({ summary: 'Transfer money from an acount to another' })
   @ApiBody({
     type: TransferDto,
     description: 'Json structure for transfer transaction creation',
@@ -109,6 +111,7 @@ export class TransactionController {
     return await this.transactionService.transfer(transferDto);
   }
 
+  @ApiOperation({ summary: 'Get the transaction history of an account' })
   @ApiParam({
     name: 'accountNumber',
     type: String,
