@@ -124,4 +124,64 @@ export class TransactionController {
   ): Promise<any> {
     return await this.transactionService.getList(accountNumber);
   }
+
+  @ApiParam({
+    name: 'accountNumber',
+    type: String,
+    description: 'The account number of the customer',
+    example: '112233445566',
+  })
+  @ApiResponse({ status: 200, description: 'Return all transaction of an accoutn', type: [Transaction] })
+  @ApiOperation({ summary: '1.6: Get all transaction history of an account' })
+  @Get('all-transaction-history/:accountNumber')
+  async allTransactionHistory(
+    @Param('accountNumber') accountNumber: string,
+  ): Promise<any> {
+    return await this.transactionService.allTransactionHistory(accountNumber);
+  }
+
+  @ApiParam({
+    name: 'accountNumber',
+    type: String,
+    description: 'The account number of the customer',
+    example: '112233445566',
+  })
+  @ApiResponse({ status: 200, description: 'Return all transfer transaction of an accoutn', type: [Transaction] })
+  @ApiOperation({ summary: '1,6: Get the transfer transaction history of an account' })
+  @Get('transfer-transaction-history/:accountNumber')
+  async transferTransactionHistory (
+    @Param('accountNumber') accountNumber: string,
+  ): Promise<any> {
+    return await this.transactionService.transferTransactionHistory(accountNumber);
+  }
+
+  @ApiParam({
+    name: 'accountNumber',
+    type: String,
+    description: 'The account number of the customer',
+    example: '112233445566',
+  })
+  @ApiResponse({ status: 200, description: 'Return all receiver transaction of an accoutn', type: [Transaction] })
+  @ApiOperation({ summary: '1.6: Get the receiver transaction history of an account' })
+  @Get('receiver-transaction-history/:accountNumber')
+  async receiverTransactionHistory(
+    @Param('accountNumber') accountNumber: string,
+  ): Promise<any> {
+    return await this.transactionService.receiverTransactionHistory(accountNumber);
+  }
+
+  @ApiParam({
+    name: 'accountNumber',
+    type: String,
+    description: 'The account number of the customer',
+    example: '112233445566',
+  })
+  @ApiResponse({ status: 200, description: 'Return all debt payment transaction of an accoutn', type: [Transaction] })
+  @ApiOperation({ summary: '1.6: Get the debt payment transaction history of an account' })
+  @Get('debt-payment-transaction-history/:accountNumber')
+  async debtPaymentTransactionHistory(
+    @Param('accountNumber') accountNumber: string,
+  ): Promise<any> {
+    return await this.transactionService.debtPaymentTransactionHistory(accountNumber);
+  }
 }

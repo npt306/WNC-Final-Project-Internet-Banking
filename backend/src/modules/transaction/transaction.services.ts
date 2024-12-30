@@ -21,7 +21,7 @@ export class TransactionService {
     private transactionRepository: Repository<Transaction>,
     @Inject(forwardRef(() => AccountService))
     private readonly accountService: AccountService,
-  ) {}
+  ) { }
 
   async create(transactionDto: TransactionDto): Promise<any> {
     const newTransaction = this.transactionRepository.create({
@@ -46,6 +46,97 @@ export class TransactionService {
       },
     });
     return transactionList;
+  }
+
+  async transferTransactionHistory(accountNumber: string): Promise<Transaction[]> {
+    try {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const transactionList = await this.transactionRepository.find({
+        where: {
+          timestamp: {
+            // @ts-ignore
+            $gte: thirtyDaysAgo,
+          },
+          // @ts-ignore
+          sender: accountNumber,
+        },
+        order: { timestamp: 'DESC' },
+      });
+
+      return transactionList;
+    } catch (error) {
+      throw new Error(`Failed to fetch transaction history: ${error.message}`);
+    }
+  }
+
+  async receiverTransactionHistory(accountNumber: string): Promise<Transaction[]> {
+    try {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const transactionList = await this.transactionRepository.find({
+        where: {
+          timestamp: {
+            // @ts-ignore
+            $gte: thirtyDaysAgo,
+          },
+          // @ts-ignore
+          receiver: accountNumber,
+        },
+        order: { timestamp: 'DESC' },
+      });
+
+      return transactionList;
+    } catch (error) {
+      throw new Error(`Failed to fetch transaction history: ${error.message}`);
+    }
+  }
+
+  async debtPaymentTransactionHistory(accountNumber: string): Promise<Transaction[]> {
+    try {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const transactionList = await this.transactionRepository.find({
+        where: {
+          timestamp: {
+            // @ts-ignore
+            $gte: thirtyDaysAgo,
+          },
+          // @ts-ignore
+          $or: [{ sender: accountNumber }, { receiver: accountNumber }],
+          // @ts-ignore
+          type: 'DEBT',
+        },
+        order: { timestamp: 'DESC' },
+      });
+
+      return transactionList;
+    } catch (error) {
+      throw new Error(`Failed to fetch transaction history: ${error.message}`);
+    }
+  }
+
+  async allTransactionHistory(accountNumber: string): Promise<Transaction[]> {
+    try {
+      const transferTransactions = await this.transferTransactionHistory(accountNumber);
+      const receiverTransactions = await this.receiverTransactionHistory(accountNumber);
+      const debtPaymentTransactions = await this.debtPaymentTransactionHistory(accountNumber);
+  
+      const allTransactions = [
+        ...transferTransactions,
+        ...receiverTransactions,
+        ...debtPaymentTransactions,
+      ];
+  
+      allTransactions.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  
+      return allTransactions;
+    } catch (error) {
+      throw new Error(`Failed to fetch all transaction history: ${error.message}`);
+    }
   }
 
   async getListForChecking(
