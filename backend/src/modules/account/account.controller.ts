@@ -126,4 +126,9 @@ export class AccountController {
   async transfer(@Body() transferDto: TransferDto): Promise<any> {
     return await this.accountService.transfer(transferDto);
   }
+
+  @Get('transfer/history/:id')
+  async transferHistory(@Param('id') id: string): Promise<any> {
+    return await this.accountService.transactionHistory(id);
+  }
 }

@@ -189,4 +189,8 @@ export class AccountService {
     const result = await this.transactionService.create(transferDto);
     return result;
   }
+
+  async transactionHistory(accountNumber: string){
+    return await this.transactionService.getList(accountNumber);
+  }
 }
