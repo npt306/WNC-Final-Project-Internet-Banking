@@ -59,14 +59,6 @@ export class TransferDto implements TransactionDto {
   @IsString()
   content: string;
 
-  @IsNumber()
-  @IsOptional()
-  sender_balance: number;
-
-  @IsNumber()
-  @IsOptional()
-  receiver_balance: number;
-
   @ApiProperty({
     example: '112233445566',
     required: true,

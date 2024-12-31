@@ -13,8 +13,8 @@ export interface TransactionDto {
   fee?: number;
   content: string;
   sender_balance?: number | null;
-  receiver_balance: number | null;
+  receiver_balance?: number | null;
   payer?: string | null;
   timestamp: Date;
-  type: string;
+  type?: string;
 }

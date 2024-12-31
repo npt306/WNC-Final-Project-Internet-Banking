@@ -51,8 +51,6 @@ export const LocalTransferBodyExample = {
   receiver: '112233445566',
   amount: 100000,
   content: 'Local transfer money',
-  sender_balance: 7498000,
-  receiver_balance: 432000,
   payer: '112233445566',
   type: 'TRANSFER',
 };
@@ -64,8 +62,5 @@ export const InterbankTransferBodyExample = {
   receiver_bank: 'bank B',
   amount: 100000,
   content: 'Interbank transfer money',
-  sender_balance: 7498000,
-  receiver_balance: 432000,
-  payer: '112233445566',
   type: 'TRANSFER',
 };

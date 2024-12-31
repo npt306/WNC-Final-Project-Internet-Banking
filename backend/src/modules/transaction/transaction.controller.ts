@@ -29,6 +29,7 @@ import {
 } from './schema/transaction.schema';
 import { TransferDto } from './dto/transfer.dto';
 import { DepositDto } from './dto/deposit.dto';
+import { TransferLogDto } from './dto/transfer_log.dto';
 
 @ApiTags('transaction')
 @Controller('transaction')
@@ -142,7 +143,7 @@ export class TransactionController {
   @ApiCreatedResponse({ example: TransferExample })
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('transfer')
-  async transfer(@Body() transferDto: TransferDto): Promise<any> {
+  async transfer(@Body() transferDto: TransferLogDto): Promise<any> {
     return await this.transactionService.transfer(transferDto);
   }
 

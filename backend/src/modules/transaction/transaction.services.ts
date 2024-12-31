@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 import { TransactionDto } from './dto/transaction.dto';
 import { DepositDto } from './dto/deposit.dto';
 import { AccountService } from '../account/account.service';
-import { TransferDto } from './dto/transfer.dto';
+import { TransferLogDto } from './dto/transfer_log.dto';
 
 const TRANSFER_FEE = 0.02;
 
@@ -236,7 +236,7 @@ export class TransactionService {
     return result;
   }
 
-  async transfer(transferDto: TransferDto): Promise<any> {
+  async transfer(transferDto: TransferLogDto): Promise<any> {
     let amount = transferDto.amount;
 
     // Get current balances
@@ -285,7 +285,7 @@ export class TransactionService {
     );
 
     // Save log
-    const result = await this.transactionRepository.create(transferDto);
+    const result = await this.create(transferDto);
     return result;
   }
 }
