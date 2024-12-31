@@ -151,7 +151,7 @@ export class TransactionController {
   })
   @ApiResponse({ status: 200, description: 'Return all transfer transaction of an accoutn', type: [Transaction] })
   @ApiOperation({ summary: '1,6: Get the transfer transaction history of an account' })
-  @Get('transfer-transaction-history/:accountNumber')
+  @Get('transfer-transaction-history/:accountNumber') 
   async transferTransactionHistory (
     @Param('accountNumber') accountNumber: string,
   ): Promise<any> {

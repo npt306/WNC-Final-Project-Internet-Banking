@@ -61,6 +61,8 @@ export class TransactionService {
           },
           // @ts-ignore
           sender: accountNumber,
+          // @ts-ignore
+          type: { $ne: 'DEBT' },
         },
         order: { timestamp: 'DESC' },
       });
@@ -84,6 +86,8 @@ export class TransactionService {
           },
           // @ts-ignore
           receiver: accountNumber,
+          // @ts-ignore
+          type: { $ne: 'DEBT' },
         },
         order: { timestamp: 'DESC' },
       });
@@ -119,25 +123,41 @@ export class TransactionService {
     }
   }
 
-  async allTransactionHistory(accountNumber: string): Promise<Transaction[]> {
+  async allTransactionHistory(accountNumber: string): Promise<any> {
     try {
       const transferTransactions = await this.transferTransactionHistory(accountNumber);
       const receiverTransactions = await this.receiverTransactionHistory(accountNumber);
       const debtPaymentTransactions = await this.debtPaymentTransactionHistory(accountNumber);
-
+  
+      const updatedDebtPaymentTransactions = debtPaymentTransactions.map((transaction) => {
+        if (transaction.sender === accountNumber) {
+          return { ...transaction, customerSide: 'payer' }; 
+        } else if (transaction.receiver === accountNumber) {
+          return { ...transaction, customerSide: 'payee' }; 
+        }
+        return transaction;
+      });
+  
       const allTransactions = [
-        ...transferTransactions,
-        ...receiverTransactions,
-        ...debtPaymentTransactions,
+        ...transferTransactions.map((transaction) => ({
+          ...transaction,
+          customerSide: 'sender',
+        })),
+        ...receiverTransactions.map((transaction) => ({
+          ...transaction,
+          customerSide: 'receiver',
+        })),
+        ...updatedDebtPaymentTransactions,
       ];
-
+  
       allTransactions.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-
+  
       return allTransactions;
     } catch (error) {
       throw new Error(`Failed to fetch all transaction history: ${error.message}`);
     }
   }
+  
 
   async getListForChecking(
     bank?: string,
