@@ -73,6 +73,38 @@ export class TransactionController {
     return await this.transactionService.getListForChecking(bank, from, to);
   }
 
+
+  @ApiOperation({ summary: 'Get all transactions with all banks' })
+  @ApiResponse({ status: 200, description: 'Return transactions.' })
+  @ApiQuery({
+    name: 'from',
+    type: Date,
+    required: false,
+    description: 'Start date of the chosen period',
+    example: '2024-12-28',
+  })
+  @ApiQuery({
+    name: 'to',
+    type: Date,
+    required: false,
+    description: 'End date of the chosen period',
+    example: '2024-12-29',
+  })
+  @Get('checking-all')
+  async findAllForChecking(
+    @Query('from') from?: Date,
+    @Query('to') to?: Date,
+  ): Promise<{ transactions: Transaction[], totalAmount : number }> {
+    if (!(from && to)) {
+      throw new BadRequestException(
+        "Must declare both 'from' and 'to' query for period querying",
+      );
+    }
+    return await this.transactionService.getListForCheckingAllBanks(from, to);
+  }
+  
+
+
   
 
 

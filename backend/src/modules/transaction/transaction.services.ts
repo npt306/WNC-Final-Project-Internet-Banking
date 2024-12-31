@@ -180,6 +180,44 @@ export class TransactionService {
     return { transactions, totalAmount };
   }
 
+  async getListForCheckingAllBanks(
+    from?: Date,
+    to?: Date,
+  ): Promise<{ transactions: Transaction[], totalAmount: number }> {
+    try {
+      // Parse from/to thành Date 
+      const fromDate = from ? new Date(from) : null;
+      const toDate = to ? new Date(to) : null;
+  
+      let whereCondition: any = {
+        type: 'TRANSFER',
+        sender_bank: { $exists: true, $ne: null },
+        receiver_bank: { $exists: true, $ne: null },
+      };
+  
+      // Thêm điều kiện timestamp nếu from/to tồn tại
+      if (fromDate || toDate) {
+        whereCondition.timestamp = {};
+        if (fromDate) whereCondition.timestamp.$gte = fromDate;
+        if (toDate) whereCondition.timestamp.$lte = toDate;
+      }
+  
+      // Lấy danh sách giao dịch
+      const transactions = await this.transactionRepository.find({
+        where: whereCondition,
+        order: { timestamp: 'DESC' },
+      });
+  
+      // Tính tổng số tiền giao dịch
+      const totalAmount = transactions.reduce((sum, transaction) => {
+        return sum + (transaction.amount || 0);
+      }, 0);
+  
+      return { transactions, totalAmount };
+    } catch (error) {
+      throw new Error(`Failed to fetch transactions: ${error.message}`);
+    }
+  }
   
 
   async deposit(depositDto: DepositDto): Promise<any> {
