@@ -4,6 +4,8 @@ import {
   IsString,
   MaxLength,
   MinLength,
+  IsPhoneNumber,
+  IsOptional,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -13,6 +15,8 @@ export class CreateCustomerDto {
     description: 'Username of the customer',
     required: true,
   })
+  @IsString()
+  @IsNotEmpty()
   username: string;
 
   @ApiProperty({
@@ -20,6 +24,8 @@ export class CreateCustomerDto {
     description: 'Full name of the customer',
     required: true,
   })
+  @IsString()
+  @IsNotEmpty()
   full_name: string;
 
   @ApiProperty({
@@ -27,6 +33,8 @@ export class CreateCustomerDto {
     description: 'Email address of the customer',
     required: true,
   })
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   @ApiProperty({
@@ -34,6 +42,8 @@ export class CreateCustomerDto {
     description: 'Phone number of the customer',
     required: true,
   })
+  @IsPhoneNumber(null) 
+  @IsNotEmpty()
   phone: string;
 
   @ApiProperty({
@@ -41,6 +51,9 @@ export class CreateCustomerDto {
     description: 'Hashed password of the customer',
     required: true,
   })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(6) 
   password: string;
 
   @ApiProperty({
@@ -48,5 +61,7 @@ export class CreateCustomerDto {
     description: 'Hashed refresh token confirmation',
     required: true,
   })
+  @IsOptional() 
+  @IsString()
   refresh_token?: string | null;
 }

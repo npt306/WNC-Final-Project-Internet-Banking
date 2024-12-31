@@ -31,7 +31,6 @@ export class EmployeeController {
     description: 'The employee has been successfully created.',
     type: Employee,
   })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiBody({
     type: CreateEmployeeDto,
     description: 'Json structure for employee creation',
