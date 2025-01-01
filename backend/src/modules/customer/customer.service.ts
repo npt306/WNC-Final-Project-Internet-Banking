@@ -15,6 +15,7 @@ import { ObjectId } from 'mongodb';
 import { ConflictException } from '@nestjs/common';
 import { AccountService } from 'src/modules/account/account.service';
 import { comparePasswordHelper, hashPasswordHelper, randomSequence } from '@/helpers/utils';
+import { SearchCustomerDto } from './dto/search-customer.dto';
 
 @Injectable()
 export class CustomerService {
@@ -93,13 +94,14 @@ export class CustomerService {
     return await this.customerRepository.find();
   }
 
-  async findOne(id: string): Promise<Customer | null> {
+  async findOne(id: string): Promise<SearchCustomerDto> {
     const objectId = new ObjectId(id);
     const customer = await this.customerRepository.findOneBy({ _id: objectId });
     if (!customer) {
       throw new NotFoundException(`Customer not found`);
     }
-    return customer;
+    const { password, refresh_token,  ...filteredCustomer } = customer;
+    return filteredCustomer;
   }
 
   async update(

@@ -72,7 +72,7 @@ export class AccountService {
     if (!customer) {
       throw new NotFoundException(`Customer not found`);
     }
-    const { password, refresh_token, phone, email, ...filteredCustomer } =
+    const { phone, email, ...filteredCustomer } =
       customer;
     return filteredCustomer;
   }

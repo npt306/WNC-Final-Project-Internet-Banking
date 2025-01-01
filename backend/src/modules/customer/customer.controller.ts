@@ -16,7 +16,9 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBody,
+  ApiParam,
 } from '@nestjs/swagger';
+import { SearchCustomerDto } from './dto/search-customer.dto';
 
 @ApiBearerAuth()
 @ApiTags('customer')
@@ -53,10 +55,22 @@ export class CustomerController {
   //   return this.customerService.findAll();
   // }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.customerService.findOne(id);
-  // }
+  @ApiOperation({ summary: 'Search customer infomation with id' })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'The ID of the customer',
+    example: '675babee10466a57086768eb'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Return customer by id.',
+    type: SearchCustomerDto,
+  })
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<SearchCustomerDto> {
+    return this.customerService.findOne(id);
+  }
 
   // @Patch(':id')
   // update(
