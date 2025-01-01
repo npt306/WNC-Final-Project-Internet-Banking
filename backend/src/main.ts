@@ -40,6 +40,7 @@ async function bootstrap() {
     )
     .addTag('recipient', 'Endpoints for managing recipients')
     .addTag('transaction', 'Endpoints for transaction')
+    .addTag('external', 'Endpoints for external call')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

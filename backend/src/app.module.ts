@@ -14,6 +14,7 @@ import { TransformInterceptor } from './core/transform.interceptor';
 import { AuthEmployeeModule } from './auth/auth_employee/auth_employee.module';
 import { MailerCustomModule } from './mail/mailer.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
+import { ExternalModule } from './modules/external/external.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TransactionModule } from './modules/transaction/transaction.module';
     TransactionModule,
     DebtReminderModule,
     MailerCustomModule,
+    ExternalModule,
   ],
   controllers: [AppController],
   providers: [
