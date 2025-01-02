@@ -1,9 +1,8 @@
-import { SendEmailDto } from './../auth/auth_customer/dto/send-email.dto';
-import { ChangePasswordDto } from './../auth/auth_customer/dto/change-password.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { MailerService as NestMailerService } from '@nestjs-modules/mailer';
 import { CustomerService } from '@/modules/customer/customer.service';
 import { randomSequence } from '@/helpers/utils';
+import { SendEmailDto } from '@/auth/auth_customer/dto/send-email.dto';
 
 @Injectable()
 export class MailerCustomService {

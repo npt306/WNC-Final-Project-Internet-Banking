@@ -13,8 +13,7 @@ import { compareRefreshToken } from '@/helpers/utils';
 import { CustomerService } from '@/modules/customer/customer.service';
 import { Roles } from '@/constants/roles.enum';
 import { SendEmailDto } from './dto/send-email.dto';
-import { send } from 'process';
-import { MailerCustomService } from '@/mail/mailer.service';
+import { MailerCustomService } from '@/services/mail/mailer.service';
 
 @Injectable()
 export class AuthCustomerService {

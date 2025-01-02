@@ -8,7 +8,8 @@ import { LocalStrategy } from '../../jwt/strategies/local.strategy';
 import { CustomerModule } from '@/modules/customer/customer.module';
 import { JwtAccessStrategy } from '@/jwt/strategies/jwt-access.strategy';
 import { JwtRefreshStrategy } from '@/jwt/strategies/jwt-refresh.strategy';
-import { MailerCustomModule } from '@/mail/mailer.module';
+import { MailerCustomModule } from '@/services/mail/mailer.module';
+
 
 @Module({
   controllers: [AuthCustomerController],

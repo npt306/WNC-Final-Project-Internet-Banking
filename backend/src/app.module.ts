@@ -12,9 +12,10 @@ import { DebtReminderModule } from './modules/debt-reminder/debt-reminder.module
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { AuthEmployeeModule } from './auth/auth_employee/auth_employee.module';
-import { MailerCustomModule } from './mail/mailer.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { ExternalModule } from './modules/external/external.module';
+import { MailerCustomModule } from './services/mail/mailer.module';
+import { PgpModule } from './services/pgp/pgp.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ExternalModule } from './modules/external/external.module';
     TransactionModule,
     DebtReminderModule,
     MailerCustomModule,
+    PgpModule,
     ExternalModule,
   ],
   controllers: [AppController],

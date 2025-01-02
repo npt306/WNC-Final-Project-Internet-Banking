@@ -1,7 +1,12 @@
 const bcryptjs = require('bcryptjs');
 const argon2 = require('argon2');
+import * as openpgp from 'openpgp';
 
 const saltRounds = 10;
+const secretPassphrase = "b96ea3a0-bc33-4dfd-aed1-9a76233afdc9";
+const secreteUsername = "Internet banking app Team 08";
+const secreteEmail = "internet.banking.system.bot@gmail.com";
+const secreteExpiration = 600; //10 minutes
 
 export const hashPasswordHelper = async (plainPassword: string) => {
   try {
@@ -47,4 +52,16 @@ export const randomSequence = (length: number) => {
     }
 
     return result;
+}
+
+export async function generatePGPKeys() {
+  const { privateKey, publicKey } = await openpgp.generateKey({
+    type: 'rsa', // RSA keys
+    rsaBits: 2048, // Key size
+    userIDs: [{ name: secreteUsername, email: secreteEmail }],
+    // keyExpirationTime: secreteExpiration,
+    passphrase: secretPassphrase, // Optional
+  });
+
+  return { publicKey, privateKey };
 }
