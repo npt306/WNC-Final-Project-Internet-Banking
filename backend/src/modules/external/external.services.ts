@@ -2,7 +2,7 @@ import { generatePGPKeys } from '@/helpers/utils';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import * as openpgp from 'openpgp';
 import { TransactionService } from '../transaction/transaction.services';
-import { TransferDto } from '../transaction/dto/transfer.dto';
+import { ExternalTransferDto } from '../transaction/dto/external_transfer.dto';
 
 @Injectable()
 export class ExternalService {
@@ -47,7 +47,7 @@ export class ExternalService {
     return decryptedData;
   }
 
-  async handleTransfer(transferDto: TransferDto) {
-    return await this.transactionService.externalTransfer(transferDto);
+  async handleTransfer(externalTransferDto: ExternalTransferDto) {
+    return await this.transactionService.externalTransfer(externalTransferDto);
   }
 }

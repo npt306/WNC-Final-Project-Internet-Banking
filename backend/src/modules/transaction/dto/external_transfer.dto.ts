@@ -3,13 +3,13 @@ import {
   IsNumber,
   Min,
   IsDate,
-  IsOptional,
   IsEnum,
+  IsOptional,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { SupportedBank, TransactionDto, TransactionType } from './transaction.dto';
 
-export class TransferDto implements TransactionDto {
+export class ExternalTransferDto implements TransactionDto {
   @ApiProperty({
     example: '112233445566',
     required: true,
@@ -29,7 +29,6 @@ export class TransferDto implements TransactionDto {
     required: true,
   })
   @IsString()
-  @IsOptional()
   @IsEnum(SupportedBank)
   sender_bank: string;
 
@@ -38,9 +37,16 @@ export class TransferDto implements TransactionDto {
     required: true,
   })
   @IsString()
-  @IsOptional()
   @IsEnum(SupportedBank)
   receiver_bank: string;
+
+  @IsNumber()
+  @IsOptional()
+  sender_balance: number;
+
+  @IsNumber()
+  @IsOptional()
+  receiver_balance: number;
 
   @ApiProperty({
     example: '100000',
@@ -50,33 +56,17 @@ export class TransferDto implements TransactionDto {
   @Min(0)
   amount: number;
 
-  @IsNumber()
-  @IsOptional()
-  fee: number;
-
   @ApiProperty({
-    example: 'Transfer money',
+    example: 'External Transfer money',
     required: true,
   })
   @IsString()
   content: string;
 
-  @ApiProperty({
-    example: '112233445566',
-    required: true,
-  })
-  @IsString()
-  @IsOptional()
-  payer: string | null;
-
   @IsDate()
   timestamp: Date = new Date(Date.now());
 
-  @ApiProperty({
-    example: 'TRANSFER',
-    required: true,
-  })
   @IsString()
   @IsEnum(TransactionType)
-  type: string;
+  type: string = "TRANSFER";
 }

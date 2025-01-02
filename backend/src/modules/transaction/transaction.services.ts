@@ -7,11 +7,11 @@ import {
 import { Transaction } from './entities/transaction.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TransactionDto } from './dto/transaction.dto';
+import { SupportedBank, TransactionDto } from './dto/transaction.dto';
 import { DepositDto } from './dto/deposit.dto';
 import { AccountService } from '../account/account.service';
 import { TransferLogDto } from './dto/transfer_log.dto';
-import { TransferDto } from './dto/transfer.dto';
+import { ExternalTransferDto } from './dto/external_transfer.dto';
 
 const TRANSFER_FEE = 0.02;
 const OURBANK = 'Sankcomba';
@@ -306,16 +306,16 @@ export class TransactionService {
     return result;
   }
 
-  async externalTransfer(transferDto: TransferDto) {
-    let amount = transferDto.amount;
+  async externalTransfer(externalTransferDto: ExternalTransferDto) {
+    let amount = externalTransferDto.amount;
     let senderNewBalance = 0;
     let receiverNewBalance = 0;
 
-    if (transferDto.sender_bank == OURBANK) {
+    if (externalTransferDto.sender_bank == SupportedBank.ThisBank) {
       // Get current balances
       const senderAccount =
         await this.accountService.findAccountByAccountNumber(
-          transferDto.sender,
+          externalTransferDto.sender,
         );
       senderNewBalance = senderAccount.balance - amount;
 
@@ -327,19 +327,22 @@ export class TransactionService {
 
       // Update sender's balance
       senderAccount.balance = senderNewBalance;
+      externalTransferDto.sender_balance = senderNewBalance;
       this.accountService.updateUserAccount(
         senderAccount._id.toString(),
         senderAccount,
       );
     } else {
+      // Get current balances
       const receiverAccount =
         await this.accountService.findAccountByAccountNumber(
-          transferDto.receiver,
+          externalTransferDto.receiver,
         );
       receiverNewBalance = receiverAccount.balance + amount;
 
       // Update receiver's balance
       receiverAccount.balance = receiverNewBalance;
+      externalTransferDto.receiver_balance = receiverNewBalance;
       this.accountService.updateUserAccount(
         receiverAccount._id.toString(),
         receiverAccount,
@@ -347,10 +350,7 @@ export class TransactionService {
     }
 
     // Save log
-    // TODO: make a way to conver transferDto to transferLogDto
-    // for saving our user balance
-    const result = await this.create(transferDto);
-    // TODO: update returned result
-    return result;
+    const result = await this.create(externalTransferDto);
+    return result.statusCode;
   }
 }

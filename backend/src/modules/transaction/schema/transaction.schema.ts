@@ -4,8 +4,8 @@ export const TransferExample = {
   data: {
     sender: '556677889900',
     receiver: '112233445566',
-    sender_bank: 'bank A',
-    receiver_bank: 'bank B',
+    sender_bank: 'Sankcomba',
+    receiver_bank: 'Test Bank',
     amount: 100000,
     fee: 2000,
     content: 'Interbank Transfer money',
@@ -58,9 +58,8 @@ export const LocalTransferBodyExample = {
 export const InterbankTransferBodyExample = {
   sender: '556677889900',
   receiver: '112233445566',
-  sender_bank: 'bank A',
-  receiver_bank: 'bank B',
+  sender_bank: 'Sankcomba',
+  receiver_bank: 'Test Bank',
   amount: 100000,
   content: 'Interbank transfer money',
-  type: 'TRANSFER',
 };

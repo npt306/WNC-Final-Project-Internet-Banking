@@ -125,10 +125,6 @@ export class TransactionController {
         value: LocalTransferBodyExample,
       },
       example2: {
-        summary: 'Interbank Transfer type transaction example',
-        value: InterbankTransferBodyExample,
-      },
-      example3: {
         summary: 'Debt type transaction example',
         value: DebtBodyExample,
       },

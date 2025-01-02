@@ -4,6 +4,11 @@ export enum TransactionType {
   DEPOSIT = 'DEPOSIT',
 }
 
+export enum SupportedBank {
+  ThisBank  = 'Sankcomba',
+  TestBank = 'Test Bank',
+}
+
 export interface TransactionDto {
   sender?: string | null;
   receiver: string;
