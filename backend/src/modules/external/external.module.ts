@@ -4,9 +4,15 @@ import { ExternalController } from './external.controller';
 import { ExternalService } from './external.services';
 import { PgpModule } from '@/services/pgp/pgp.module';
 import { TransactionModule } from '../transaction/transaction.module';
+import { AccountModule } from '../account/account.module';
 
 @Module({
-  imports: [MongoModule, PgpModule, forwardRef(() => TransactionModule)],
+  imports: [
+    MongoModule,
+    PgpModule,
+    forwardRef(() => TransactionModule),
+    forwardRef(() => AccountModule),
+  ],
   controllers: [ExternalController],
   providers: [ExternalService],
   exports: [ExternalService],

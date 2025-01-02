@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ExternalService } from './external.services';
 import { IpWhitelistGuard } from '@/guards/ip_whitelist/ip_whitelist.guard';
 import { PgpService } from '@/services/pgp/pgp.service';
@@ -17,9 +17,35 @@ export class ExternalController {
   ) {}
 
   @UseGuards(IpWhitelistGuard)
+  @ApiBody({
+    description: 'The decrypted account number of the customer',
+    schema: {
+      type: 'object',
+      properties: {
+        accountNumber: { type: 'string', example: '112233445566' },
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    example: {
+      "statusCode": 201,
+      "message": "",
+      "data": {
+        "_id": "675babee10466a57086768eb",
+        "username": "nguyenvana",
+        "full_name": "Nguyễn Văn A",
+        "email": "nguyenvana@example.com",
+        "phone": "0901234567"
+      }
+    }
+  })
   @Post('acccount/info')
-  async getAccountInfo() {
-    return 'Access granted!';
+  async getAccountInfo(@Body() body: any) {
+    var accountNumber = body.accountNumber;
+    // var accountNumber = body.accountNumber;
+
+    return this.externalService.handleAccountInfo(accountNumber);
+    // return 'Access granted!';
   }
 
   @UseGuards(IpWhitelistGuard)

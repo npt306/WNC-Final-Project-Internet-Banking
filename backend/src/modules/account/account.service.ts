@@ -72,9 +72,7 @@ export class AccountService {
     if (!customer) {
       throw new NotFoundException(`Customer not found`);
     }
-    const { phone, email, ...filteredCustomer } =
-      customer;
-    return filteredCustomer;
+    return customer;
   }
 
   async findOneAccount(id: string): Promise<Account> {

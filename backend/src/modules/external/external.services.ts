@@ -3,12 +3,15 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import * as openpgp from 'openpgp';
 import { TransactionService } from '../transaction/transaction.services';
 import { ExternalTransferDto } from '../transaction/dto/external_transfer.dto';
+import { AccountService } from '../account/account.service';
 
 @Injectable()
 export class ExternalService {
   constructor(
     @Inject(forwardRef(() => TransactionService))
     private readonly transactionService: TransactionService,
+    @Inject(forwardRef(() => AccountService))
+    private readonly accountService: AccountService,
   ) {}
 
   async createPublicKey() {
@@ -45,6 +48,11 @@ export class ExternalService {
     });
 
     return decryptedData;
+  }
+
+  async handleAccountInfo(accountNumber: string) {
+    let result = await this.accountService.findCustomerByAccountNumber(accountNumber);
+    return result;
   }
 
   async handleTransfer(externalTransferDto: ExternalTransferDto) {

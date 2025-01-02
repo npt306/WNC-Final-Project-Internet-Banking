@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { Account } from './entities/account.entity';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { ApiResponse, ApiBody, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import { ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Customer } from '../customer/entities/customer.entity';
 
 @ApiTags('account')
