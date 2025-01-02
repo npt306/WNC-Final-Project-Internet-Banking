@@ -65,7 +65,7 @@ export class TransactionController {
     @Query('bank') bank?: string,
     @Query('from') from?: Date,
     @Query('to') to?: Date,
-  ): Promise<{ transactions: Transaction[], totalAmount : number }> {
+  ): Promise<{ transactions: Transaction[]; totalAmount: number }> {
     if (!(from && to)) {
       throw new BadRequestException(
         "Must declare both 'from' and 'to' query for period querying",
@@ -73,7 +73,6 @@ export class TransactionController {
     }
     return await this.transactionService.getListForChecking(bank, from, to);
   }
-
 
   @ApiOperation({ summary: 'Get all transactions with all banks' })
   @ApiResponse({ status: 200, description: 'Return transactions.' })
@@ -95,7 +94,7 @@ export class TransactionController {
   async findAllForChecking(
     @Query('from') from?: Date,
     @Query('to') to?: Date,
-  ): Promise<{ transactions: Transaction[], totalAmount : number }> {
+  ): Promise<{ transactions: Transaction[]; totalAmount: number }> {
     if (!(from && to)) {
       throw new BadRequestException(
         "Must declare both 'from' and 'to' query for period querying",
@@ -103,11 +102,6 @@ export class TransactionController {
     }
     return await this.transactionService.getListForCheckingAllBanks(from, to);
   }
-  
-
-
-  
-
 
   @ApiOperation({ summary: 'Deposit money to an account' })
   @ApiBody({
@@ -167,7 +161,11 @@ export class TransactionController {
     description: 'The account number of the customer',
     example: '112233445566',
   })
-  @ApiResponse({ status: 200, description: 'Return all transaction of an accoutn', type: [Transaction] })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all transaction of an accoutn',
+    type: [Transaction],
+  })
   @ApiOperation({ summary: '1.6: Get all transaction history of an account' })
   @Get('all-transaction-history/:accountNumber')
   async allTransactionHistory(
@@ -182,13 +180,21 @@ export class TransactionController {
     description: 'The account number of the customer',
     example: '112233445566',
   })
-  @ApiResponse({ status: 200, description: 'Return all transfer transaction of an accoutn', type: [Transaction] })
-  @ApiOperation({ summary: '1,6: Get the transfer transaction history of an account' })
-  @Get('transfer-transaction-history/:accountNumber') 
-  async transferTransactionHistory (
+  @ApiResponse({
+    status: 200,
+    description: 'Return all transfer transaction of an accoutn',
+    type: [Transaction],
+  })
+  @ApiOperation({
+    summary: '1,6: Get the transfer transaction history of an account',
+  })
+  @Get('transfer-transaction-history/:accountNumber')
+  async transferTransactionHistory(
     @Param('accountNumber') accountNumber: string,
   ): Promise<any> {
-    return await this.transactionService.transferTransactionHistory(accountNumber);
+    return await this.transactionService.transferTransactionHistory(
+      accountNumber,
+    );
   }
 
   @ApiParam({
@@ -197,13 +203,21 @@ export class TransactionController {
     description: 'The account number of the customer',
     example: '112233445566',
   })
-  @ApiResponse({ status: 200, description: 'Return all receiver transaction of an accoutn', type: [Transaction] })
-  @ApiOperation({ summary: '1.6: Get the receiver transaction history of an account' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all receiver transaction of an accoutn',
+    type: [Transaction],
+  })
+  @ApiOperation({
+    summary: '1.6: Get the receiver transaction history of an account',
+  })
   @Get('receiver-transaction-history/:accountNumber')
   async receiverTransactionHistory(
     @Param('accountNumber') accountNumber: string,
   ): Promise<any> {
-    return await this.transactionService.receiverTransactionHistory(accountNumber);
+    return await this.transactionService.receiverTransactionHistory(
+      accountNumber,
+    );
   }
 
   @ApiParam({
@@ -212,12 +226,20 @@ export class TransactionController {
     description: 'The account number of the customer',
     example: '112233445566',
   })
-  @ApiResponse({ status: 200, description: 'Return all debt payment transaction of an accoutn', type: [Transaction] })
-  @ApiOperation({ summary: '1.6: Get the debt payment transaction history of an account' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all debt payment transaction of an accoutn',
+    type: [Transaction],
+  })
+  @ApiOperation({
+    summary: '1.6: Get the debt payment transaction history of an account',
+  })
   @Get('debt-payment-transaction-history/:accountNumber')
   async debtPaymentTransactionHistory(
     @Param('accountNumber') accountNumber: string,
   ): Promise<any> {
-    return await this.transactionService.debtPaymentTransactionHistory(accountNumber);
+    return await this.transactionService.debtPaymentTransactionHistory(
+      accountNumber,
+    );
   }
 }
