@@ -6,6 +6,8 @@ import * as openpgp from 'openpgp';
 export class PgpService {
   private privateKey: string;
   private publicKey: string;
+  private passphrase: string;
+
   constructor() {
     generatePGPKeys()
     .then(({ publicKey, privateKey }) => {
@@ -20,19 +22,19 @@ export class PgpService {
     return this.privateKey;
   }
 
-  async encrypt(data: string): Promise<string> {
-    const publicKeyObj = await openpgp.readKey({ armoredKey: this.publicKey });
+  async encrypt(data: string, publicKey: string): Promise<string> {
+    const publicKeyObj = await openpgp.readKey({ armoredKey: publicKey });
     return await openpgp.encrypt({
       message: await openpgp.createMessage({ text: data }),
       encryptionKeys: publicKeyObj,
     });
   }
 
-  async decrypt(encryptedData: string, passphrase: string): Promise<string> {
+  async decrypt(encryptedData: string): Promise<string> {
     const privateKeyObj = await openpgp.readPrivateKey({ armoredKey: this.privateKey });
     const decryptedPrivateKey = await openpgp.decryptKey({
       privateKey: privateKeyObj,
-      passphrase,
+      passphrase: this.passphrase,
     });
 
     const message = await openpgp.readMessage({ armoredMessage: encryptedData });

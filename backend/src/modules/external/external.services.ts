@@ -4,6 +4,7 @@ import * as openpgp from 'openpgp';
 import { TransactionService } from '../transaction/transaction.services';
 import { ExternalTransferDto } from '../transaction/dto/external_transfer.dto';
 import { AccountService } from '../account/account.service';
+import { PgpService } from '@/services/pgp/pgp.service';
 
 @Injectable()
 export class ExternalService {
@@ -12,13 +13,15 @@ export class ExternalService {
     private readonly transactionService: TransactionService,
     @Inject(forwardRef(() => AccountService))
     private readonly accountService: AccountService,
+    private readonly pgpService: PgpService,
   ) {}
 
   async createPublicKey() {
     return await generatePGPKeys();
   }
 
-  async encrypt(data: string, publicKey: string): Promise<string> {
+  async encrypt(data: string): Promise<string> {
+    const publicKey = this.pgpService.getPublicKey();
     const publicKeyObj = await openpgp.readKey({ armoredKey: publicKey });
     return await openpgp.encrypt({
       message: await openpgp.createMessage({ text: data }),
@@ -28,9 +31,9 @@ export class ExternalService {
 
   async decrypt(
     encryptedData: string,
-    privateKey: string,
     passphrase: string,
   ): Promise<string> {
+    const privateKey = this.pgpService.getPrivateKey();
     const privateKeyObj = await openpgp.readPrivateKey({
       armoredKey: privateKey,
     });
