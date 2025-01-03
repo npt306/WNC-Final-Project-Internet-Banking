@@ -17,7 +17,8 @@ import { ExternalModule } from './modules/external/external.module';
 import { MailerCustomModule } from './services/mail/mailer.module';
 import { PgpModule } from './services/pgp/pgp.module';
 import { AxiosModule } from './axios/axios.module';
-
+import { DebtReminderNotificationModule } from './debt-reminder-notification/debt-reminder-notification.module';
+import AppGateway from './debt-reminder-notification/socket/AppGetWay';
 @Module({
   imports: [
     MongoModule,
@@ -30,14 +31,11 @@ import { AxiosModule } from './axios/axios.module';
     RecipientModule,
     TransactionModule,
     DebtReminderModule,
-    MailerCustomModule,
-    PgpModule,
-    AxiosModule,
-    ExternalModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
+    AppGateway,
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
