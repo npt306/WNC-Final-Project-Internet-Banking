@@ -24,10 +24,10 @@ export class AppGateway {
   @WebSocketServer()
   server: Server;
 
-  private clientStates: Map<string, string> = new Map();
+  private clientStates: Record<string, boolean> = {};
 
   isCustomerOnline(userId: string): boolean {
-    return Array.from(this.clientStates.values()).includes(userId);
+    return this.clientStates[userId] || false;
   }
 
   handleConnection(client: Socket) {
@@ -35,9 +35,9 @@ export class AppGateway {
   }
 
   handleDisconnect(client: Socket) {
-    const userId = this.clientStates.get(client.id);
+    const userId = this.clientStates[client.id];
     if (userId) 
-      this.clientStates.delete(client.id);
+      this.clientStates[client.id] = false;
     console.log(`Client disconnected: ${userId}`);
   }
 

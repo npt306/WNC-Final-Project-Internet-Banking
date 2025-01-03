@@ -27,11 +27,12 @@ export class DebtReminderNotificationService {
   async sendNotification(customerId: string, title: string, content: string): Promise<void> {
     const isOnline = this.appGateway.isCustomerOnline(customerId);
 
+    console.log('online: ' + isOnline);
     if (isOnline) {
       // Gửi thông báo qua WebSocket
       this.appGateway.server.to(customerId).emit('notification', {
         customerId,
-        title,
+        title: title,
         content: content,
       });
       console.log(`Notification sent to online user: ${customerId}`);
@@ -39,7 +40,7 @@ export class DebtReminderNotificationService {
       // Lưu thông báo vào cơ sở dữ liệu
       const notification = this.debtReminderNotificationRepository.create({
         customer_id: customerId,
-        title,
+        title: title,
         content: content,
         createdAt: new Date(),
       });
