@@ -12,7 +12,8 @@ import { DebtReminderModule } from './modules/debt-reminder/debt-reminder.module
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { AuthEmployeeModule } from './auth/auth_employee/auth_employee.module';
-import AppGateway from './socket/AppGetWay';
+import { DebtReminderNotificationModule } from './debt-reminder-notification/debt-reminder-notification.module';
+import AppGateway from './debt-reminder-notification/socket/AppGetWay';
 @Module({
   imports: [
     MongoModule,
@@ -24,6 +25,7 @@ import AppGateway from './socket/AppGetWay';
     AccountModule,
     RecipientModule,
     DebtReminderModule,
+    DebtReminderNotificationModule,
   ],
   controllers: [AppController],
   providers: [
