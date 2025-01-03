@@ -5,6 +5,7 @@ import { ExternalService } from './external.services';
 import { PgpModule } from '@/services/pgp/pgp.module';
 import { TransactionModule } from '../transaction/transaction.module';
 import { AccountModule } from '../account/account.module';
+import { AxiosService } from '@/axios/axios.service';
 
 @Module({
   imports: [
@@ -14,7 +15,9 @@ import { AccountModule } from '../account/account.module';
     forwardRef(() => AccountModule),
   ],
   controllers: [ExternalController],
-  providers: [ExternalService],
+  providers: [ExternalService,
+    AxiosService
+  ],
   exports: [ExternalService],
 })
 export class ExternalModule {}

@@ -1,5 +1,6 @@
 import { generatePGPKeys } from '@/helpers/utils';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as openpgp from 'openpgp';
 
 @Injectable()
@@ -8,11 +9,14 @@ export class PgpService {
   private publicKey: string;
   private passphrase: string;
 
-  constructor() {
+  constructor(
+    private readonly configService: ConfigService
+  ) {
     generatePGPKeys()
     .then(({ publicKey, privateKey }) => {
       this.privateKey = privateKey;
       this.publicKey = publicKey;
+      this.passphrase = configService.get<string>("SECRET_PASSPHRASE");
     })
   }
   getPublicKey() {

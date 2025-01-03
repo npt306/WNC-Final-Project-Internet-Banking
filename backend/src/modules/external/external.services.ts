@@ -5,6 +5,7 @@ import { TransactionService } from '../transaction/transaction.services';
 import { ExternalTransferDto } from '../transaction/dto/external_transfer.dto';
 import { AccountService } from '../account/account.service';
 import { PgpService } from '@/services/pgp/pgp.service';
+import { AxiosService } from '@/axios/axios.service';
 
 @Injectable()
 export class ExternalService {
@@ -13,7 +14,9 @@ export class ExternalService {
     private readonly transactionService: TransactionService,
     @Inject(forwardRef(() => AccountService))
     private readonly accountService: AccountService,
+
     private readonly pgpService: PgpService,
+    private readonly axiosService: AxiosService
   ) {}
 
   async createPublicKey() {
@@ -55,6 +58,8 @@ export class ExternalService {
 
   async handleAccountInfo(accountNumber: string) {
     let result = await this.accountService.findCustomerByAccountNumber(accountNumber);
+    const encrypted = this.pgpService.encrypt(accountNumber, this.axiosService.getPublicKey());
+    
     return result;
   }
 

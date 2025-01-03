@@ -1,12 +1,13 @@
 const bcryptjs = require('bcryptjs');
 const argon2 = require('argon2');
+import * as crypto from 'crypto';
 import * as openpgp from 'openpgp';
 
 const saltRounds = 10;
-const secretPassphrase = "b96ea3a0-bc33-4dfd-aed1-9a76233afdc9";
+const secretPassphrase = process.env.SECRET_PASSPHRASE;
 const secreteUsername = "Internet banking app Team 08";
 const secreteEmail = "internet.banking.system.bot@gmail.com";
-const secreteExpiration = 600; //10 minutes
+const timeDiff = 300000; //5 minutes
 
 export const hashPasswordHelper = async (plainPassword: string) => {
   try {
@@ -64,4 +65,35 @@ export async function generatePGPKeys() {
   });
 
   return { publicKey, privateKey };
+}
+
+export function generateSignature(encrypted: Promise<string>, salt: number) {
+  return crypto
+    .createHash('md5')
+    .update(JSON.stringify({ data: encrypted }) + salt)
+    .digest('hex');
+}
+
+export function checkTimeDiff(requestTimestamp: number) {
+  const currentTime = Date.now();
+  const timeDifference = Math.abs(currentTime - requestTimestamp);
+
+  // Allow a maximum difference of 5 minutes (300,000 milliseconds)
+  if (timeDifference > timeDiff) {
+    return false;
+  }else {
+    return true;
+  }
+}
+
+export function checkSignature(message: string, signature: string, salt: number) {
+  const recalculatedSignature = crypto
+      .createHash('md5')
+      .update(JSON.stringify({ data: message }) + salt)
+      .digest('hex');
+  if(recalculatedSignature !== signature) {
+    return false;
+  }else {
+    return true;
+  }
 }

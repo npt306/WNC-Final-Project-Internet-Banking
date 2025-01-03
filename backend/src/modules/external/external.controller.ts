@@ -1,11 +1,13 @@
 import { ConfigService } from '@nestjs/config';
-import { Body, Controller, Get, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ExternalService } from './external.services';
 import { IpWhitelistGuard } from '@/guards/ip_whitelist/ip_whitelist.guard';
 import { PgpService } from '@/services/pgp/pgp.service';
 import { InterbankTransferBodyExample } from '../transaction/schema/transaction.schema';
 import { ExternalTransferDto } from '../transaction/dto/external_transfer.dto';
+import { checkSignature, checkTimeDiff } from '@/helpers/utils';
+import { AxiosService } from '@/axios/axios.service';
 
 @ApiTags('external')
 @Controller('external')
@@ -14,6 +16,7 @@ export class ExternalController {
     private readonly configService: ConfigService,
     private readonly externalService: ExternalService,
     private readonly pgpService: PgpService,
+    private readonly axiosService: AxiosService
   ) {}
 
   @UseGuards(IpWhitelistGuard)
@@ -40,9 +43,31 @@ export class ExternalController {
     }
   })
   @Post('acccount/info')
-  async getAccountInfo(@Body() body: any) {
-    var accountNumber = body.accountNumber;
+  async getAccountInfo(
+    @Headers('RequestDate') requestDate: number,
+    @Headers('Signature') signature: string,
+    @Body() body: any) {
     // var accountNumber = body.accountNumber;
+
+
+    if (!requestDate || !signature) {
+      throw new BadRequestException('Missing required headers');
+    }
+    const requestTimestamp = Number(requestDate);
+    if (isNaN(requestTimestamp)) {
+      throw new BadRequestException('Invalid RequestDate');
+    }
+
+    const checkTime = checkTimeDiff(requestTimestamp);
+    const checkSign = checkSignature(body, signature, this.axiosService.getExternalSalt());
+    if(!checkTime) {
+      throw new BadRequestException('RequestDate is outside the acceptable range');
+    }
+    if(!checkSign) {
+      throw new BadRequestException('Invalid Signature');
+    }
+
+    const accountNumber = await this.pgpService.decrypt(body);
 
     return this.externalService.handleAccountInfo(accountNumber);
     // return 'Access granted!';
