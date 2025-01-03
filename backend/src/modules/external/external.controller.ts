@@ -50,9 +50,9 @@ export class ExternalController {
     // var accountNumber = body.accountNumber;
 
 
-    if (!requestDate || !signature) {
-      throw new BadRequestException('Missing required headers');
-    }
+    // if (!requestDate || !signature) {
+    //   throw new BadRequestException('Missing required headers');
+    // }
     const requestTimestamp = Number(requestDate);
     if (isNaN(requestTimestamp)) {
       throw new BadRequestException('Invalid RequestDate');
@@ -60,9 +60,9 @@ export class ExternalController {
 
     const checkTime = checkTimeDiff(requestTimestamp);
     const checkSign = checkSignature(body, signature, this.axiosService.getExternalSalt());
-    if(!checkTime) {
-      throw new BadRequestException('RequestDate is outside the acceptable range');
-    }
+    // if(!checkTime) {
+    //   throw new BadRequestException('RequestDate is outside the acceptable range');
+    // }
     if(!checkSign) {
       throw new BadRequestException('Invalid Signature');
     }

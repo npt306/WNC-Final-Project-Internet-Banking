@@ -58,7 +58,7 @@ export class ExternalService {
 
   async handleAccountInfo(accountNumber: string) {
     let result = await this.accountService.findCustomerByAccountNumber(accountNumber);
-    const encrypted = this.pgpService.encrypt(accountNumber, this.axiosService.getPublicKey());
+    const encrypted = this.pgpService.encrypt(accountNumber, this.axiosService.getExternalBankPublicKey());
     
     return result;
   }

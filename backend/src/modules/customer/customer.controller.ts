@@ -19,12 +19,16 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { SearchCustomerDto } from './dto/search-customer.dto';
+import { AxiosService } from '@/axios/axios.service';
+import { externalCustomerDto } from './dto/external-customer.dto';
 
 @ApiBearerAuth()
 @ApiTags('customer')
 @Controller('customer')
 export class CustomerController {
-  constructor(private readonly customerService: CustomerService) {}
+  constructor(
+    private readonly customerService: CustomerService,
+    private readonly axiosService: AxiosService) {}
 
   @ApiOperation({ summary: '2.1: Create customer' })
   @ApiResponse({
@@ -70,6 +74,23 @@ export class CustomerController {
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<SearchCustomerDto> {
     return this.customerService.findOne(id);
+  }
+
+  @ApiOperation({ summary: 'Search external customer infomation with account_number' })
+  @ApiParam({
+    name: 'account_number',
+    type: String,
+    description: 'The account_number of the external customer',
+    example: '112233445566'
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Return external customer by account_number.',
+    type: SearchCustomerDto,
+  })
+  @Post('/external-search')
+  async findExternalCustomer(@Body() body: any): Promise<any> {
+    return await this.axiosService.getCustomerCredential(body.account_number);
   }
 
   // @Patch(':id')

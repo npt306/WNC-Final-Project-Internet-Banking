@@ -67,7 +67,7 @@ export async function generatePGPKeys() {
   return { publicKey, privateKey };
 }
 
-export function generateSignature(encrypted: Promise<string>, salt: number) {
+export function generateSignature(encrypted: string, salt: number) {
   return crypto
     .createHash('md5')
     .update(JSON.stringify({ data: encrypted }) + salt)

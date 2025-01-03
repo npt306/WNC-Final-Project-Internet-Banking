@@ -11,8 +11,8 @@ import { generateSignature } from '@/helpers/utils';
 @Injectable()
 export class AxiosService {
     private baseUrl: string;
-    private externalBankPublicKey: string;
     private externalSalt: number;
+    private externalBankPublicKey: string;
 
     constructor(
     private readonly configService: ConfigService,
@@ -20,8 +20,8 @@ export class AxiosService {
         this.baseUrl = configService.get("EXTERNAL_BASE_URL");
         this.externalSalt = configService.get<number>("SECRET_SALT");
     }
-    
-    getPublicKey() {
+
+    getExternalBankPublicKey() {
         return this.externalBankPublicKey;
     }
 
@@ -30,18 +30,14 @@ export class AxiosService {
     }
 
     async fetchPublicKey() {
-        axios.get(this.baseUrl + '/external/publickey')
-        .then((res) => {
-            this.externalBankPublicKey = res.data.data;
-            console.log(this.externalBankPublicKey)
-        })
-        .catch((error) => console.log(error))
+        let res = await axios.get(this.baseUrl + '/external/publicKey');
+        this.externalBankPublicKey = res.data.data;
     }
 
     async getCustomerCredential(accountNumber: string) {
         // const msg = '73336867059848144273';
-        this.fetchPublicKey();
-        const encrypted = this.pgpService.encrypt(accountNumber, this.externalBankPublicKey);
+        await this.fetchPublicKey();
+        const encrypted = await this.pgpService.encrypt(accountNumber, this.externalBankPublicKey);
         // Send encrypted message
         const res = await axios.post(
             this.baseUrl + '/external/account/info',
@@ -56,6 +52,7 @@ export class AxiosService {
             },
         );
         console.log(res.data);
+        return res;
     }
 
     async postTransferMoney(transferDto: TransferDto) {
@@ -66,8 +63,8 @@ export class AxiosService {
         //     amount: 100000,
         //     description: 'Gửi chơi chơi',
         // };
-        this.fetchPublicKey();
-        const encrypted = this.pgpService.encrypt(JSON.stringify(transferDto), this.externalBankPublicKey);
+        await this.fetchPublicKey();
+        const encrypted = await this.pgpService.encrypt(JSON.stringify(transferDto), this.externalBankPublicKey);
         console.log(encrypted);
         // Send encrypted message
         const res = await axios.post(
@@ -78,10 +75,7 @@ export class AxiosService {
             {
             headers: {
                 RequestDate: new Date().getTime(),
-                Signature: crypto
-                .createHash('md5')
-                .update(JSON.stringify({ data: encrypted }) + this.externalSalt)
-                .digest('hex'),
+                Signature: generateSignature(encrypted, this.externalSalt),
             },
             },
         );
