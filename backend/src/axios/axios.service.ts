@@ -15,26 +15,28 @@ export class AxiosService {
 
     constructor(
     private readonly configService: ConfigService,
-    private readonly pgpService: PgpService,
-    private readonly httpService: HttpService) {
+    private readonly pgpService: PgpService) {
         this.baseUrl = configService.get("EXTERNAL_BASE_URL");
         this.salt = configService.get<number>("SECRET_SALT");
 
-        axios.get(this.baseUrl + '/api/external/publickey')
-        .then((res) => {
-            this.externalBankPublicKey = res.data.data;
-        })
+        this.getPublicKey();
     }
     async getPublicKey() {
-        return this.externalBankPublicKey;
+        axios.get(this.baseUrl + '/external/publickey')
+        .then((res) => {
+            this.externalBankPublicKey = res.data.data;
+            console.log(this.externalBankPublicKey)
+        })
+        .catch((error) => console.log(error))
     }
 
     async getCustomerCredential(accountNumber: string) {
         // const msg = '73336867059848144273';
+        this.getPublicKey();
         const encrypted = this.pgpService.encrypt(accountNumber, this.externalBankPublicKey);
         // Send encrypted message
         const res = await axios.post(
-            this.baseUrl + '/api/external/account/info',
+            this.baseUrl + '/external/account/info',
             {
                 data: encrypted,
             },
@@ -59,11 +61,12 @@ export class AxiosService {
         //     amount: 100000,
         //     description: 'Gửi chơi chơi',
         // };
+        this.getPublicKey();
         const encrypted = this.pgpService.encrypt(JSON.stringify(transferDto), this.externalBankPublicKey);
         console.log(encrypted);
         // Send encrypted message
         const res = await axios.post(
-            this.baseUrl + '/api/external/transfer',
+            this.baseUrl + '/external/transfer',
             {
                 data: encrypted,
             },

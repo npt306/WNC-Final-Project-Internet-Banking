@@ -16,6 +16,7 @@ import { TransactionModule } from './modules/transaction/transaction.module';
 import { ExternalModule } from './modules/external/external.module';
 import { MailerCustomModule } from './services/mail/mailer.module';
 import { PgpModule } from './services/pgp/pgp.module';
+import { AxiosModule } from './axios/axios.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { PgpModule } from './services/pgp/pgp.module';
     DebtReminderModule,
     MailerCustomModule,
     PgpModule,
+    AxiosModule,
     ExternalModule,
   ],
   controllers: [AppController],
