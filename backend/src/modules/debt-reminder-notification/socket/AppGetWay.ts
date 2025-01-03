@@ -17,7 +17,7 @@ import { Inject, forwardRef } from '@nestjs/common';
 export class AppGateway {
 
   constructor(
-    @Inject(forwardRef(() => DebtReminderNotificationService)) 
+    @Inject(forwardRef(() => DebtReminderNotificationService))
     private readonly debtReminderNotificationService: DebtReminderNotificationService,
   ) {}
 
@@ -57,8 +57,7 @@ export class AppGateway {
 
     unreadNotifications.forEach((notification) => {
       this.server.to(customerId).emit('notification', notification);
-      console.log('notification: ', notification);
-      
+            
       this.debtReminderNotificationService.deleteCustomerNotifications(customerId);
     });
   }

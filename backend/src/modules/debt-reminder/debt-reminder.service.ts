@@ -5,12 +5,14 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DebtReminder } from './entities/debt-reminder.entity';
 import { ObjectId } from 'mongodb';
+import { DebtReminderNotificationService } from '../debt-reminder-notification/debt-reminder-notification.service';
 
 @Injectable()
 export class DebtReminderService {
   constructor(
     @InjectRepository(DebtReminder)
     private debtReminderRepository: Repository<DebtReminder>,
+    private readonly debtReminderNotificationService: DebtReminderNotificationService,
   ) {}
 
   async create(
@@ -18,6 +20,11 @@ export class DebtReminderService {
   ): Promise<DebtReminder> {
     const newDebtReminder = this.debtReminderRepository.create(
       createDebtReminderDto,
+    );
+    await this.debtReminderNotificationService.sendNotification(
+      newDebtReminder.debtor,
+      'Debt reminder',
+      `You have a new debt reminder from ${newDebtReminder.creditor}`,
     );
     return await this.debtReminderRepository.save(newDebtReminder);
   }

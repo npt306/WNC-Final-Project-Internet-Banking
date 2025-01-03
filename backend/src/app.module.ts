@@ -17,8 +17,8 @@ import { ExternalModule } from './modules/external/external.module';
 import { MailerCustomModule } from './services/mail/mailer.module';
 import { PgpModule } from './services/pgp/pgp.module';
 import { AxiosModule } from './axios/axios.module';
-import { DebtReminderNotificationModule } from './debt-reminder-notification/debt-reminder-notification.module';
-import AppGateway from './debt-reminder-notification/socket/AppGetWay';
+import { DebtReminderNotificationModule } from './modules/debt-reminder-notification/debt-reminder-notification.module';
+import AppGateway from './modules/debt-reminder-notification/socket/AppGetWay';
 @Module({
   imports: [
     MongoModule,
@@ -31,6 +31,7 @@ import AppGateway from './debt-reminder-notification/socket/AppGetWay';
     RecipientModule,
     TransactionModule,
     DebtReminderModule,
+    DebtReminderNotificationModule,
   ],
   controllers: [AppController],
   providers: [
