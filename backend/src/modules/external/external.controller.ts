@@ -85,6 +85,13 @@ export class ExternalController {
 
   @UseGuards(IpWhitelistGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
+  @ApiResponse({
+    example:{
+      "statusCode": 200,
+      "message": "",
+      "data": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nSAMPLE PUBLIC KEY\n-----END PGP PUBLIC KEY BLOCK-----\n"
+    }
+  })
   @Get('publicKey')
   async getPublicKey() {
     return this.rsaService.getPublicKey();
