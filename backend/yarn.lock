@@ -374,7 +374,7 @@
 
 "@css-inline/css-inline-win32-x64-msvc@0.14.1":
   version "0.14.1"
-  resolved "https://registry.npmjs.org/@css-inline/css-inline-win32-x64-msvc/-/css-inline-win32-x64-msvc-0.14.1.tgz"
+  resolved "https://registry.yarnpkg.com/@css-inline/css-inline-win32-x64-msvc/-/css-inline-win32-x64-msvc-0.14.1.tgz#9c269f414d44196c603033f528364a8ddf51ebc8"
   integrity sha512-nzotGiaiuiQW78EzsiwsHZXbxEt6DiMUFcDJ6dhiliomXxnlaPyBfZb6/FMBgRJOf6sknDt/5695OttNmbMYzg==
 
 "@css-inline/css-inline@0.14.1":
