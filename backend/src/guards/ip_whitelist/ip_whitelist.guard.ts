@@ -4,7 +4,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 export class IpWhitelistGuard implements CanActivate {
   private readonly whitelist: string[] = [
     '127.0.0.1', //Localhost
-    '0.0.0.0',
+    '103.199.18.250',
   ];
 
   canActivate(context: ExecutionContext): boolean {
