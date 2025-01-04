@@ -1,4 +1,3 @@
-import { generatePGPKeys } from '@/helpers/utils';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import * as openpgp from 'openpgp';
 import { TransactionService } from '../transaction/transaction.services';
@@ -18,43 +17,6 @@ export class ExternalService {
     private readonly pgpService: PgpService,
     private readonly axiosService: AxiosService
   ) {}
-
-  async createPublicKey() {
-    return await generatePGPKeys();
-  }
-
-  async encrypt(data: string): Promise<string> {
-    const publicKey = this.pgpService.getPublicKey();
-    const publicKeyObj = await openpgp.readKey({ armoredKey: publicKey });
-    return await openpgp.encrypt({
-      message: await openpgp.createMessage({ text: data }),
-      encryptionKeys: publicKeyObj,
-    });
-  }
-
-  async decrypt(
-    encryptedData: string,
-    passphrase: string,
-  ): Promise<string> {
-    const privateKey = this.pgpService.getPrivateKey();
-    const privateKeyObj = await openpgp.readPrivateKey({
-      armoredKey: privateKey,
-    });
-    const decryptedPrivateKey = await openpgp.decryptKey({
-      privateKey: privateKeyObj,
-      passphrase,
-    });
-
-    const message = await openpgp.readMessage({
-      armoredMessage: encryptedData,
-    });
-    const { data: decryptedData } = await openpgp.decrypt({
-      message,
-      decryptionKeys: decryptedPrivateKey,
-    });
-
-    return decryptedData;
-  }
 
   async handleAccountInfo(accountNumber: string) {
     return await this.accountService.findCustomerByAccountNumber(accountNumber);

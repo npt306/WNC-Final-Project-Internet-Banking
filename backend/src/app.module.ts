@@ -19,6 +19,7 @@ import { PgpModule } from './services/pgp/pgp.module';
 import { AxiosModule } from './axios/axios.module';
 import { DebtReminderNotificationModule } from './modules/debt-reminder-notification/debt-reminder-notification.module';
 import AppGateway from './modules/debt-reminder-notification/socket/AppGetWay';
+import { RsaModule } from './services/rsa/rsa.module';
 @Module({
   imports: [
     MongoModule,
@@ -33,6 +34,7 @@ import AppGateway from './modules/debt-reminder-notification/socket/AppGetWay';
     DebtReminderModule,
     DebtReminderNotificationModule,
     PgpModule,
+    RsaModule,
     AxiosModule,
     ExternalModule,
   ],

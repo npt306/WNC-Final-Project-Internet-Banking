@@ -1,6 +1,7 @@
 const bcryptjs = require('bcryptjs');
 const argon2 = require('argon2');
 import * as crypto from 'crypto';
+import { generateKeyPairSync } from 'crypto';
 import * as openpgp from 'openpgp';
 
 const saltRounds = 10;
@@ -55,23 +56,8 @@ export const randomSequence = (length: number) => {
     return result;
 }
 
-export async function generatePGPKeys() {
-  const { privateKey, publicKey } = await openpgp.generateKey({
-    type: 'rsa', // RSA keys
-    rsaBits: 2048, // Key size
-    userIDs: [{ name: secreteUsername, email: secreteEmail }],
-    // keyExpirationTime: secreteExpiration,
-    passphrase: secretPassphrase, // Optional
-  });
-
-  return { publicKey, privateKey };
-}
-
-export function generateSignature(encrypted: string, salt: number) {
-  return crypto
-    .createHash('md5')
-    .update(JSON.stringify({ data: encrypted }) + salt)
-    .digest('hex');
+export async function generateRsaKeys() {
+  
 }
 
 export function checkTimeDiff(requestTimestamp: number) {
@@ -86,14 +72,3 @@ export function checkTimeDiff(requestTimestamp: number) {
   }
 }
 
-export function checkSignature(message: string, signature: string, salt: number) {
-  const recalculatedSignature = crypto
-      .createHash('md5')
-      .update(JSON.stringify({ data: message }) + salt)
-      .digest('hex');
-  if(recalculatedSignature !== signature) {
-    return false;
-  }else {
-    return true;
-  }
-}

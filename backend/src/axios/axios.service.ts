@@ -1,12 +1,8 @@
 import { PgpService } from '@/services/pgp/pgp.service';
-import { Customer } from './../modules/customer/entities/customer.entity';
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import * as crypto from 'crypto';
 import { TransferDto } from '@/modules/transaction/dto/transfer.dto';
-import { generateSignature } from '@/helpers/utils';
 
 @Injectable()
 export class AxiosService {
@@ -47,7 +43,7 @@ export class AxiosService {
             {
                 headers: {
                     RequestDate: new Date().getTime(),
-                    Signature: generateSignature(encrypted, this.externalSalt)
+                    Signature: this.pgpService.generateSignature(encrypted, this.externalSalt)
                 },
             },
         );
@@ -74,7 +70,7 @@ export class AxiosService {
             {
             headers: {
                 RequestDate: new Date().getTime(),
-                Signature: generateSignature(encrypted, this.externalSalt),
+                Signature: this.pgpService.generateSignature(encrypted, this.externalSalt),
             },
             },
         );

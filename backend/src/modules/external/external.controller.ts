@@ -6,8 +6,9 @@ import { IpWhitelistGuard } from '@/guards/ip_whitelist/ip_whitelist.guard';
 import { PgpService } from '@/services/pgp/pgp.service';
 import { InterbankTransferBodyExample } from '../transaction/schema/transaction.schema';
 import { ExternalTransferDto } from '../transaction/dto/external_transfer.dto';
-import { checkSignature, checkTimeDiff } from '@/helpers/utils';
+import { checkTimeDiff } from '@/helpers/utils';
 import { AxiosService } from '@/axios/axios.service';
+import { RsaService } from '@/services/rsa/rsa.service';
 
 @ApiTags('external')
 @Controller('external')
@@ -16,6 +17,7 @@ export class ExternalController {
     private readonly configService: ConfigService,
     private readonly externalService: ExternalService,
     private readonly pgpService: PgpService,
+    private readonly rsaService: RsaService,
     private readonly axiosService: AxiosService
   ) {}
 
@@ -55,7 +57,7 @@ export class ExternalController {
     }
 
     const checkTime = checkTimeDiff(requestTimestamp);
-    const checkSign = checkSignature(body, signature, this.axiosService.getExternalSalt());
+    const checkSign = this.rsaService.checkSignature(body, signature, this.axiosService.getExternalSalt());
     if(!checkTime) {
       throw new BadRequestException('RequestDate is outside the acceptable range');
     }
@@ -63,7 +65,7 @@ export class ExternalController {
       throw new BadRequestException('Invalid Signature');
     }
 
-    const accountNumber = await this.pgpService.decrypt(body);
+    const accountNumber = await this.rsaService.decrypt(body);
 
     return this.externalService.handleAccountInfo(accountNumber);
   }
@@ -72,7 +74,7 @@ export class ExternalController {
   @UsePipes(new ValidationPipe({ transform: true }))
   @Get('publicKey')
   async getPublicKey() {
-    return this.pgpService.getPublicKey();
+    return this.rsaService.getPublicKey();
   }
 
   @UseGuards(IpWhitelistGuard)
