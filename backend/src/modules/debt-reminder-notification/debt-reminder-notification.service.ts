@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DebtReminderNotification } from './entities/debt-reminder-notification.entity';
 import { Repository } from 'typeorm';
 import { AppGateway } from './socket/AppGetWay';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class DebtReminderNotificationService {
@@ -20,13 +21,26 @@ export class DebtReminderNotificationService {
     });
   }
 
+  async getUnreadCustomerNotifications(customerId: string): Promise<DebtReminderNotification[]> {
+    return this.debtReminderNotificationRepository.find({
+      where: { customer_id: customerId, isRead: false },
+    });
+  }
+
   async deleteCustomerNotifications(customerId: string): Promise<void> {
     await this.debtReminderNotificationRepository.delete({ customer_id: customerId });
   }
 
+  async markNotificationAsRead(notificationId: ObjectId): Promise<void> {
+    await this.debtReminderNotificationRepository.update(
+      { _id: notificationId },
+      { isRead: true },
+    );
+  }
+
   async sendNotification(customerId: string, title: string, content: string): Promise<void> {
     const isOnline = this.appGateway.isCustomerOnline(customerId);
-
+    let isRead = true;
     console.log('online: ' + isOnline);
     if (isOnline) {
       // Gửi thông báo qua WebSocket
@@ -35,17 +49,17 @@ export class DebtReminderNotificationService {
         title: title,
         content: content,
       });
-      console.log(`Notification sent to online user: ${customerId}`);
     } else {
-      // Lưu thông báo vào cơ sở dữ liệu
-      const notification = this.debtReminderNotificationRepository.create({
-        customer_id: customerId,
-        title: title,
-        content: content,
-        createdAt: new Date(),
-      });
-      await this.debtReminderNotificationRepository.save(notification);
-      console.log(`Notification saved for offline user: ${customerId}`);
+      isRead = false
     }
+    
+    const notification = this.debtReminderNotificationRepository.create({
+      customer_id: customerId,
+      title: title,
+      content: content,
+      isRead: isRead,
+      createdAt: new Date(),
+    });
+    await this.debtReminderNotificationRepository.save(notification);
   }
 }
