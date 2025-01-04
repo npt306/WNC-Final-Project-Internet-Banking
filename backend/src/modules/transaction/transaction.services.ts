@@ -253,8 +253,6 @@ export class TransactionService {
     return result;
   }
 
-  
-
   async transfer(transferDto: TransferDto): Promise<any> {
     let amount = transferDto.amount;
 
@@ -300,7 +298,7 @@ export class TransactionService {
       receiverAccount._id.toString(),
       receiverAccount,
     );
-  
+
     const transferLogDto: TransferLogDto = {
       ...transferDto,
       sender_balance: senderNewBalance,
