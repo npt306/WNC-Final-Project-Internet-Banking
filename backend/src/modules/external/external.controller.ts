@@ -9,6 +9,7 @@ import { ExternalTransferDto } from '../transaction/dto/external_transfer.dto';
 import { checkTimeDiff } from '@/helpers/utils';
 import { AxiosService } from '@/axios/axios.service';
 import { RsaService } from '@/services/rsa/rsa.service';
+import { SearchExternalDto } from './dto/search-external.dto';
 
 @ApiTags('external')
 @Controller('external')
@@ -48,26 +49,33 @@ export class ExternalController {
   async getAccountInfo(
     @Headers('RequestDate') requestDate: number,
     @Headers('Signature') signature: string,
-    @Body('data') body: string) {if (!requestDate || !signature) {
-      throw new BadRequestException('Missing required headers');
-    }
-    const requestTimestamp = Number(requestDate);
-    if (isNaN(requestTimestamp)) {
-      throw new BadRequestException('Invalid RequestDate');
-    }
+    @Headers('X-Signature') xSignature: string,
+    @Body() body: SearchExternalDto) {
+      if (!requestDate || !signature) {
+        throw new BadRequestException('Missing required headers');
+      }
+      const requestTimestamp = Number(requestDate);
+      if (isNaN(requestTimestamp)) {
+        throw new BadRequestException('Invalid RequestDate');
+      }
 
     const checkTime = checkTimeDiff(requestTimestamp);
-    const checkSign = this.rsaService.checkSignature(body, signature, this.axiosService.getExternalSalt());
+    const checkSign = this.pgpService.checkSignature(JSON.stringify(body), signature, this.axiosService.getSecretSalt());
     if(!checkTime) {
       throw new BadRequestException('RequestDate is outside the acceptable range');
     }
     if(!checkSign) {
       throw new BadRequestException('Invalid Signature');
     }
+    const decodeXSign = Buffer.from(xSignature, 'base64').toString('ascii');
+    await this.axiosService.fetchPublicKey()
+    const result = await this.pgpService.verify(JSON.stringify(body), decodeXSign, this.axiosService.getExternalBankPublicKey());
 
-    const accountNumber = await this.rsaService.decrypt(body);
+    if(!result) {
+      throw new BadRequestException('Invalid x-Signature');
+    }
 
-    return this.externalService.handleAccountInfo(accountNumber);
+    return this.externalService.handleAccountInfo(body.accountNumber);
   }
 
   @UseGuards(IpWhitelistGuard)

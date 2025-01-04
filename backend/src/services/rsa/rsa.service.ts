@@ -45,8 +45,6 @@ export class RsaService {
       privateKeyEncoding: {
         type: 'pkcs8', // Private key format
         format: 'pem', // PEM encoded
-        cipher: 'aes-256-cbc', // Encrypt the private key
-        passphrase: 'your-passphrase', // Protect the private key
       },
     });
 
@@ -98,8 +96,8 @@ export class RsaService {
       sign.end();
   
       // Sign the data using the private key
-      const signature = sign.sign(this.privateKey, 'base64'); // Returns a base64-encoded signature
-  
+      const signature = sign.sign(this.privateKey, 'base64url'); // Returns a base64-encoded signature
+
       return signature;
     } catch (error) {
       console.error('Error signing data with RSA:', error);
@@ -117,7 +115,7 @@ export class RsaService {
       verify.end();
   
       // Verify the signature using the public key
-      const isValid = verify.verify(this.publicKey, signature, 'base64'); // Expecting signature in base64
+      const isValid = verify.verify(this.publicKey, signature, 'base64url'); // Expecting signature in base64
   
       return isValid;
     } catch (error) {
@@ -126,10 +124,10 @@ export class RsaService {
     }
   }
 
-  generateSignature(encrypted: string, salt: number) {
+  generateSignature(payload: string, salt: string) {
     return crypto
       .createHash('md5')
-      .update(JSON.stringify({ data: encrypted }) + salt)
+      .update(payload  + salt)
       .digest('hex');
   }
 

@@ -1,24 +1,33 @@
 import { PgpService } from '@/services/pgp/pgp.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { TransferDto } from '@/modules/transaction/dto/transfer.dto';
+import { RsaService } from '@/services/rsa/rsa.service';
 
 @Injectable()
 export class AxiosService {
     private baseUrl: string;
-    private externalSalt: number;
+    private externalSalt: string;
+    private secretSalt: string;
     private externalBankPublicKey: string;
 
     constructor(
     private readonly configService: ConfigService,
-    private readonly pgpService: PgpService) {
+    private readonly pgpService: PgpService,
+    private readonly rsaService: RsaService) {
         this.baseUrl = configService.get("EXTERNAL_BASE_URL");
-        this.externalSalt = configService.get<number>("SECRET_SALT");
+        this.secretSalt = configService.get<string>("SECRET_SALT");
+        this.externalSalt = configService.get<string>("EXTERNAL_SALT");
+        this.fetchPublicKey();
     }
 
     getExternalBankPublicKey() {
         return this.externalBankPublicKey;
+    }
+
+    getSecretSalt() {
+        return this.secretSalt;
     }
 
     getExternalSalt() {
@@ -32,22 +41,29 @@ export class AxiosService {
 
     async getCustomerCredential(accountNumber: string) {
         // const accountNumber = '112233445566';
-        await this.fetchPublicKey();
-        const encrypted = await this.pgpService.encrypt(accountNumber, this.externalBankPublicKey);
         // Send encrypted message
-        const res = await axios.post(
-            this.baseUrl + '/external/account/info',
-            {
-                data: encrypted,
-            },
-            {
-                headers: {
-                    RequestDate: new Date().getTime(),
-                    Signature: this.pgpService.generateSignature(encrypted, this.externalSalt)
+        const payload = {
+            accountNumber: accountNumber,
+        };
+        const xSignature = await this.rsaService.sign(JSON.stringify(payload));
+        console.log(await this.rsaService.verify(JSON.stringify(payload), xSignature));
+        try {
+            const res = await axios.post(
+                this.baseUrl + '/external/account/info',
+                payload,
+                {
+                    headers: {
+                        RequestDate: new Date().getTime(),
+                        Signature: this.rsaService.generateSignature(JSON.stringify(payload), this.externalSalt),
+                        "X-Signature": xSignature
+                    },
                 },
-            },
-        );
-        return res.data;
+            );
+            return res.data;
+        }catch(error) {
+            throw new InternalServerErrorException("Cannot get required resources")
+        }
+        
     }
 
     async postTransferMoney(transferDto: TransferDto) {

@@ -83,33 +83,34 @@ export class PgpService {
     return signed;
   }
 
-  async verify(data: string) {
-    const publicKey = await openpgp.readKey({ armoredKey: this.publicKey });
-    const verificationResult = await openpgp.verify({
-      message: await openpgp.readMessage({ armoredMessage: data }),
-      verificationKeys: publicKey,
+  async verify(data: string, signature: string, publicKey: string) {
+    const message = await openpgp.createMessage({text: data});
+    const sign = await openpgp.readSignature({
+      armoredSignature: signature
     });
-    const { verified, keyID } = verificationResult.signatures[0];
-    try {
-      await verified; // throws on invalid signature
-      return true;
-      console.log('Signed by key id ' + keyID.toHex());
-    } catch {
-      return false;
-    }
+
+    const publicKeyDecode = await openpgp.readKey({ armoredKey: publicKey });
+    const verificationResult = await openpgp.verify({
+      date: new Date(Date.now() + 10000),
+      message: message,
+      signature: sign,
+      verificationKeys: publicKeyDecode,
+      expectSigned: true,
+    });
+    return !!verificationResult;
   }
 
-  generateSignature(encrypted: string, salt: number) {
+  generateSignature(encrypted: string, salt: string) {
     return crypto
       .createHash('md5')
       .update(JSON.stringify({ data: encrypted }) + salt)
       .digest('hex');
   }
 
-  checkSignature(message: string, signature: string, salt: number) {
+  checkSignature(message: string, signature: string, salt: string) {
     const recalculatedSignature = crypto
         .createHash('md5')
-        .update(JSON.stringify({ data: message }) + salt)
+        .update(message + salt)
         .digest('hex');
     if(recalculatedSignature !== signature) {
       return false;
