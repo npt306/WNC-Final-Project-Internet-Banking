@@ -35,7 +35,7 @@ export class AxiosService {
     }
 
     async getCustomerCredential(accountNumber: string) {
-        // const msg = '73336867059848144273';
+        // const accountNumber = '112233445566';
         await this.fetchPublicKey();
         const encrypted = await this.pgpService.encrypt(accountNumber, this.externalBankPublicKey);
         // Send encrypted message
@@ -51,8 +51,7 @@ export class AxiosService {
                 },
             },
         );
-        console.log(res.data);
-        return res;
+        return res.data;
     }
 
     async postTransferMoney(transferDto: TransferDto) {

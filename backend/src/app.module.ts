@@ -32,6 +32,9 @@ import AppGateway from './modules/debt-reminder-notification/socket/AppGetWay';
     TransactionModule,
     DebtReminderModule,
     DebtReminderNotificationModule,
+    PgpModule,
+    AxiosModule,
+    ExternalModule,
   ],
   controllers: [AppController],
   providers: [

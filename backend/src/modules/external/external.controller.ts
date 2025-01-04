@@ -42,17 +42,13 @@ export class ExternalController {
       }
     }
   })
-  @Post('acccount/info')
+  @Post('account/info')
   async getAccountInfo(
     @Headers('RequestDate') requestDate: number,
     @Headers('Signature') signature: string,
-    @Body() body: any) {
-    // var accountNumber = body.accountNumber;
-
-
-    // if (!requestDate || !signature) {
-    //   throw new BadRequestException('Missing required headers');
-    // }
+    @Body('data') body: string) {if (!requestDate || !signature) {
+      throw new BadRequestException('Missing required headers');
+    }
     const requestTimestamp = Number(requestDate);
     if (isNaN(requestTimestamp)) {
       throw new BadRequestException('Invalid RequestDate');
@@ -60,9 +56,9 @@ export class ExternalController {
 
     const checkTime = checkTimeDiff(requestTimestamp);
     const checkSign = checkSignature(body, signature, this.axiosService.getExternalSalt());
-    // if(!checkTime) {
-    //   throw new BadRequestException('RequestDate is outside the acceptable range');
-    // }
+    if(!checkTime) {
+      throw new BadRequestException('RequestDate is outside the acceptable range');
+    }
     if(!checkSign) {
       throw new BadRequestException('Invalid Signature');
     }
@@ -70,7 +66,6 @@ export class ExternalController {
     const accountNumber = await this.pgpService.decrypt(body);
 
     return this.externalService.handleAccountInfo(accountNumber);
-    // return 'Access granted!';
   }
 
   @UseGuards(IpWhitelistGuard)

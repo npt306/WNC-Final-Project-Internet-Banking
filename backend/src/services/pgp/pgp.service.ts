@@ -36,17 +36,20 @@ export class PgpService {
 
   async decrypt(encryptedData: string): Promise<string> {
     const privateKeyObj = await openpgp.readPrivateKey({ armoredKey: this.privateKey });
-    const decryptedPrivateKey = await openpgp.decryptKey({
-      privateKey: privateKeyObj,
-      passphrase: this.passphrase,
-    });
-
+    const decryptedPrivateKey = privateKeyObj.isDecrypted()
+      ? privateKeyObj
+      : await openpgp.decryptKey({
+          privateKey: privateKeyObj,
+          passphrase: this.passphrase,
+        });
+  
     const message = await openpgp.readMessage({ armoredMessage: encryptedData });
+  
     const { data: decryptedData } = await openpgp.decrypt({
       message,
       decryptionKeys: decryptedPrivateKey,
     });
-
+  
     return decryptedData;
   }
 }
