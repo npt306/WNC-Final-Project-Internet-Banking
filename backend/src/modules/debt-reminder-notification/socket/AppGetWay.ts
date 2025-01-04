@@ -25,6 +25,7 @@ export class AppGateway {
   server: Server;
 
   private clientStates: Record<string, boolean> = {};
+  private socketIdToUserId: Record<string, string> = {};
 
   isCustomerOnline(userId: string): boolean {
     return this.clientStates[userId] || false;
@@ -35,10 +36,11 @@ export class AppGateway {
   }
 
   handleDisconnect(client: Socket) {
-    const userId = this.clientStates[client.id];
-    if (userId) 
-      this.clientStates[client.id] = false;
-    console.log(`Client disconnected: ${userId}`);
+    const customerId = this.socketIdToUserId[client.id];
+    if (customerId) {
+      delete this.clientStates[customerId];
+    }
+    console.log(`Client disconnected: ${client.id}`);
   }
 
   @SubscribeMessage('initialize')
@@ -46,6 +48,7 @@ export class AppGateway {
     @MessageBody() data: { id: string },
     @ConnectedSocket() client: Socket,
   ) {
+    this.socketIdToUserId[client.id] = data.id;
     client.join(data.id); 
     this.clientStates[data.id] = true; 
     this.resendUnreadNotifications(data.id);
@@ -53,12 +56,12 @@ export class AppGateway {
   }
 
   async resendUnreadNotifications(customerId: string) {
-    const unreadNotifications = await this.debtReminderNotificationService.getCustomerNotifications(customerId);
+    const unreadNotifications = await this.debtReminderNotificationService.getUnreadCustomerNotifications(customerId);
 
     unreadNotifications.forEach((notification) => {
       this.server.to(customerId).emit('notification', notification);
             
-      this.debtReminderNotificationService.deleteCustomerNotifications(customerId);
+      this.debtReminderNotificationService.markNotificationAsRead(notification._id);
     });
   }
 
