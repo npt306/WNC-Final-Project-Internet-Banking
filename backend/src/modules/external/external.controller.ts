@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { BadRequestException, Body, Controller, Get, Headers, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, Post, Response, UseGuards, UsePipes, ValidationPipe, Patch } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ExternalService } from './external.services';
 import { IpWhitelistGuard } from '@/guards/ip_whitelist/ip_whitelist.guard';
@@ -10,6 +10,7 @@ import { checkTimeDiff } from '@/helpers/utils';
 import { AxiosService } from '@/axios/axios.service';
 import { RsaService } from '@/services/rsa/rsa.service';
 import { SearchExternalDto } from './dto/search-external.dto';
+import { Response as Res } from "express";
 
 @ApiTags('external')
 @Controller('external')
@@ -50,7 +51,9 @@ export class ExternalController {
     @Headers('RequestDate') requestDate: number,
     @Headers('Signature') signature: string,
     @Headers('X-Signature') xSignature: string,
-    @Body() body: SearchExternalDto) {
+    @Body() body: SearchExternalDto,
+    @Response({passthrough: true}) res: Res) {
+      console.log("called");
       if (!requestDate || !signature) {
         throw new BadRequestException('Missing required headers');
       }
@@ -72,10 +75,12 @@ export class ExternalController {
     const result = await this.pgpService.verify(JSON.stringify(body), decodeXSign, this.axiosService.getExternalBankPublicKey());
 
     if(!result) {
-      throw new BadRequestException('Invalid x-Signature');
+      throw new BadRequestException('Invalid X-Signature');
     }
 
-    return this.externalService.handleAccountInfo(body.accountNumber);
+    const foundCustomer = await this.externalService.handleAccountInfo(body.accountNumber);
+    res.header("X-Signature", await this.rsaService.sign(JSON.stringify(foundCustomer)));
+    return foundCustomer;
   }
 
   @UseGuards(IpWhitelistGuard)

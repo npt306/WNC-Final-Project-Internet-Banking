@@ -1,5 +1,5 @@
 import { PgpService } from '@/services/pgp/pgp.service';
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { TransferDto } from '@/modules/transaction/dto/transfer.dto';
@@ -46,7 +46,6 @@ export class AxiosService {
             accountNumber: accountNumber,
         };
         const xSignature = await this.rsaService.sign(JSON.stringify(payload));
-        console.log(await this.rsaService.verify(JSON.stringify(payload), xSignature));
         try {
             const res = await axios.post(
                 this.baseUrl + '/external/account/info',
@@ -59,9 +58,19 @@ export class AxiosService {
                     },
                 },
             );
+            const xSignatureReceive = res.headers["x-signature"];
+            console.log(xSignatureReceive);
+
+            const decodeXSign = Buffer.from(xSignatureReceive, 'base64').toString('ascii');
+            await this.fetchPublicKey()
+            const result = await this.pgpService.verify(JSON.stringify(res.data), decodeXSign, this.getExternalBankPublicKey());
+            if(!result) {
+                throw new BadRequestException('Invalid X-Signature');
+            }
             return res.data;
         }catch(error) {
-            throw new InternalServerErrorException("Cannot get required resources")
+            console.log(error);
+            throw new InternalServerErrorException("Cannot get required resources");
         }
         
     }
