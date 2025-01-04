@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateDebtReminderDto } from './dto/create-debt-reminder.dto';
 import { UpdateDebtReminderDto } from './dto/update-debt-reminder.dto';
 import { Repository } from 'typeorm';
@@ -6,6 +6,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DebtReminder } from './entities/debt-reminder.entity';
 import { ObjectId } from 'mongodb';
 import { DebtReminderNotificationService } from '../debt-reminder-notification/debt-reminder-notification.service';
+import { AccountService } from '../account/account.service';
+import { TransactionService } from '../transaction/transaction.services';
+import { CustomerService } from '../customer/customer.service';
 
 @Injectable()
 export class DebtReminderService {
@@ -13,6 +16,9 @@ export class DebtReminderService {
     @InjectRepository(DebtReminder)
     private debtReminderRepository: Repository<DebtReminder>,
     private readonly debtReminderNotificationService: DebtReminderNotificationService,
+    private readonly accountService: AccountService,
+    private readonly customerService: CustomerService,
+    private readonly transactionService: TransactionService,
   ) {}
 
   async create(
@@ -74,5 +80,38 @@ export class DebtReminderService {
     const debtReminderRemove = await this.findOneDebtReminder(id);
     await this.debtReminderRepository.delete({ _id: new ObjectId(id) });
     return debtReminderRemove;
+  }
+
+  async payDebt(id: string): Promise<DebtReminder> {
+    const debtReminder = await this.findOneDebtReminder(id);
+  
+    const creditorAccount = await this.accountService.findPaymentAccountByCustomerId(debtReminder.creditor);
+    const creditorAccountNumber = creditorAccount.account_number;
+
+    const debtorAccount = await this.accountService.findPaymentAccountByCustomerId(debtReminder.debtor);
+    const debtorAccountNumber = debtorAccount.account_number;
+    
+    const debtorCustomer = await this.customerService.findById(debtReminder.debtor);
+
+    const transaction = await this.transactionService.transfer({
+      sender: debtorAccountNumber,
+      receiver: creditorAccountNumber,
+      amount: debtReminder.amount,
+      content: debtorCustomer.full_name + ' have paid the debt.',
+      fee: 2000,
+      payer: debtorAccountNumber,
+      type: 'DEBT',
+      timestamp: new Date(),
+    });
+
+    if (transaction) {
+      debtReminder.status = 'Completed';
+      await this.debtReminderRepository.save(debtReminder);
+    }
+    else {
+      throw new BadRequestException(`Paid debt failed`);
+    }
+
+    return await this.findOneDebtReminder(id);
   }
 }

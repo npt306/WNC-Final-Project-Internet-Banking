@@ -107,8 +107,8 @@ export class DebtReminderController {
     description: 'Return updated debt reminder.',
     type: DebtReminder,
   })
-  @Post(':id/pay')
+  @Get('/pay/:id')
   async payDebtReminder(@Param('id') id: string) {
-    // pay debt reminder
+    return await this.debtReminderService.payDebt(id);
   }
 }

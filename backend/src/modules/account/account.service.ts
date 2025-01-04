@@ -52,6 +52,21 @@ export class AccountService {
     return await this.accountRepository.find();
   }
 
+  async findPaymentAccountByCustomerId(id: string): Promise<Account> {
+    await this.customerService.findOne(id);
+
+    const account = await this.accountRepository.findOneBy({
+      customer_id: id ,
+      account_type: 'payment',
+    });
+
+    if(!account){
+      throw new NotFoundException(`Payment account not found `);
+    }
+
+    return account;
+  }
+
   async findAccountsUser(id: string): Promise<Account[]> {
     await this.customerService.findOne(id);
 

@@ -31,7 +31,7 @@ export class TransferDto implements TransactionDto {
   @IsString()
   @IsOptional()
   @IsEnum(SupportedBank)
-  sender_bank: string;
+  sender_bank?: string;
 
   @ApiProperty({
     example: 'Test Bank',
@@ -40,7 +40,7 @@ export class TransferDto implements TransactionDto {
   @IsString()
   @IsOptional()
   @IsEnum(SupportedBank)
-  receiver_bank: string;
+  receiver_bank?: string;
 
   @ApiProperty({
     example: '100000',
