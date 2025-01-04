@@ -19,9 +19,7 @@ import { AxiosModule } from '@/axios/axios.module';
     forwardRef(() => AccountModule),
   ],
   controllers: [ExternalController],
-  providers: [ExternalService,
-    
-  ],
+  providers: [ExternalService],
   exports: [ExternalService],
 })
 export class ExternalModule {}

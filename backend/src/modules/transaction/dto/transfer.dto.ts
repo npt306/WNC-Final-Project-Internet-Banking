@@ -7,7 +7,11 @@ import {
   IsEnum,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { SupportedBank, TransactionDto, TransactionType } from './transaction.dto';
+import {
+  SupportedBank,
+  TransactionDto,
+  TransactionType,
+} from './transaction.dto';
 
 export class TransferDto implements TransactionDto {
   @ApiProperty({
