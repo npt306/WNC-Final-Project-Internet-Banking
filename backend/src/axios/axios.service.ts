@@ -1,7 +1,7 @@
 import { PgpService } from '@/services/pgp/pgp.service';
 import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { TransferDto } from '@/modules/transaction/dto/transfer.dto';
 import { RsaService } from '@/services/rsa/rsa.service';
 import { ExternalTransferDto } from '@/modules/external/dto/external-transfer.dto';
@@ -65,13 +65,8 @@ export class AxiosService {
                     },
                 },
             );
-            const xSignatureReceive = res.headers["x-signature"];
-            console.log(xSignatureReceive);
-
-            const decodeXSign = Buffer.from(xSignatureReceive, 'base64').toString('ascii');
-            await this.fetchPublicKey()
-            const result = await this.pgpService.verify(JSON.stringify(res.data), decodeXSign, this.getExternalBankPublicKey());
-            if(!result) {
+            
+            if(!(await this.checkResponse(res))) {
                 throw new BadRequestException('Invalid X-Signature');
             }
             return res.data;
@@ -79,7 +74,6 @@ export class AxiosService {
             console.log(error);
             throw new InternalServerErrorException("Cannot get required resources");
         }
-        
     }
 
     async postTransferMoney(transferDto: TransferDto) {
@@ -128,6 +122,54 @@ export class AxiosService {
         } catch (error) {
             // console.log(error)
             throw new UnauthorizedException({cause: error});
-        }  
+        }
+        
+
+
+
+        // NEW EXTERNAL TRANSFER
+        // const payload = plainToClass(
+        //     ExternalTransferDto,
+        //     {
+        //         amount: transferDto.amount,
+        //         description: transferDto.content,
+        //         fromAccountNumber: transferDto.sender,
+        //         toAccountNumber: transferDto.receiver,
+        //         feePayer: (transferDto.payer == transferDto.sender)? "SENDER": "RECEIVER", 
+        //         type: 'TRANSFER',
+        //     },
+        //     { exposeDefaultValues: true },
+        // );
+        // const xSignature = await this.rsaService.sign(JSON.stringify(payload));
+        // try {
+        //     const res = await axios.post(
+        //         this.baseUrl + '/external/transfer',
+        //         payload,
+        //         {
+        //             headers: {
+        //                 RequestDate: new Date().getTime(),
+        //                 Signature: this.rsaService.generateSignature(JSON.stringify(payload), this.externalSalt),
+        //                 "X-Signature": xSignature
+        //             },
+        //         },
+        //     );
+
+        //     if(!(await this.checkResponse(res))) {
+        //         throw new BadRequestException('Invalid X-Signature');
+        //     }
+        //     return res.data;
+        // }catch(error) {
+        //     console.log(error);
+        //     throw new InternalServerErrorException("Cannot get required resources");
+        // }
+    }
+
+    private async checkResponse(res: AxiosResponse)  {
+        const xSignatureReceive = res.headers["x-signature"];
+
+        const decodeXSign = Buffer.from(xSignatureReceive, 'base64').toString('ascii');
+        await this.fetchPublicKey()
+        const result = await this.pgpService.verify(JSON.stringify(res.data), decodeXSign, this.getExternalBankPublicKey());
+        return result;
     }
 }

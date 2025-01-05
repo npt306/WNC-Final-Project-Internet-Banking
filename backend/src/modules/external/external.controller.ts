@@ -72,7 +72,6 @@ export class ExternalController {
     @Body() body: SearchExternalDto,
     @Response({ passthrough: true }) res: Res,
   ) {
-    console.log('called');
     if (!requestDate || !signature) {
       throw new BadRequestException('Missing required headers');
     }
@@ -142,7 +141,12 @@ export class ExternalController {
   })
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('transfer')
-  async transfer(@Body() transferDto: ExternalTransferDto, @Response() res) {
+  async transfer(
+    // @Headers('RequestDate') requestDate: number,
+    // @Headers('Signature') signature: string,
+    // @Headers('X-Signature') xSignature: string,
+    @Body() transferDto: ExternalTransferDto,
+    @Response({ passthrough: true }) res: Res) {
     let result = await this.externalService.handleTransfer(transferDto);
 
     let msg = {"message": "success"};
@@ -156,5 +160,49 @@ export class ExternalController {
     res.setHeader('Signature', signature)
     res.setHeader('X-Signature', xSignature)
     return res.json(msg);
+
+
+
+    // NEW TRANSFER HANDLE
+    // if (!requestDate || !signature) {
+    //   throw new BadRequestException('Missing required headers');
+    // }
+    // const requestTimestamp = Number(requestDate);
+    // if (isNaN(requestTimestamp)) {
+    //   throw new BadRequestException('Invalid RequestDate');
+    // }
+
+    // const checkTime = checkTimeDiff(requestTimestamp);
+    // const checkSign = this.pgpService.checkSignature(
+    //   JSON.stringify(transferDto),
+    //   signature,
+    //   this.axiosService.getSecretSalt(),
+    // );
+    // if (!checkTime) {
+    //   throw new BadRequestException(
+    //     'RequestDate is outside the acceptable range',
+    //   );
+    // }
+    // if (!checkSign) {
+    //   throw new BadRequestException('Invalid Signature');
+    // }
+    // const decodeXSign = Buffer.from(xSignature, 'base64').toString('ascii');
+    // await this.axiosService.fetchPublicKey();
+    // const result = await this.pgpService.verify(
+    //   JSON.stringify(transferDto),
+    //   decodeXSign,
+    //   this.axiosService.getExternalBankPublicKey(),
+    // );
+
+    // if (!result) {
+    //   throw new BadRequestException('Invalid X-Signature');
+    // }
+
+    // const transferResult = await this.externalService.handleTransfer(transferDto);
+    // res.header(
+    //   'X-Signature',
+    //   await this.rsaService.sign(JSON.stringify(transferResult)),
+    // );
+    // return transferResult;
   }
 }
