@@ -16,7 +16,9 @@ export class AppGateway {
   @WebSocketServer()
   server: Server;
 
-  private clientStates: Record<string, boolean> = {};
+  private clientStates: Record<string, number> = {};
+  private counters: Record<string, number> = {};
+  private isIncreasing: Record<string, boolean> = {};
 
   handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
@@ -32,7 +34,9 @@ export class AppGateway {
     @ConnectedSocket() client: Socket,
   ) {
     client.join(data.id);
-    this.clientStates[data.id] = true;
+    this.clientStates[data.id] = 1;
+    this.counters[data.id] = 1;
+    this.isIncreasing[data.id] = true;
     console.log(`Client initialized with ID: ${data.id}`);
   }
 
@@ -43,11 +47,22 @@ export class AppGateway {
   ) {
     const recipientId = data.recipientId;
     if (recipientId in this.clientStates) {
-      this.clientStates[recipientId] = !this.clientStates[recipientId];
-      this.server
-        .to(recipientId)
-        .emit('receive', this.clientStates[recipientId]);
+      if (this.isIncreasing[recipientId]) {
+        this.counters[recipientId]++;
+        if (this.counters[recipientId] >= 10) {
+          this.isIncreasing[recipientId] = false;
+        }
+      } else {
+        this.counters[recipientId]--;
+        if (this.counters[recipientId] <= 1) {
+          this.isIncreasing[recipientId] = true;
+        }
+      }
+
+      this.clientStates[recipientId] = this.counters[recipientId];
+      this.server.to(recipientId).emit('receive', this.counters[recipientId]);
     }
   }
 }
+
 export default AppGateway;
