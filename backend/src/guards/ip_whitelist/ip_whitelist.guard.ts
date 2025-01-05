@@ -5,12 +5,14 @@ export class IpWhitelistGuard implements CanActivate {
   private readonly whitelist: string[] = [
     '127.0.0.1', //Localhost
     '103.199.18.250',
+    '0.0.0.0'
   ];
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     // const clientIp = request.ip || request.connection.remoteAddress;
     const clientIp = request.headers['x-forwarded-for'] || request.ip || request.connection.remoteAddress;
+    console.log(clientIp);
 
     if (this.whitelist.includes('0.0.0.0')) {
       return true; //grant access to all
