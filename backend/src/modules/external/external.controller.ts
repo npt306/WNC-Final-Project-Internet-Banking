@@ -138,25 +138,23 @@ export class ExternalController {
   })
   @ApiCreatedResponse({
     description: 'Return status code of result',
-    example: {
-      statusCode: 201,
-      message: '',
-    },
+    example: {"message": "success"},
   })
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('transfer')
   async transfer(@Body() transferDto: ExternalTransferDto, @Response() res) {
     let result = await this.externalService.handleTransfer(transferDto);
 
+    let msg = {"message": "success"};
     // TODO: optimize this logic
     const rsa = await this.axiosService.getRsa();
-    const xSignature = await rsa.sign(JSON.stringify(result));
+    const xSignature = await rsa.sign(JSON.stringify(msg));
     const externalSalt = this.axiosService.getExternalSalt()
-    const signature = await rsa.generateSignature(JSON.stringify(result), externalSalt);
+    const signature = await rsa.generateSignature(JSON.stringify(msg), externalSalt);
     const requestDate = new Date().getTime();
     res.setHeader('RequestDate', requestDate)
     res.setHeader('Signature', signature)
     res.setHeader('X-Signature', xSignature)
-    return res.json({"message": "success"});
+    return res.json(msg);
   }
 }
