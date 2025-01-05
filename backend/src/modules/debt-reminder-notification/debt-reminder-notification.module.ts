@@ -3,11 +3,11 @@ import { DebtReminderNotificationService } from './debt-reminder-notification.se
 import { DebtReminderNotificationController } from './debt-reminder-notification.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DebtReminderNotification } from './entities/debt-reminder-notification.entity';
-
+import { AppGateway } from './socket/AppGetWay';
 @Module({
   imports: [TypeOrmModule.forFeature([DebtReminderNotification])],
   controllers: [DebtReminderNotificationController],
-  providers: [DebtReminderNotificationService],
+  providers: [DebtReminderNotificationService, AppGateway],
   exports: [DebtReminderNotificationService],
 })
 export class DebtReminderNotificationModule {}

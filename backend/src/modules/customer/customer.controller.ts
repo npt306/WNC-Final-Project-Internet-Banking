@@ -28,7 +28,8 @@ import { externalCustomerDto } from './dto/external-customer.dto';
 export class CustomerController {
   constructor(
     private readonly customerService: CustomerService,
-    private readonly axiosService: AxiosService) {}
+    private readonly axiosService: AxiosService,
+  ) {}
 
   @ApiOperation({ summary: '2.1: Create customer' })
   @ApiResponse({
@@ -54,17 +55,23 @@ export class CustomerController {
     return this.customerService.createCustomer(createCustomerDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.customerService.findAll();
-  // }
+  @Get()
+  @ApiOperation({ summary: 'Get all customers' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all customers.',
+    type: [SearchCustomerDto],
+  })
+  async findAll() {
+    return this.customerService.findAll();
+  }
 
   @ApiOperation({ summary: 'Search customer infomation with id' })
   @ApiParam({
     name: 'id',
     type: String,
     description: 'The ID of the customer',
-    example: '675babee10466a57086768eb'
+    example: '675babee10466a57086768eb',
   })
   @ApiResponse({
     status: 200,
@@ -76,12 +83,14 @@ export class CustomerController {
     return this.customerService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Search external customer infomation with account_number' })
+  @ApiOperation({
+    summary: 'Search external customer infomation with account_number',
+  })
   @ApiParam({
     name: 'account_number',
     type: String,
     description: 'The account_number of the external customer',
-    example: '112233445566'
+    example: '112233445566',
   })
   @ApiResponse({
     status: 200,
