@@ -5,8 +5,9 @@ export enum TransactionType {
 }
 
 export enum SupportedBank {
-  ThisBank  = 'Sankcomba',
+  ThisBank = 'Sankcomba',
   TestBank = 'Test Bank',
+  BlueSkyBank = 'BlueSkyBank',
 }
 
 export interface TransactionDto {

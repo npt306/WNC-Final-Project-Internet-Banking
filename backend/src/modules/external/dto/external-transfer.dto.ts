@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsEmail, MinLength, IsOptional, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
-export class TransferDto {
+export class ExternalTransferDto {
   @ApiProperty({
     example: '98765432101',
-    description: 'Account number of sender',
+    description: 'Other bank account number of sender',
     required: true,
   })
   @IsString()
@@ -12,8 +12,8 @@ export class TransferDto {
   fromAccountNumber: string;
 
   @ApiProperty({
-    example: '98765432101',
-    description: 'Account number of receiver',
+    example: '112233445566',
+    description: 'Sankcomba account number of receiver',
     required: true,
   })
   @IsString()
@@ -21,20 +21,20 @@ export class TransferDto {
   toAccountNumber: string;
 
   @ApiProperty({
-    example: '10000',
+    example: '100000',
     description: 'Amount of money',
     required: true,
   })
   @IsNumber()
   @IsNotEmpty()
-  amount: string;
+  amount: number;
 
   @ApiProperty({
-    example: 'Customer A transfer money',
+    example: 'Transfer money from other bank',
     description: 'Description of money transfer',
     required: true,
   })
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   description: string;
 }

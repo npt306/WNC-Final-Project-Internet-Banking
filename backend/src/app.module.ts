@@ -12,6 +12,7 @@ import { DebtReminderModule } from './modules/debt-reminder/debt-reminder.module
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { AuthEmployeeModule } from './auth/auth_employee/auth_employee.module';
+import { AuthAdminModule } from './auth/auth_admin/auth_admin.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
 import { ExternalModule } from './modules/external/external.module';
 import { MailerCustomModule } from './services/mail/mailer.module';
@@ -26,6 +27,7 @@ import { RsaModule } from './services/rsa/rsa.module';
     CustomerModule,
     ConfigModule.forRoot({ isGlobal: true }),
     AuthEmployeeModule,
+    AuthAdminModule,
     AuthCustomerModule,
     EmployeeModule,
     AccountModule,

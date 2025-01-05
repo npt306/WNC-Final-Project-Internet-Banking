@@ -11,7 +11,7 @@ import { SupportedBank, TransactionDto } from './dto/transaction.dto';
 import { DepositDto } from './dto/deposit.dto';
 import { AccountService } from '../account/account.service';
 import { TransferLogDto } from './dto/transfer_log.dto';
-import { ExternalTransferDto } from './dto/external_transfer.dto';
+import { TransferDto } from './dto/transfer.dto';
 
 const TRANSFER_FEE = 0.02;
 const OURBANK = 'Sankcomba';
@@ -253,7 +253,7 @@ export class TransactionService {
     return result;
   }
 
-  async transfer(transferDto: TransferLogDto): Promise<any> {
+  async transfer(transferDto: TransferDto): Promise<any> {
     let amount = transferDto.amount;
 
     // Get current balances
@@ -287,7 +287,6 @@ export class TransactionService {
 
     // Update sender's balance
     senderAccount.balance = senderNewBalance;
-    transferDto.sender_balance = senderNewBalance;
     this.accountService.updateUserAccount(
       senderAccount._id.toString(),
       senderAccount,
@@ -295,27 +294,32 @@ export class TransactionService {
 
     // Update receiver's balance
     receiverAccount.balance = receiverNewBalance;
-    transferDto.receiver_balance = receiverNewBalance;
     this.accountService.updateUserAccount(
       receiverAccount._id.toString(),
       receiverAccount,
     );
 
+    const transferLogDto: TransferLogDto = {
+      ...transferDto,
+      sender_balance: senderNewBalance,
+      receiver_balance: receiverNewBalance,
+    };
+
     // Save log
-    const result = await this.create(transferDto);
+    const result = await this.create(transferLogDto);
     return result;
   }
 
-  async externalTransfer(externalTransferDto: ExternalTransferDto) {
-    let amount = externalTransferDto.amount;
+  async externalTransfer(transferDto: TransferLogDto) {
+    let amount = transferDto.amount;
     let senderNewBalance = 0;
     let receiverNewBalance = 0;
 
-    if (externalTransferDto.sender_bank == SupportedBank.ThisBank) {
+    if (transferDto.sender_bank == SupportedBank.ThisBank) {
       // Get current balances
       const senderAccount =
         await this.accountService.findAccountByAccountNumber(
-          externalTransferDto.sender,
+          transferDto.sender,
         );
       senderNewBalance = senderAccount.balance - amount;
 
@@ -327,7 +331,7 @@ export class TransactionService {
 
       // Update sender's balance
       senderAccount.balance = senderNewBalance;
-      externalTransferDto.sender_balance = senderNewBalance;
+      transferDto.sender_balance = senderNewBalance;
       this.accountService.updateUserAccount(
         senderAccount._id.toString(),
         senderAccount,
@@ -336,13 +340,13 @@ export class TransactionService {
       // Get current balances
       const receiverAccount =
         await this.accountService.findAccountByAccountNumber(
-          externalTransferDto.receiver,
+          transferDto.receiver,
         );
       receiverNewBalance = receiverAccount.balance + amount;
 
       // Update receiver's balance
       receiverAccount.balance = receiverNewBalance;
-      externalTransferDto.receiver_balance = receiverNewBalance;
+      transferDto.receiver_balance = receiverNewBalance;
       this.accountService.updateUserAccount(
         receiverAccount._id.toString(),
         receiverAccount,
@@ -350,7 +354,7 @@ export class TransactionService {
     }
 
     // Save log
-    const result = await this.create(externalTransferDto);
+    const result = await this.create(transferDto);
     return result.statusCode;
   }
 }

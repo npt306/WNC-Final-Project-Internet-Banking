@@ -1,10 +1,12 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, ValidationPipe } from '@nestjs/common';
 import * as openpgp from 'openpgp';
 import { TransactionService } from '../transaction/transaction.services';
-import { ExternalTransferDto } from '../transaction/dto/external_transfer.dto';
 import { AccountService } from '../account/account.service';
 import { PgpService } from '@/services/pgp/pgp.service';
 import { AxiosService } from '@/axios/axios.service';
+import { plainToClass } from 'class-transformer';
+import { ExternalTransferDto } from './dto/external-transfer.dto';
+import { TransferLogDto } from '../transaction/dto/transfer_log.dto';
 
 @Injectable()
 export class ExternalService {
@@ -15,7 +17,7 @@ export class ExternalService {
     private readonly accountService: AccountService,
 
     private readonly pgpService: PgpService,
-    private readonly axiosService: AxiosService
+    private readonly axiosService: AxiosService,
   ) {}
 
   async handleAccountInfo(accountNumber: string) {
@@ -23,6 +25,18 @@ export class ExternalService {
   }
 
   async handleTransfer(externalTransferDto: ExternalTransferDto) {
-    return await this.transactionService.externalTransfer(externalTransferDto);
+    const transferDto = plainToClass(
+      TransferLogDto,
+      {
+        amount: externalTransferDto.amount,
+        content: externalTransferDto.description,
+        sender: externalTransferDto.fromAccountNumber,
+        receiver: externalTransferDto.toAccountNumber,
+        type: 'TRANSFER',
+      },
+      { exposeDefaultValues: true },
+    );
+
+    return await this.transactionService.externalTransfer(transferDto);
   }
 }
