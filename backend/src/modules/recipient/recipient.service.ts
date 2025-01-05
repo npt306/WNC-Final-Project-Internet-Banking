@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { CreateRecipientDto } from './dto/create-recipient.dto';
 import { UpdateRecipientDto } from './dto/update-recipient.dto';
 import { Recipient } from './entities/recipient.entity';
@@ -55,6 +59,20 @@ export class RecipientService {
   }
 
   async create(createRecipientDto: CreateRecipientDto): Promise<Recipient> {
+    // Kiểm tra xem số tài khoản đã tồn tại trong danh sách người nhận của customer này chưa
+    const existingRecipient = await this.recipientRepository.findOne({
+      where: {
+        customer_id: createRecipientDto.customer_id,
+        account_number: createRecipientDto.account_number,
+      },
+    });
+
+    if (existingRecipient) {
+      throw new ConflictException(
+        'This account number is already in your recipient list',
+      );
+    }
+
     const { nickname, bank, account_number } = createRecipientDto;
 
     // When nickname is not provided, we will get the name from the bank
@@ -75,6 +93,7 @@ export class RecipientService {
         }
       }
     }
+
     const newRecipient = this.recipientRepository.create(createRecipientDto);
     return await this.recipientRepository.save(newRecipient);
   }
