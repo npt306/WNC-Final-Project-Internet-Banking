@@ -23,10 +23,10 @@ export class Recipient extends BaseEntity {
 
   @ApiProperty({
     example: 'Uncle John',
-    required: true,
+    required: false,
   })
   @Column()
-  nickname: string;
+  nickname?: string;
 
   @ApiProperty({
     example: 'default',

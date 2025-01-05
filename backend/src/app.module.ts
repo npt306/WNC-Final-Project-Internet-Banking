@@ -19,7 +19,7 @@ import { MailerCustomModule } from './services/mail/mailer.module';
 import { PgpModule } from './services/pgp/pgp.module';
 import { AxiosModule } from './axios/axios.module';
 import { DebtReminderNotificationModule } from './modules/debt-reminder-notification/debt-reminder-notification.module';
-import AppGateway from './modules/debt-reminder-notification/socket/AppGetWay';
+// import AppGateway from './modules/debt-reminder-notification/socket/AppGetWay';
 import { RsaModule } from './services/rsa/rsa.module';
 @Module({
   imports: [
@@ -43,7 +43,7 @@ import { RsaModule } from './services/rsa/rsa.module';
   controllers: [AppController],
   providers: [
     AppService,
-    AppGateway,
+    // AppGateway,
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
