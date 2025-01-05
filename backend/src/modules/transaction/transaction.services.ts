@@ -376,6 +376,6 @@ export class TransactionService {
 
     // Save log
     const result = await this.create(transferLogDto);
-    return result.statusCode;
+    return result;
   }
 }

@@ -145,7 +145,18 @@ export class ExternalController {
   })
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('transfer')
-  async transfer(@Body() transferDto: ExternalTransferDto) {
-    return this.externalService.handleTransfer(transferDto);
+  async transfer(@Body() transferDto: ExternalTransferDto, @Response() res) {
+    let result = await this.externalService.handleTransfer(transferDto);
+
+    // TODO: optimize this logic
+    const rsa = await this.axiosService.getRsa();
+    const xSignature = await rsa.sign(JSON.stringify(result));
+    const externalSalt = this.axiosService.getExternalSalt()
+    const signature = await rsa.generateSignature(JSON.stringify(result), externalSalt);
+    const requestDate = new Date().getTime();
+    res.setHeader('RequestDate', requestDate)
+    res.setHeader('Signature', signature)
+    res.setHeader('X-Signature', xSignature)
+    return res.json({"message": "success"});
   }
 }

@@ -37,6 +37,10 @@ export class AxiosService {
         return this.externalSalt;
     }
 
+    async getRsa(){
+        return await this.rsaService;
+    }
+
     async fetchPublicKey() {
         let res = await axios.get(this.baseUrl + '/external/publicKey');
         this.externalBankPublicKey = res.data.data;
