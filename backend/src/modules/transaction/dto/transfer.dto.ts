@@ -70,8 +70,7 @@ export class TransferDto implements TransactionDto {
     required: true,
   })
   @IsString()
-  @IsOptional()
-  payer: string | null;
+  payer: string;
 
   @IsDate()
   timestamp: Date = new Date(Date.now());

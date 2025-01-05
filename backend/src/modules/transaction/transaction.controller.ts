@@ -128,12 +128,21 @@ export class TransactionController {
         summary: 'Debt type transaction example',
         value: DebtBodyExample,
       },
+      example3: {
+        summary: 'Interbank Transfer type transaction example',
+        value: InterbankTransferBodyExample,
+      },
     },
   })
   @ApiCreatedResponse({ example: TransferExample })
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('transfer')
-  async transfer(@Body() transferDto: TransferLogDto): Promise<any> {
+  async transfer(@Body() transferDto: TransferDto): Promise<any> {
+    if (transferDto.sender_bank && transferDto.receiver_bank){
+      if (transferDto.sender_bank !== transferDto.receiver_bank){
+        return await this.transactionService.externalTransfer(transferDto);
+      }
+    }
     return await this.transactionService.transfer(transferDto);
   }
 

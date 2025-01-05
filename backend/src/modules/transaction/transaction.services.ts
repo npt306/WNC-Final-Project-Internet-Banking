@@ -269,14 +269,12 @@ export class TransactionService {
     let receiverNewBalance = receiverAccount.balance + amount;
 
     // Fee handling
-    if (transferDto.payer) {
-      transferDto.fee = amount * TRANSFER_FEE; // 2%
+    transferDto.fee = amount * TRANSFER_FEE; // 2%
 
-      if (transferDto.payer == transferDto.sender) {
-        senderNewBalance -= transferDto.fee;
-      } else {
-        receiverNewBalance -= transferDto.fee;
-      }
+    if (transferDto.payer == transferDto.sender) {
+      senderNewBalance -= transferDto.fee;
+    } else {
+      receiverNewBalance -= transferDto.fee;
     }
 
     // Checking balance for case sender pay the fee,
@@ -310,12 +308,18 @@ export class TransactionService {
     return result;
   }
 
-  async externalTransfer(transferDto: TransferLogDto) {
+  async externalTransfer(transferDto: TransferDto) {
     let amount = transferDto.amount;
-    let senderNewBalance = 0;
-    let receiverNewBalance = 0;
+    let senderNewBalance = null;
+    let receiverNewBalance = null;
+    // Fee handling
+    transferDto.fee = amount * TRANSFER_FEE; // 2%    
 
-    if (transferDto.sender_bank == SupportedBank.ThisBank) {
+    if (transferDto.sender_bank == SupportedBank.ThisBank) { // SEND transfer
+      // Apply fee
+      if (transferDto.payer == transferDto.sender) {
+        senderNewBalance -= transferDto.fee;
+      }
       // Get current balances
       const senderAccount =
         await this.accountService.findAccountByAccountNumber(
@@ -329,14 +333,23 @@ export class TransactionService {
         throw new BadRequestException('Sender does not have enough balance');
       }
 
+      // TODO: send request
+      // let result = await this.axiosService.postTransferMoney(transferDto);
+      // Handle result
+
       // Update sender's balance
       senderAccount.balance = senderNewBalance;
-      transferDto.sender_balance = senderNewBalance;
       this.accountService.updateUserAccount(
         senderAccount._id.toString(),
         senderAccount,
       );
-    } else {
+
+    } else { // RECEIVE transfer
+      // Apply fee
+      if (transferDto.payer == transferDto.receiver){
+        receiverNewBalance -= transferDto.fee;
+      }
+
       // Get current balances
       const receiverAccount =
         await this.accountService.findAccountByAccountNumber(
@@ -346,15 +359,16 @@ export class TransactionService {
 
       // Update receiver's balance
       receiverAccount.balance = receiverNewBalance;
-      transferDto.receiver_balance = receiverNewBalance;
-      this.accountService.updateUserAccount(
-        receiverAccount._id.toString(),
-        receiverAccount,
-      );
     }
 
+    const transferLogDto: TransferLogDto = {
+      ...transferDto,
+      sender_balance: senderNewBalance,
+      receiver_balance: receiverNewBalance,
+    };
+
     // Save log
-    const result = await this.create(transferDto);
+    const result = await this.create(transferLogDto);
     return result.statusCode;
   }
 }

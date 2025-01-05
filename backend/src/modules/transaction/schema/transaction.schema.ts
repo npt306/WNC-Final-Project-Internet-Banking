@@ -61,5 +61,7 @@ export const InterbankTransferBodyExample = {
   sender_bank: 'Sankcomba',
   receiver_bank: 'Test Bank',
   amount: 100000,
+  payer: "112233445566",
   content: 'Interbank transfer money',
+  type: 'TRANSFER',
 };
