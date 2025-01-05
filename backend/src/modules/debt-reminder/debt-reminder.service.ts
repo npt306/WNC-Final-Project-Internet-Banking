@@ -27,11 +27,11 @@ export class DebtReminderService {
     const newDebtReminder = this.debtReminderRepository.create(
       createDebtReminderDto,
     );
-    await this.debtReminderNotificationService.sendNotification(
-      newDebtReminder.debtor,
-      'Debt reminder',
-      `You have a new debt reminder from ${newDebtReminder.creditor}`,
-    );
+    // await this.debtReminderNotificationService.sendNotification(
+    //   newDebtReminder.debtor,
+    //   'Debt reminder',
+    //   `You have a new debt reminder from ${newDebtReminder.creditor}`,
+    // );
     return await this.debtReminderRepository.save(newDebtReminder);
   }
 
