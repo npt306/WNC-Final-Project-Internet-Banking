@@ -37,4 +37,13 @@ export class ExternalTransferDto {
   @IsString()
   @IsNotEmpty()
   description: string;
+
+  @ApiProperty({
+    example: 'SENDER',
+    description: 'Fee payer',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  feePayer: string;
 }

@@ -6,7 +6,8 @@ import { PgpService } from '@/services/pgp/pgp.service';
 import { AxiosService } from '@/axios/axios.service';
 import { plainToClass } from 'class-transformer';
 import { ExternalTransferDto } from './dto/external-transfer.dto';
-import { TransferLogDto } from '../transaction/dto/transfer_log.dto';
+import { TransferDto } from '../transaction/dto/transfer.dto';
+import { SupportedBank } from '../transaction/dto/transaction.dto';
 
 @Injectable()
 export class ExternalService {
@@ -25,13 +26,17 @@ export class ExternalService {
   }
 
   async handleTransfer(externalTransferDto: ExternalTransferDto) {
+
     const transferDto = plainToClass(
-      TransferLogDto,
+      TransferDto,
       {
         amount: externalTransferDto.amount,
         content: externalTransferDto.description,
         sender: externalTransferDto.fromAccountNumber,
         receiver: externalTransferDto.toAccountNumber,
+        sender_bank: SupportedBank.BlueSkyBank,
+        receiver_bank: SupportedBank.ThisBank,
+        payer: (externalTransferDto.feePayer == "SENDER")? externalTransferDto.fromAccountNumber : externalTransferDto.toAccountNumber, 
         type: 'TRANSFER',
       },
       { exposeDefaultValues: true },

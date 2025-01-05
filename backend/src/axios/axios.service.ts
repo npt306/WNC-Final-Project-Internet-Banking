@@ -1,9 +1,12 @@
 import { PgpService } from '@/services/pgp/pgp.service';
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { TransferDto } from '@/modules/transaction/dto/transfer.dto';
 import { RsaService } from '@/services/rsa/rsa.service';
+import { ExternalTransferDto } from '@/modules/external/dto/external-transfer.dto';
+import { plainToClass } from 'class-transformer';
+import { Exception } from 'handlebars';
 
 @Injectable()
 export class AxiosService {
@@ -83,22 +86,44 @@ export class AxiosService {
         //     amount: 100000,
         //     description: 'Gửi chơi chơi',
         // };
-        await this.fetchPublicKey();
-        const encrypted = await this.pgpService.encrypt(JSON.stringify(transferDto), this.externalBankPublicKey);
-        console.log(encrypted);
-        // Send encrypted message
-        const res = await axios.post(
-            this.baseUrl + '/external/transfer',
+
+        const data = plainToClass(
+            ExternalTransferDto,
             {
-                data: encrypted,
+                amount: transferDto.amount,
+                description: transferDto.content,
+                fromAccountNumber: transferDto.sender,
+                toAccountNumber: transferDto.receiver,
+                feePayer: (transferDto.payer == transferDto.sender)? "SENDER": "RECEIVER", 
+                type: 'TRANSFER',
             },
-            {
-            headers: {
-                RequestDate: new Date().getTime(),
-                Signature: this.pgpService.generateSignature(encrypted, this.externalSalt),
-            },
-            },
+            { exposeDefaultValues: true },
         );
-        console.log(res.data);
+        await this.fetchPublicKey();
+        const encrypted = await this.pgpService.encrypt(JSON.stringify(data), this.externalBankPublicKey);
+        console.log("encrypted");
+        console.log(encrypted);
+        try{
+            // Send encrypted message
+            const res = await axios.post(
+                this.baseUrl + '/external/transfer',
+                {
+                    data: encrypted,
+                },
+                {
+                    headers: {
+                        RequestDate: new Date().getTime(),
+                        Signature: this.pgpService.generateSignature(encrypted, this.externalSalt),
+                    },
+                },
+            );
+            
+            console.log(res.data);
+            console.log(res.status);
+            return res;
+        } catch (error) {
+            // console.log(error)
+            throw new UnauthorizedException({cause: error});
+        }  
     }
 }

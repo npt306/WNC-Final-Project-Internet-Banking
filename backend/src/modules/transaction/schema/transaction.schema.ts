@@ -56,12 +56,12 @@ export const LocalTransferBodyExample = {
 };
 
 export const InterbankTransferBodyExample = {
-  sender: '556677889900',
-  receiver: '112233445566',
-  sender_bank: 'Sankcomba',
-  receiver_bank: 'Test Bank',
-  amount: 100000,
-  payer: "112233445566",
-  content: 'Interbank transfer money',
-  type: 'TRANSFER',
+  "sender": "556677889900",
+  "receiver": "73336867059848144273",
+  "sender_bank": "Sankcomba",
+  "receiver_bank": "BlueSkyBank",
+  "amount": 100000,
+  "payer": "556677889900",
+  "content": "Interbank transfer money",
+  "type": "TRANSFER"
 };

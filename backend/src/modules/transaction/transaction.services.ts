@@ -3,6 +3,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Transaction } from './entities/transaction.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,6 +13,7 @@ import { DepositDto } from './dto/deposit.dto';
 import { AccountService } from '../account/account.service';
 import { TransferLogDto } from './dto/transfer_log.dto';
 import { TransferDto } from './dto/transfer.dto';
+import { AxiosService } from '@/axios/axios.service';
 
 const TRANSFER_FEE = 0.02;
 const OURBANK = 'Sankcomba';
@@ -23,6 +25,8 @@ export class TransactionService {
     private transactionRepository: Repository<Transaction>,
     @Inject(forwardRef(() => AccountService))
     private readonly accountService: AccountService,
+    @Inject(forwardRef(() => AxiosService))
+    private readonly axiosService: AxiosService,
   ) {}
 
   async create(transactionDto: TransactionDto): Promise<any> {
@@ -313,7 +317,7 @@ export class TransactionService {
     let senderNewBalance = null;
     let receiverNewBalance = null;
     // Fee handling
-    transferDto.fee = amount * TRANSFER_FEE; // 2%    
+    transferDto.fee = amount * TRANSFER_FEE; // 2%   
 
     if (transferDto.sender_bank == SupportedBank.ThisBank) { // SEND transfer
       // Apply fee
@@ -333,9 +337,12 @@ export class TransactionService {
         throw new BadRequestException('Sender does not have enough balance');
       }
 
-      // TODO: send request
-      // let result = await this.axiosService.postTransferMoney(transferDto);
+      // TODO: uncomment and test
       // Handle result
+      // let result = await this.axiosService.postTransferMoney(transferDto);
+      // if (result.status !== 200) {
+      //   return result;
+      // }
 
       // Update sender's balance
       senderAccount.balance = senderNewBalance;
