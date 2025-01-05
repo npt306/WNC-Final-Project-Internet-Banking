@@ -153,7 +153,7 @@ export class ExternalController {
     // TODO: optimize this logic
     const rsa = await this.axiosService.getRsa();
     const xSignature = await rsa.sign(JSON.stringify(msg));
-    const externalSalt = this.axiosService.getExternalSalt()
+    const externalSalt = this.axiosService.getExternalSalt();
     const signature = await rsa.generateSignature(JSON.stringify(msg), externalSalt);
     const requestDate = new Date().getTime();
     res.setHeader('RequestDate', requestDate)
@@ -199,10 +199,12 @@ export class ExternalController {
     // }
 
     // const transferResult = await this.externalService.handleTransfer(transferDto);
-    // res.header(
-    //   'X-Signature',
-    //   await this.rsaService.sign(JSON.stringify(transferResult)),
-    // );
-    // return transferResult;
+    // let msg = {"message": "success"};
+    // const timeNow = new Date().getTime();
+    // res.setHeader('RequestDate', timeNow)
+    // res.setHeader('Signature', 
+    //   await this.rsaService.generateSignature(JSON.stringify(msg), this.axiosService.getExternalSalt()))
+    // res.setHeader('X-Signature', await this.rsaService.sign(JSON.stringify(msg)))
+    // return res.json(msg);
   }
 }
