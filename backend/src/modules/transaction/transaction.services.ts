@@ -15,6 +15,7 @@ import { TransferLogDto } from './dto/transfer_log.dto';
 import { TransferDto } from './dto/transfer.dto';
 import { AxiosService } from '@/axios/axios.service';
 import { SupportedBank } from '@/constants/supported-bank.enum';
+import { TransactionType } from '@/constants/transaction-type.enum';
 
 const TRANSFER_FEE = 0.02;
 
@@ -70,7 +71,7 @@ export class TransactionService {
           // @ts-ignore
           sender: accountNumber,
           // @ts-ignore
-          type: { $ne: 'DEBT' },
+          type: { $ne: TransactionType.DEBT },
         },
         order: { timestamp: 'DESC' },
       });
@@ -97,7 +98,7 @@ export class TransactionService {
           // @ts-ignore
           receiver: accountNumber,
           // @ts-ignore
-          type: { $ne: 'DEBT' },
+          type: { $ne: TransactionType.DEBT },
         },
         order: { timestamp: 'DESC' },
       });
@@ -124,7 +125,7 @@ export class TransactionService {
           // @ts-ignore
           $or: [{ sender: accountNumber }, { receiver: accountNumber }],
           // @ts-ignore
-          type: 'DEBT',
+          type: TransactionType.DEBT,
         },
         order: { timestamp: 'DESC' },
       });
@@ -147,9 +148,9 @@ export class TransactionService {
       const updatedDebtPaymentTransactions = debtPaymentTransactions.map(
         (transaction) => {
           if (transaction.sender === accountNumber) {
-            return { ...transaction, customerSide: 'payer' };
+            return { ...transaction, customerSide: 'PAYER' };
           } else if (transaction.receiver === accountNumber) {
-            return { ...transaction, customerSide: 'payee' };
+            return { ...transaction, customerSide: 'PAYEE' };
           }
           return transaction;
         },
@@ -158,11 +159,11 @@ export class TransactionService {
       const allTransactions = [
         ...transferTransactions.map((transaction) => ({
           ...transaction,
-          customerSide: 'sender',
+          customerSide: 'SENDER',
         })),
         ...receiverTransactions.map((transaction) => ({
           ...transaction,
-          customerSide: 'receiver',
+          customerSide: 'RECEIVER',
         })),
         ...updatedDebtPaymentTransactions,
       ];
@@ -185,7 +186,7 @@ export class TransactionService {
     to?: Date,
   ): Promise<{ transactions: Transaction[]; totalAmount: number }> {
     let whereCondition: any = {
-      type: 'TRANSFER',
+      type: TransactionType.TRANSFER,
     };
     if (bank && typeof bank === 'string' && bank.trim() !== '') {
       console.log(bank);
@@ -212,7 +213,7 @@ export class TransactionService {
       const toDate = to ? new Date(to) : null;
 
       let whereCondition: any = {
-        type: 'TRANSFER',
+        type: TransactionType.TRANSFER,
         sender_bank: { $exists: true, $ne: null },
         receiver_bank: { $exists: true, $ne: null },
       };

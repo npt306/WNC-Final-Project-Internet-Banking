@@ -45,7 +45,7 @@ export class AuthAdminService {
         full_name: user.full_name,
         email: user.email,
         _id: user._id,
-        role: 'admin',
+        role: Roles.ADMIN,
       },
       tokens,
     };
@@ -86,7 +86,7 @@ export class AuthAdminService {
         {
           sub: userId,
           username,
-          role: Roles.Admin,
+          role: Roles.ADMIN,
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
@@ -97,7 +97,7 @@ export class AuthAdminService {
         {
           sub: userId,
           username,
-          role: Roles.Admin,
+          role: Roles.ADMIN,
         },
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),

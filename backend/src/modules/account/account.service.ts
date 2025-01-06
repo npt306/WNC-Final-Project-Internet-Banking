@@ -9,6 +9,7 @@ import { ObjectId } from 'mongodb';
 import { NotFoundException, Inject, forwardRef } from '@nestjs/common';
 import { UpdateBalanceDto } from './dto/update-balance.dto';
 import { SupportedBank } from '../../constants/supported-bank.enum';
+import { AccountType } from '@/constants/account-type.enum';
 
 @Injectable()
 export class AccountService {
@@ -73,7 +74,7 @@ export class AccountService {
 
     const account = await this.accountRepository.findOneBy({
       customer_id: id,
-      account_type: 'payment',
+      account_type: AccountType.PAYMENT,
     });
 
     if (!account) {
@@ -143,7 +144,7 @@ export class AccountService {
   async removeAccount(id: string): Promise<Account> {
     const removeAccount = await this.findOneAccount(id);
     if (
-      removeAccount.account_type === 'payment' &&
+      removeAccount.account_type === AccountType.PAYMENT &&
       removeAccount.bank === SupportedBank.DEFAULT
     ) {
       throw new ConflictException('Cannot default delete payment account');

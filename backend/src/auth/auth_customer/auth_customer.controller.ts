@@ -38,14 +38,14 @@ export class AuthCustomerController {
     return this.authService.handleRegister(registerDto);
   }
 
-  @AssignRoles(Roles.Customer)
+  @AssignRoles(Roles.CUSTOMER)
   @UseGuards(JwtRefreshGuard, RolesGuard)
   @Get('logout')
   logoutCustomer(@Req() req: Request) {
     this.authService.logout(req['user']['sub']);
   }
 
-  @AssignRoles(Roles.Customer)
+  @AssignRoles(Roles.CUSTOMER)
   @UseGuards(JwtRefreshGuard, RolesGuard)
   @Get('refresh')
   refreshTokensCustomer(@Req() req: Request) {

@@ -2,6 +2,8 @@ import { Entity, Column, BaseEntity, ObjectIdColumn } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { ApiProperty } from '@nestjs/swagger';
 import { SupportedBank } from '../../../constants/supported-bank.enum'
+import { AccountType } from '../../../constants/account-type.enum'
+import { IsEnum } from 'class-validator';
 @Entity()
 export class Account extends BaseEntity {
   @ObjectIdColumn()
@@ -22,9 +24,10 @@ export class Account extends BaseEntity {
   account_number: string;
 
   @ApiProperty({
-    example: 'payment',
+    example: AccountType.PAYMENT,
     required: true,
   })
+  @IsEnum(AccountType)
   @Column()
   account_type: string;
 

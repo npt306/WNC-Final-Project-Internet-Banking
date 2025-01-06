@@ -20,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { PayDebtReminderDto } from './dto/pay-debt.dto';
 import { SendEmailDebtReminderDto } from './dto/send-email.dto';
+import { DebtReminderStatus } from '@/constants/debt-reminder-status.enum';
 
 // @ApiBearerAuth()
 @ApiTags('debt-reminder')
@@ -44,7 +45,7 @@ export class DebtReminderController {
           debtor: '675babee10466a57086768ec',
           amount: 10000000,
           message: 'You owe me money',
-          status: 'Pending',
+          status: DebtReminderStatus.PENDING,
         },
       },
     },

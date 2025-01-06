@@ -39,7 +39,7 @@ export class AuthAdminController {
           full_name: 'Admin User',
           email: 'admin@example.com',
           _id: '507f1f77bcf86cd799439011',
-          role: 'admin',
+          role: Roles.ADMIN,
         },
         tokens: {
           accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
@@ -87,7 +87,7 @@ export class AuthAdminController {
     return this.authService.handleRegister(registerDto);
   }
 
-  @AssignRoles(Roles.Admin)
+  @AssignRoles(Roles.ADMIN)
   @UseGuards(JwtRefreshGuard, RolesGuard)
   @Get('logout')
   @ApiOperation({ summary: 'Logout admin' })

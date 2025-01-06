@@ -1,3 +1,4 @@
+import { Roles } from '@/constants/roles.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
@@ -9,7 +10,7 @@ import {
 
 export class CreateAdminDto {
   @ApiProperty({
-    example: 'admin',
+    example: Roles.ADMIN,
     description: 'Username of the admin',
     required: true,
   })

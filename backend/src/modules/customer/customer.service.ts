@@ -21,6 +21,7 @@ import {
 } from '@/helpers/utils';
 import { SearchCustomerDto } from './dto/search-customer.dto';
 import { SupportedBank } from '@/constants/supported-bank.enum';
+import { AccountType } from '@/constants/account-type.enum';
 
 @Injectable()
 export class CustomerService {
@@ -95,7 +96,7 @@ export class CustomerService {
         customer_id: savedCustomer._id.toString(),
         balance: 0,
         bank: SupportedBank.DEFAULT,
-        account_type: 'payment',
+        account_type: AccountType.PAYMENT,
         account_number: 'none',
       });
     } catch (error) {

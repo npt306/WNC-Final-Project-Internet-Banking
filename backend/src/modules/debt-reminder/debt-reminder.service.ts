@@ -17,7 +17,8 @@ import { PayDebtReminderDto } from './dto/pay-debt.dto';
 import { SendEmailDebtReminderDto } from './dto/send-email.dto';
 import { MailerCustomService } from '@/services/mail/mailer.service';
 import { Customer } from '../customer/entities/customer.entity';
-
+import { DebtReminderStatus } from '@/constants/debt-reminder-status.enum';
+import { TransactionType } from '@/constants/transaction-type.enum';
 @Injectable()
 export class DebtReminderService {
   constructor(
@@ -50,7 +51,7 @@ export class DebtReminderService {
     const newDebtReminder = this.debtReminderRepository.create({
       ...createDebtReminderDto,
       createdAt: new Date(),
-      status: 'Pending',
+      status: DebtReminderStatus.PENDING,
     });
 
     return await this.debtReminderRepository.save(newDebtReminder);
@@ -165,12 +166,12 @@ export class DebtReminderService {
       content: debtorCustomer.full_name + ' have paid the debt.',
       fee: 2000,
       payer: debtorAccountNumber,
-      type: 'DEBT',
+      type: TransactionType.DEBT,
       timestamp: new Date(),
     });
 
     if (transaction) {
-      debtReminder.status = 'Completed';
+      debtReminder.status = DebtReminderStatus.COMPLETED;
       await this.debtReminderRepository.save(debtReminder);
     } else {
       throw new BadRequestException(`Paid debt failed`);
@@ -183,7 +184,7 @@ export class DebtReminderService {
   async sendPayDebtReminderEmail(_id: string) {
     const debtReminder = await this.findOneDebtReminder(_id);
 
-    if(debtReminder.status === 'Completed') {
+    if(debtReminder.status === DebtReminderStatus.COMPLETED) {
       throw new BadRequestException("Debt have already been paid");
     }
     this.mailCustomService.sendMailDebtReminder(debtReminder);

@@ -1,3 +1,5 @@
+import { TransactionType } from "@/constants/transaction-type.enum";
+
 export const TransferExample = {
   statusCode: 201,
   message: '',
@@ -13,7 +15,7 @@ export const TransferExample = {
     receiver_balance: 432000,
     payer: '112233445566',
     timestamp: '2024-12-28T17:57:22.124Z',
-    type: 'TRANSFER',
+    type: TransactionType.TRANSFER,
     _id: '67703c0246c40ffcefd94108',
   },
 };
@@ -27,7 +29,7 @@ export const DepositExample = {
     content: 'Deposit from bank',
     receiver_balance: 440000,
     timestamp: '2024-12-28T16:53:15.418Z',
-    type: 'DEPOSIT',
+    type: TransactionType.DEPOSIT,
     _id: '67702cfba58833cd162ea900',
     sender: null,
     sender_bank: null,
@@ -43,7 +45,7 @@ export const DebtBodyExample = {
   amount: 100000,
   content: 'Pay debt',
   payer: '112233445566',
-  type: 'DEBT',
+  type: TransactionType.DEBT,
 };
 
 export const LocalTransferBodyExample = {
@@ -52,7 +54,7 @@ export const LocalTransferBodyExample = {
   amount: 100000,
   content: 'Local transfer money',
   payer: '112233445566',
-  type: 'TRANSFER',
+  type: TransactionType.TRANSFER,
 };
 
 export const InterbankTransferBodyExample = {

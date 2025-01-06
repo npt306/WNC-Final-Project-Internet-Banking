@@ -37,14 +37,14 @@ export class AuthEmployeeController {
     return this.authService.handleRegister(registerDto);
   }
 
-  @AssignRoles(Roles.Employee)
+  @AssignRoles(Roles.EMPLOYEE)
   @UseGuards(JwtRefreshGuard, RolesGuard)
   @Get('logout')
   logoutEmployee(@Req() req: Request) {
     this.authService.logout(req['user']['sub']);
   }
 
-  @AssignRoles(Roles.Employee)
+  @AssignRoles(Roles.EMPLOYEE)
   @UseGuards(JwtRefreshGuard, RolesGuard)
   @Get('refresh')
   refreshTokensEmployee(@Req() req: Request) {
