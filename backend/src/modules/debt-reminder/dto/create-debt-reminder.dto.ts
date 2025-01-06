@@ -32,20 +32,4 @@ export class CreateDebtReminderDto {
   })
   @IsString()
   message: string;
-
-  @ApiProperty({
-    example: '2021-09-01T00:00:00.000Z',
-    required: true,
-  })
-  @IsDate()
-  @IsNotEmpty()
-  createdAt: Date;
-
-  @ApiProperty({
-    example: 'Pending',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  status: string;
 }

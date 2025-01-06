@@ -44,12 +44,12 @@ export class DebtReminder extends BaseEntity {
     required: true,
   })
   @Column()
-  createdAt: Date;
+  createdAt: Date = new Date();
 
   @ApiProperty({
     example: 'Pending',
     required: true,
   })
   @Column()
-  status: string;
+  status: string = 'Pending';
 }
