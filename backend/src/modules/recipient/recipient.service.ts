@@ -59,6 +59,8 @@ export class RecipientService {
   }
 
   async create(createRecipientDto: CreateRecipientDto): Promise<Recipient> {
+    await this.accountService.findAccountByAccountNumber(createRecipientDto.account_number);
+
     // Kiểm tra xem số tài khoản đã tồn tại trong danh sách người nhận của customer này chưa
     const existingRecipient = await this.recipientRepository.findOne({
       where: {
