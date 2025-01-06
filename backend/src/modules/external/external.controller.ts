@@ -41,7 +41,11 @@ export class ExternalController {
     private readonly axiosService: AxiosService,
   ) {}
 
-  @UseGuards(IpWhitelistGuard)
+  @ApiOperation({ summary: 'For external bank: Get customer account info' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return customer account info'
+  })
   @ApiBody({
     description: 'The decrypted account number of the customer',
     schema: {
@@ -64,6 +68,7 @@ export class ExternalController {
       },
     },
   })
+  @UseGuards(IpWhitelistGuard)
   @Post('account/info')
   async getAccountInfo(
     @Headers('RequestDate') requestDate: number,
@@ -116,6 +121,11 @@ export class ExternalController {
     return foundCustomer;
   }
 
+  @ApiOperation({ summary: 'For external bank: Get public key' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return public key'
+  })
   @UseGuards(IpWhitelistGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @ApiResponse({
@@ -130,6 +140,11 @@ export class ExternalController {
     return this.rsaService.getPublicKey();
   }
 
+  @ApiOperation({ summary: 'For external bank: Post money transaction' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return transaction info'
+  })
   @UseGuards(IpWhitelistGuard)
   @ApiBody({
     type: ExternalTransferDto,
