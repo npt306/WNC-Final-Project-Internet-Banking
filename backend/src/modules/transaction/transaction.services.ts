@@ -8,15 +8,15 @@ import {
 import { Transaction } from './entities/transaction.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { SupportedBank, TransactionDto } from './dto/transaction.dto';
+import { TransactionDto } from './dto/transaction.dto';
 import { DepositDto } from './dto/deposit.dto';
 import { AccountService } from '../account/account.service';
 import { TransferLogDto } from './dto/transfer_log.dto';
 import { TransferDto } from './dto/transfer.dto';
 import { AxiosService } from '@/axios/axios.service';
+import { SupportedBank } from '@/constants/supported-bank.enum';
 
 const TRANSFER_FEE = 0.02;
-const OURBANK = 'Sankcomba';
 
 @Injectable()
 export class TransactionService {
@@ -319,7 +319,7 @@ export class TransactionService {
     // Fee handling
     transferDto.fee = amount * TRANSFER_FEE; // 2%   
 
-    if (transferDto.sender_bank == SupportedBank.ThisBank) { // SEND transfer
+    if (transferDto.sender_bank == SupportedBank.DEFAULT) { // SEND transfer
       // Apply fee
       if (transferDto.payer == transferDto.sender) {
         senderNewBalance -= transferDto.fee;

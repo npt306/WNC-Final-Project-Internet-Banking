@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Bank } from '@/constants/bank.enum';
+import { SupportedBank } from '@/constants/supported-bank.enum';
 
 export class CreateRecipientDto {
   @ApiProperty({
@@ -28,7 +28,7 @@ export class CreateRecipientDto {
   nickname?: string;
 
   @ApiProperty({
-    example: Bank.DEFAULT,
+    example: SupportedBank.DEFAULT,
     required: true,
   })
   @IsString()

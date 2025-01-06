@@ -1,10 +1,6 @@
 import {
-  IsString,
   IsNumber,
-  Min,
-  IsDate,
   IsOptional,
-  IsEnum,
 } from 'class-validator';
 import { TransferDto } from './transfer.dto';
 

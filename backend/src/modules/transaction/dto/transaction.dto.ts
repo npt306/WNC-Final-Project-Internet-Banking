@@ -1,15 +1,3 @@
-export enum TransactionType {
-  TRANSFER = 'TRANSFER',
-  DEBT = 'DEBT',
-  DEPOSIT = 'DEPOSIT',
-}
-
-export enum SupportedBank {
-  ThisBank = 'Sankcomba',
-  TestBank = 'Test Bank',
-  BlueSkyBank = 'BlueSkyBank',
-}
-
 export interface TransactionDto {
   sender?: string | null;
   receiver: string;
