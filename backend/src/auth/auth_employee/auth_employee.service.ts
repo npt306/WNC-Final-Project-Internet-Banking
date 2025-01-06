@@ -86,7 +86,7 @@ export class AuthEmployeeService {
         {
           sub: userId,
           username,
-          role: Roles.Employee,
+          role: Roles.EMPLOYEE,
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
@@ -97,7 +97,7 @@ export class AuthEmployeeService {
         {
           sub: userId,
           username,
-          role: Roles.Employee,
+          role: Roles.EMPLOYEE,
         },
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),

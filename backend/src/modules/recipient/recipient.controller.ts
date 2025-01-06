@@ -18,7 +18,7 @@ import {
   ApiResponse,
   ApiBody,
 } from '@nestjs/swagger';
-import { Bank } from '@/constants/bank.enum';
+import { SupportedBank } from '@/constants/supported-bank.enum';
 
 @ApiBearerAuth()
 @ApiTags('recipient')
@@ -41,14 +41,14 @@ export class RecipientController {
           customer_id: '675db7c4cb2b0bf8ef4ffbf3',
           account_number: '112233445566',
           nickname: 'Uncle John',
-          bank: Bank.DEFAULT,
+          bank: SupportedBank.DEFAULT,
         },
       },
       withoutNickname: {
         value: {
           customer_id: '675db7c4cb2b0bf8ef4ffbf3',
           account_number: '112233445566',
-          bank: Bank.DEFAULT,
+          bank: SupportedBank.DEFAULT,
         },
       },
     },

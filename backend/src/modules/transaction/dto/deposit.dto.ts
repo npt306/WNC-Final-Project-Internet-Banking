@@ -7,7 +7,8 @@ import {
   IsEnum,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { TransactionDto, TransactionType } from './transaction.dto';
+import { TransactionDto } from './transaction.dto';
+import { TransactionType } from '@/constants/transaction-type.enum';
 
 export class DepositDto implements TransactionDto {
   @ApiProperty({
@@ -37,5 +38,5 @@ export class DepositDto implements TransactionDto {
 
   @IsString()
   @IsEnum(TransactionType)
-  type: string = 'DEPOSIT';
+  type: string = TransactionType.DEPOSIT;
 }

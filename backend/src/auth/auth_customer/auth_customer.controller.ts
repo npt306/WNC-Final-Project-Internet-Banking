@@ -51,7 +51,7 @@ export class AuthCustomerController {
   }
 
   @ApiOperation({ summary: 'Logout from customer account' })
-  @AssignRoles(Roles.Customer)
+  @AssignRoles(Roles.CUSTOMER)
   @UseGuards(JwtRefreshGuard, RolesGuard)
   @Get('logout')
   logoutCustomer(@Req() req: Request) {
@@ -63,7 +63,7 @@ export class AuthCustomerController {
     status: 200,
     description: 'Return new access token'
   })
-  @AssignRoles(Roles.Customer)
+  @AssignRoles(Roles.CUSTOMER)
   @UseGuards(JwtRefreshGuard, RolesGuard)
   @Get('refresh')
   refreshTokensCustomer(@Req() req: Request) {

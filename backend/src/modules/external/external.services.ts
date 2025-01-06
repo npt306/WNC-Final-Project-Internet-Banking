@@ -7,7 +7,7 @@ import { AxiosService } from '@/axios/axios.service';
 import { plainToClass } from 'class-transformer';
 import { ExternalTransferDto } from './dto/external-transfer.dto';
 import { TransferDto } from '../transaction/dto/transfer.dto';
-import { SupportedBank } from '../transaction/dto/transaction.dto';
+import { SupportedBank } from '@/constants/supported-bank.enum';
 
 @Injectable()
 export class ExternalService {
@@ -35,7 +35,7 @@ export class ExternalService {
         sender: externalTransferDto.fromAccountNumber,
         receiver: externalTransferDto.toAccountNumber,
         sender_bank: SupportedBank.BlueSkyBank,
-        receiver_bank: SupportedBank.ThisBank,
+        receiver_bank: SupportedBank.DEFAULT,
         payer: (externalTransferDto.feePayer == "SENDER")? externalTransferDto.fromAccountNumber : externalTransferDto.toAccountNumber, 
         type: 'TRANSFER',
       },

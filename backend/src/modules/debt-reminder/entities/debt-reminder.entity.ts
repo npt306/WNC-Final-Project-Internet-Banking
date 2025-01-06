@@ -1,6 +1,7 @@
 import { Entity, ObjectIdColumn, Column } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { ApiProperty } from '@nestjs/swagger';
+import { DebtReminderStatus } from '@/constants/debt-reminder-status.enum';
 
 @Entity('debt-reminder')
 export class DebtReminder {
@@ -32,9 +33,9 @@ export class DebtReminder {
   createdAt: Date = new Date();
 
   @ApiProperty({
-    example: 'Pending',
+    example: DebtReminderStatus.PENDING,
     required: true,
   })
   @Column()
-  status: string = 'Pending';
+  status: string = DebtReminderStatus.PENDING;
 }

@@ -8,10 +8,10 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  SupportedBank,
   TransactionDto,
-  TransactionType,
 } from './transaction.dto';
+import { SupportedBank } from '@/constants/supported-bank.enum';
+import { TransactionType } from '@/constants/transaction-type.enum';
 
 export class TransferDto implements TransactionDto {
   @ApiProperty({
@@ -29,7 +29,7 @@ export class TransferDto implements TransactionDto {
   receiver: string;
 
   @ApiProperty({
-    example: 'Sankcomba',
+    example: SupportedBank.DEFAULT,
     required: true,
   })
   @IsString()
@@ -38,7 +38,7 @@ export class TransferDto implements TransactionDto {
   sender_bank?: string;
 
   @ApiProperty({
-    example: 'Test Bank',
+    example: SupportedBank.DEFAULT,
     required: true,
   })
   @IsString()
@@ -76,7 +76,7 @@ export class TransferDto implements TransactionDto {
   timestamp: Date = new Date(Date.now());
 
   @ApiProperty({
-    example: 'TRANSFER',
+    example: TransactionType.TRANSFER,
     required: true,
   })
   @IsString()

@@ -1,6 +1,5 @@
-export enum Bank {
+export enum SupportedBank {
     DEFAULT = 'SankComBa',
     SankComBa = 'SankComBa',
     BlueSkyBank = 'BlueSkyBank',
-    SupportedBank = 'SupportedBank',
 }

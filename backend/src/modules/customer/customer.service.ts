@@ -20,7 +20,8 @@ import {
   randomSequence,
 } from '@/helpers/utils';
 import { SearchCustomerDto } from './dto/search-customer.dto';
-import { Bank } from '@/constants/bank.enum';
+import { SupportedBank } from '@/constants/supported-bank.enum';
+import { AccountType } from '@/constants/account-type.enum';
 
 @Injectable()
 export class CustomerService {
@@ -94,8 +95,8 @@ export class CustomerService {
       await this.accountService.createAccount({
         customer_id: savedCustomer._id.toString(),
         balance: 0,
-        bank: Bank.DEFAULT,
-        account_type: 'payment',
+        bank: SupportedBank.DEFAULT,
+        account_type: AccountType.PAYMENT,
         account_number: 'none',
       });
     } catch (error) {

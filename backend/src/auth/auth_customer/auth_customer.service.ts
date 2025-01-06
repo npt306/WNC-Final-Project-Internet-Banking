@@ -93,7 +93,7 @@ export class AuthCustomerService {
         {
           sub: userId,
           username,
-          role: Roles.Customer,
+          role: Roles.CUSTOMER,
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
@@ -104,7 +104,7 @@ export class AuthCustomerService {
         {
           sub: userId,
           username,
-          role: Roles.Customer,
+          role: Roles.CUSTOMER,
         },
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
