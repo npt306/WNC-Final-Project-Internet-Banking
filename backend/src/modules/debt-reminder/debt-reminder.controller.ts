@@ -17,6 +17,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBody,
+  ApiParam,
 } from '@nestjs/swagger';
 import { PayDebtReminderDto } from './dto/pay-debt.dto';
 import { SendEmailDebtReminderDto } from './dto/send-email.dto';
@@ -128,8 +129,13 @@ export class DebtReminderController {
   @ApiOperation({ summary: 'Send debt OTP to debtor email' })
   @ApiResponse({
     status: 200,
-    description: 'Param _id must be debt reminder _id',
+    description: 'Return debtor _id',
     type: DebtReminder,
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The _id of debt-reminder',
+    example: '675e775d24198c20cc51d432',
   })
   @Get('/pay-debt-otp/:id')
   async sendPayDebtReminderOTP(@Param('id') id: string) {
