@@ -20,6 +20,7 @@ import {
   randomSequence,
 } from '@/helpers/utils';
 import { SearchCustomerDto } from './dto/search-customer.dto';
+import { Bank } from '@/constants/bank.enum';
 
 @Injectable()
 export class CustomerService {
@@ -93,7 +94,7 @@ export class CustomerService {
       await this.accountService.createAccount({
         customer_id: savedCustomer._id.toString(),
         balance: 0,
-        bank: 'default',
+        bank: Bank.DEFAULT,
         account_type: 'payment',
         account_number: 'none',
       });

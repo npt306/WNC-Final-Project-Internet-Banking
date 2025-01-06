@@ -1,7 +1,7 @@
 import { Entity, Column, BaseEntity, ObjectIdColumn } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { ApiProperty } from '@nestjs/swagger';
-
+import { Bank } from '../../../constants/bank.enum'
 @Entity()
 export class Account extends BaseEntity {
   @ObjectIdColumn()
@@ -36,7 +36,7 @@ export class Account extends BaseEntity {
   balance: number;
 
   @ApiProperty({
-    example: 'default',
+    example: Bank.DEFAULT,
     required: true,
   })
   @Column()

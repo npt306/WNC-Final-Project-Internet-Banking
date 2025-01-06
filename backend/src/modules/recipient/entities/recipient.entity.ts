@@ -1,6 +1,7 @@
 import { Column, Entity, ObjectIdColumn, BaseEntity } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { ApiProperty } from '@nestjs/swagger';
+import { Bank } from '@/constants/bank.enum';
 
 @Entity()
 export class Recipient extends BaseEntity {
@@ -29,7 +30,7 @@ export class Recipient extends BaseEntity {
   nickname?: string;
 
   @ApiProperty({
-    example: 'default',
+    example: Bank.DEFAULT,
     required: true,
   })
   @Column()

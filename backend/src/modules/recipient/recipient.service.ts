@@ -13,6 +13,7 @@ import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { AccountService } from '../account/account.service';
 import { CustomerService } from '../customer/customer.service';
+import { Bank } from '@/constants/bank.enum';
 
 @Injectable()
 export class RecipientService {
@@ -79,7 +80,7 @@ export class RecipientService {
 
     // When nickname is not provided, we will get the name from the bank
     if (!nickname) {
-      if (bank === 'default') {
+      if (bank === Bank.DEFAULT) {
         const { customer_id } =
           await this.accountService.findAccountByAccountNumber(account_number);
         const { full_name } = await this.customerService.findOne(customer_id);
