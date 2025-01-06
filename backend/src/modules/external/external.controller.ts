@@ -137,7 +137,7 @@ export class ExternalController {
   })
   @ApiCreatedResponse({
     description: 'Return status code of result',
-    example: {"message": "success"},
+    example: { message: 'success' },
   })
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('transfer')
@@ -146,22 +146,24 @@ export class ExternalController {
     // @Headers('Signature') signature: string,
     // @Headers('X-Signature') xSignature: string,
     @Body() transferDto: ExternalTransferDto,
-    @Response({ passthrough: true }) res: Res) {
+    @Response({ passthrough: true }) res: Res,
+  ) {
     let result = await this.externalService.handleTransfer(transferDto);
-
-    let msg = {"message": "success"};
+    console.log(result);
+    let msg = { message: 'success' };
     // TODO: optimize this logic
     const rsa = await this.axiosService.getRsa();
     const xSignature = await rsa.sign(JSON.stringify(msg));
     const externalSalt = this.axiosService.getExternalSalt();
-    const signature = await rsa.generateSignature(JSON.stringify(msg), externalSalt);
+    const signature = await rsa.generateSignature(
+      JSON.stringify(msg),
+      externalSalt,
+    );
     const requestDate = new Date().getTime();
-    res.setHeader('RequestDate', requestDate)
-    res.setHeader('Signature', signature)
-    res.setHeader('X-Signature', xSignature)
+    res.setHeader('RequestDate', requestDate);
+    res.setHeader('Signature', signature);
+    res.setHeader('X-Signature', xSignature);
     return res.json(msg);
-
-
 
     // NEW TRANSFER HANDLE
     // if (!requestDate || !signature) {
@@ -202,7 +204,7 @@ export class ExternalController {
     // let msg = {"message": "success"};
     // const timeNow = new Date().getTime();
     // res.setHeader('RequestDate', timeNow)
-    // res.setHeader('Signature', 
+    // res.setHeader('Signature',
     //   await this.rsaService.generateSignature(JSON.stringify(msg), this.axiosService.getExternalSalt()))
     // res.setHeader('X-Signature', await this.rsaService.sign(JSON.stringify(msg)))
     // return res.json(msg);

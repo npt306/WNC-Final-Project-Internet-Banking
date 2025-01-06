@@ -317,9 +317,10 @@ export class TransactionService {
     let senderNewBalance = null;
     let receiverNewBalance = null;
     // Fee handling
-    transferDto.fee = amount * TRANSFER_FEE; // 2%   
+    transferDto.fee = amount * TRANSFER_FEE; // 2%
 
-    if (transferDto.sender_bank == SupportedBank.DEFAULT) { // SEND transfer
+    if (transferDto.sender_bank == SupportedBank.DEFAULT) {
+      // SEND transfer
       // Apply fee
       if (transferDto.payer == transferDto.sender) {
         senderNewBalance -= transferDto.fee;
@@ -337,12 +338,13 @@ export class TransactionService {
         throw new BadRequestException('Sender does not have enough balance');
       }
 
-      // TODO: uncomment and test
       // Handle result
-      // let result = await this.axiosService.postTransferMoney(transferDto);
-      // if (result.status !== 200) {
-      //   return result;
-      // }
+      let result = await this.axiosService.postTransferMoney(transferDto);
+      console.log('RECEIVE result');
+      console.log(result);
+      if (result.statusCode !== 200) {
+        return result;
+      }
 
       // Update sender's balance
       senderAccount.balance = senderNewBalance;
@@ -350,10 +352,10 @@ export class TransactionService {
         senderAccount._id.toString(),
         senderAccount,
       );
-
-    } else { // RECEIVE transfer
+    } else {
+      // RECEIVE transfer
       // Apply fee
-      if (transferDto.payer == transferDto.receiver){
+      if (transferDto.payer == transferDto.receiver) {
         receiverNewBalance -= transferDto.fee;
       }
 
