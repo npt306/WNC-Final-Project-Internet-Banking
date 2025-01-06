@@ -1,7 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
@@ -11,6 +8,7 @@ import { CustomerService } from 'src/modules/customer/customer.service';
 import { ObjectId } from 'mongodb';
 import { NotFoundException, Inject, forwardRef } from '@nestjs/common';
 import { Customer } from '../customer/entities/customer.entity';
+import { UpdateBalanceDto } from './dto/update-balance.dto';
 
 @Injectable()
 export class AccountService {
@@ -49,18 +47,36 @@ export class AccountService {
   }
 
   async findAll() {
-    return await this.accountRepository.find();
+    const accounts = await this.accountRepository.find();
+
+    // Map qua từng account để lấy thêm thông tin customer
+    const accountsWithCustomerInfo = await Promise.all(
+      accounts.map(async (account) => {
+        const customer = await this.customerService.findOne(
+          account.customer_id,
+        );
+
+        return {
+          ...account,
+          username: customer.username,
+          full_name: customer.full_name,
+          email: customer.email,
+        };
+      }),
+    );
+
+    return accountsWithCustomerInfo;
   }
 
   async findPaymentAccountByCustomerId(id: string): Promise<Account> {
     await this.customerService.findOne(id);
 
     const account = await this.accountRepository.findOneBy({
-      customer_id: id ,
+      customer_id: id,
       account_type: 'payment',
     });
 
-    if(!account){
+    if (!account) {
       throw new NotFoundException(`Payment account not found `);
     }
 
@@ -134,5 +150,24 @@ export class AccountService {
     }
     await this.accountRepository.delete({ _id: new ObjectId(id) });
     return removeAccount;
+  }
+
+  async updateBalance(updateBalanceDto: UpdateBalanceDto): Promise<Account> {
+    const account = await this.accountRepository.findOne({
+      where: { account_number: updateBalanceDto.account_number },
+    });
+
+    if (!account) {
+      throw new NotFoundException('Account not found');
+    }
+
+    await this.accountRepository.update(
+      { account_number: updateBalanceDto.account_number },
+      { balance: updateBalanceDto.balance },
+    );
+
+    return await this.accountRepository.findOne({
+      where: { account_number: updateBalanceDto.account_number },
+    });
   }
 }

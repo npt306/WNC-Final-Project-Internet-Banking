@@ -3,13 +3,23 @@ import {
   Get,
   Param,
   Delete,
+  Patch,
+  Body,
+  Post,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { Account } from './entities/account.entity';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+  ApiBody,
+} from '@nestjs/swagger';
 import { CreateAccountDto } from './dto/create-account.dto';
-import { ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { Customer } from '../customer/entities/customer.entity';
+import { UpdateBalanceDto } from './dto/update-balance.dto';
 
 @ApiTags('account')
 @ApiBearerAuth()
@@ -25,8 +35,8 @@ export class AccountController {
   @ApiResponse({ status: 200, description: 'Return all accounts.' })
   @ApiResponse({ status: 500, description: 'Internal' })
   @ApiOperation({ summary: 'Get all accounts' })
-  @Get()
-  async findAll(): Promise<Account[]> {
+  @Get('all')
+  async findAll(): Promise<any> {
     return await this.accountService.findAll();
   }
 
@@ -76,5 +86,30 @@ export class AccountController {
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<Account> {
     return await this.accountService.removeAccount(id);
+  }
+
+  @Post('balance')
+  @ApiOperation({ summary: 'Update account balance' })
+  @ApiResponse({
+    status: 200,
+    description: 'The balance has been successfully updated.',
+    type: Account,
+  })
+  @ApiBody({
+    type: UpdateBalanceDto,
+    description: 'Update balance data',
+    examples: {
+      example1: {
+        value: {
+          account_number: '112233445566',
+          balance: 1000000,
+        },
+      },
+    },
+  })
+  async updateBalance(
+    @Body() updateBalanceDto: UpdateBalanceDto,
+  ): Promise<Account> {
+    return await this.accountService.updateBalance(updateBalanceDto);
   }
 }
