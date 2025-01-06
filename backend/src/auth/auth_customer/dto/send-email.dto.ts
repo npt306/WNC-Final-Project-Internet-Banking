@@ -1,6 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 
-export class SendEmailDto {
+export class SendEmailCustomerDto {
     @IsNotEmpty({message: "Empty username !!!"})
     username: string;
 

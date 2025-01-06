@@ -12,7 +12,7 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { compareRefreshToken } from '@/helpers/utils';
 import { CustomerService } from '@/modules/customer/customer.service';
 import { Roles } from '@/constants/roles.enum';
-import { SendEmailDto } from './dto/send-email.dto';
+import { SendEmailCustomerDto } from './dto/send-email.dto';
 import { MailerCustomService } from '@/services/mail/mailer.service';
 
 @Injectable()
@@ -136,7 +136,7 @@ export class AuthCustomerService {
     return tokens;
   }
 
-  async sendEmail(sendEmailDto: SendEmailDto) {
+  async sendEmail(sendEmailDto: SendEmailCustomerDto) {
     return this.mailerCustomService.sendMailCustomer(sendEmailDto);
   }
 

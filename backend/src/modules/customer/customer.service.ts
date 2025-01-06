@@ -26,7 +26,7 @@ export class CustomerService {
     private readonly accountService: AccountService,
   ) {}
 
-  async addResetPasswordCode(userId: string) {
+  async addCode(userId: string) {
     const foundUser = await this.findById(userId);
     const resetPasswordCode = randomSequence(6);
     await this.customerRepository.update({ _id: new ObjectId(userId) }, {
@@ -36,8 +36,16 @@ export class CustomerService {
     return {
       email: foundUser.email,
       username: foundUser.username,
-      resetPasswordCode
+      code: resetPasswordCode
     };
+  }
+
+  async removeCode(userId: string) {
+    const foundUser = await this.findById(userId);
+    await this.customerRepository.update({ _id: new ObjectId(userId) }, {
+      ...foundUser,
+      code: null
+    });
   }
 
   async findByUsername(username: string) {
@@ -153,6 +161,8 @@ export class CustomerService {
         code: null,
         password: hashedPassword
       });
+
+      await this.removeCode(foundCustomer._id.toString());
       return {
         _id: foundCustomer._id
       }

@@ -7,6 +7,7 @@ import { DebtReminderNotificationModule } from '../debt-reminder-notification/de
 import { AccountModule } from '../account/account.module';
 import { TransactionModule } from '../transaction/transaction.module';
 import { CustomerModule } from '../customer/customer.module';
+import { MailerCustomModule } from '@/services/mail/mailer.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CustomerModule } from '../customer/customer.module';
     DebtReminderNotificationModule,
     AccountModule,
     CustomerModule,
+    MailerCustomModule,
     TransactionModule,
 ],
   controllers: [DebtReminderController],

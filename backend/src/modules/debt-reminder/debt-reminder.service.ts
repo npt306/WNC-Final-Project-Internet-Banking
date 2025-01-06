@@ -9,6 +9,9 @@ import { DebtReminderNotificationService } from '../debt-reminder-notification/d
 import { AccountService } from '../account/account.service';
 import { TransactionService } from '../transaction/transaction.services';
 import { CustomerService } from '../customer/customer.service';
+import { PayDebtReminderDto } from './dto/pay-debt.dto';
+import { SendEmailDebtReminderDto } from './dto/send-email.dto';
+import { MailerCustomService } from '@/services/mail/mailer.service';
 
 @Injectable()
 export class DebtReminderService {
@@ -19,6 +22,7 @@ export class DebtReminderService {
     private readonly accountService: AccountService,
     private readonly customerService: CustomerService,
     private readonly transactionService: TransactionService,
+    private readonly mailCustomService: MailerCustomService
   ) {}
 
   async create(
@@ -82,8 +86,10 @@ export class DebtReminderService {
     return debtReminderRemove;
   }
 
-  async payDebt(id: string): Promise<DebtReminder> {
-    const debtReminder = await this.findOneDebtReminder(id);
+  async payDebt(payDebtReminderDto: PayDebtReminderDto): Promise<DebtReminder> {
+    const {_id, codeOTP} = payDebtReminderDto;
+
+    const debtReminder = await this.findOneDebtReminder(_id);
   
     const creditorAccount = await this.accountService.findPaymentAccountByCustomerId(debtReminder.creditor);
     const creditorAccountNumber = creditorAccount.account_number;
@@ -92,6 +98,9 @@ export class DebtReminderService {
     const debtorAccountNumber = debtorAccount.account_number;
     
     const debtorCustomer = await this.customerService.findById(debtReminder.debtor);
+    if(codeOTP !== debtorCustomer.code) {
+      throw new BadRequestException("Wrong reset code !!!");
+    }
 
     const transaction = await this.transactionService.transfer({
       sender: debtorAccountNumber,
@@ -111,7 +120,17 @@ export class DebtReminderService {
     else {
       throw new BadRequestException(`Paid debt failed`);
     }
+    this.customerService.removeCode(debtorCustomer._id.toString())
 
-    return await this.findOneDebtReminder(id);
+    return await this.findOneDebtReminder(_id);
+  }
+
+  async sendPayDebtReminderEmail(_id: string) {
+    const debtReminder = await this.findOneDebtReminder(_id);
+
+    if(debtReminder.status === 'Completed') {
+      throw new BadRequestException("Debt have already been paid");
+    }
+    this.mailCustomService.sendMailDebtReminder(debtReminder);
   }
 }

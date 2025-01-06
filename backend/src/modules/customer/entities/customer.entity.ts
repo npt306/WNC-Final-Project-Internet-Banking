@@ -57,7 +57,7 @@ export class Customer extends BaseEntity {
 
   @ApiProperty({
     example: '951753',
-    description: 'Code for reset password ',
+    description: 'Code for reset password/OTP ',
   })
   @Column({ nullable: true })
   code: string | null;

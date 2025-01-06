@@ -4,7 +4,7 @@ export class ChangePasswordDto {
     @IsNotEmpty({message: "Empty username !!!"})
     username: string;
 
-    @IsNotEmpty({message: "Empty change password code !!!"})
+    @IsNotEmpty({message: "Empty change password OTP code !!!"})
     code: string;
 
     @IsNotEmpty({message: "Empty password !!!"})

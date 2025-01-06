@@ -20,7 +20,7 @@ import { RolesGuard } from '@/jwt/guards/role.guard';
 import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
 import { JwtRefreshGuard } from '@/jwt/guards/jwt-refresh.guard';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { SendEmailDto } from './dto/send-email.dto';
+import { SendEmailCustomerDto } from './dto/send-email.dto';
 
 @Controller('auth/customer')
 export class AuthCustomerController {
@@ -55,7 +55,7 @@ export class AuthCustomerController {
   }
 
   @Post('forgot-password')
-  forgotPasswordCustomer(@Body() sendEmailDto: SendEmailDto) {
+  forgotPasswordCustomer(@Body() sendEmailDto: SendEmailCustomerDto) {
     return this.authService.sendEmail(sendEmailDto);
   }
 

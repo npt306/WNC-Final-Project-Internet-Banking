@@ -18,6 +18,8 @@ import {
   ApiResponse,
   ApiBody,
 } from '@nestjs/swagger';
+import { PayDebtReminderDto } from './dto/pay-debt.dto';
+import { SendEmailDebtReminderDto } from './dto/send-email.dto';
 
 // @ApiBearerAuth()
 @ApiTags('debt-reminder')
@@ -101,14 +103,36 @@ export class DebtReminderController {
     return await this.debtReminderService.remove(id);
   }
 
+  // @ApiOperation({ summary: '*1.5.4: Pay a debt reminder' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Return updated debt reminder.',
+  //   type: DebtReminder,
+  // })
+  // @Get('/pay/:id')
+  // async payDebtReminder(@Param('id') id: string) {
+  //   return await this.debtReminderService.payDebt(id);
+  // }
+
   @ApiOperation({ summary: '*1.5.4: Pay a debt reminder' })
   @ApiResponse({
     status: 200,
     description: 'Return updated debt reminder.',
     type: DebtReminder,
   })
-  @Get('/pay/:id')
-  async payDebtReminder(@Param('id') id: string) {
-    return await this.debtReminderService.payDebt(id);
+  @Post('/pay-debt-otp/:id')
+  async sendPayDebtReminderOTP(@Param('id') id: string) {
+    return await this.debtReminderService.sendPayDebtReminderEmail(id);
+  }
+
+  @ApiOperation({ summary: '*1.5.4: Pay a debt reminder' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return updated debt reminder.',
+    type: DebtReminder,
+  })
+  @Post('/pay')
+  async payDebtReminder(@Body() payDebtReminderDto: PayDebtReminderDto) {
+    return await this.debtReminderService.payDebt(payDebtReminderDto);
   }
 }
