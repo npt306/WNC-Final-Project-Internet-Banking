@@ -125,13 +125,13 @@ export class DebtReminderController {
   //   return await this.debtReminderService.payDebt(id);
   // }
 
-  @ApiOperation({ summary: '*1.5.4: Pay a debt reminder' })
+  @ApiOperation({ summary: 'Send debt OTP to debtor email' })
   @ApiResponse({
     status: 200,
-    description: 'Return updated debt reminder.',
+    description: 'Param _id must be debt reminder _id',
     type: DebtReminder,
   })
-  @Post('/pay-debt-otp/:id')
+  @Get('/pay-debt-otp/:id')
   async sendPayDebtReminderOTP(@Param('id') id: string) {
     return await this.debtReminderService.sendPayDebtReminderEmail(id);
   }
