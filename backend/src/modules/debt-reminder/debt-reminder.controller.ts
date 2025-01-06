@@ -27,6 +27,7 @@ import { SendEmailDebtReminderDto } from './dto/send-email.dto';
 export class DebtReminderController {
   constructor(private readonly debtReminderService: DebtReminderService) {}
 
+  @Post()
   @ApiOperation({ summary: '1.5.1: Create a debt reminder' })
   @ApiResponse({
     status: 201,
@@ -36,8 +37,18 @@ export class DebtReminderController {
   @ApiBody({
     type: CreateDebtReminderDto,
     description: 'Json structure for debt reminder creation',
+    examples: {
+      example1: {
+        value: {
+          creditor: '675babee10466a57086768eb',
+          debtor: '675babee10466a57086768ec',
+          amount: 10000000,
+          message: 'You owe me money',
+          status: 'Pending',
+        },
+      },
+    },
   })
-  @Post()
   async create(@Body() createDebtReminderDto: CreateDebtReminderDto) {
     return await this.debtReminderService.create(createDebtReminderDto);
   }

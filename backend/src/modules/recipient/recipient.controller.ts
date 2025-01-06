@@ -34,6 +34,23 @@ export class RecipientController {
   @ApiBody({
     type: CreateRecipientDto,
     description: 'Json structure for recipient creation',
+    examples: {
+      withNickname: {
+        value: {
+          customer_id: '675db7c4cb2b0bf8ef4ffbf3',
+          account_number: '112233445566',
+          nickname: 'Uncle John',
+          bank: 'default',
+        },
+      },
+      withoutNickname: {
+        value: {
+          customer_id: '675db7c4cb2b0bf8ef4ffbf3',
+          account_number: '112233445566',
+          bank: 'default',
+        },
+      },
+    },
   })
   @Post()
   async create(

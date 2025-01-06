@@ -1,35 +1,24 @@
-import { IsNotEmpty, IsString, IsNumber, IsDate, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+
 export class CreateDebtReminderDto {
-  @ApiProperty({
-    example: '675db7c4cb2b0bf8ef4ffbf3',
-    required: true,
-  })
+  @ApiProperty({ example: '675babee10466a57086768eb' })
   @IsNotEmpty()
   @IsString()
   creditor: string;
 
-  @ApiProperty({
-    example: '675babee10466a57086768eb',
-    required: true,
-  })
+  @ApiProperty({ example: '675babee10466a57086768ec' })
   @IsNotEmpty()
   @IsString()
   debtor: string;
 
-  @ApiProperty({
-    example: '10000000',
-    required: true,
-  })
+  @ApiProperty({ example: 10000000 })
   @IsNotEmpty()
   @IsNumber()
-  @Min(0)
   amount: number;
 
-  @ApiProperty({
-    example: 'You owe me money',
-    required: true,
-  })
+  @ApiProperty({ example: 'You owe me money' })
+  @IsNotEmpty()
   @IsString()
   message: string;
 }

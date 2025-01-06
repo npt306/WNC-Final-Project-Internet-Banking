@@ -8,10 +8,11 @@ import { AccountModule } from '../account/account.module';
 import { TransactionModule } from '../transaction/transaction.module';
 import { CustomerModule } from '../customer/customer.module';
 import { MailerCustomModule } from '@/services/mail/mailer.module';
+import { Customer } from '../customer/entities/customer.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([DebtReminder]),
+    TypeOrmModule.forFeature([DebtReminder, Customer]),
     DebtReminderNotificationModule,
     AccountModule,
     CustomerModule,
