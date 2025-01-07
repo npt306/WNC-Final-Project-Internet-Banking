@@ -84,22 +84,22 @@ export class CustomerController {
   }
 
   @ApiOperation({
-    summary: 'Search external customer infomation with account_number',
+    summary: 'Search external customer infomation with accountNumber',
   })
   @ApiParam({
-    name: 'account_number',
+    name: 'accountNumber',
     type: String,
-    description: 'The account_number of the external customer',
-    example: '112233445566',
+    description: 'The accountNumber of the external customer',
+    example: '41083885711510355544',
   })
   @ApiResponse({
     status: 200,
-    description: 'Return external customer by account_number.',
+    description: 'Return external customer by accountNumber.',
     type: SearchCustomerDto,
   })
   @Post('/external-search')
   async findExternalCustomer(@Body() body: any): Promise<any> {
-    return await this.axiosService.getCustomerCredential(body.account_number);
+    return await this.axiosService.getCustomerCredential(body.accountNumber);
   }
 
   // @Patch(':id')
