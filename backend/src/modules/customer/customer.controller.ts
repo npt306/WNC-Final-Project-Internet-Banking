@@ -21,6 +21,7 @@ import {
 import { SearchCustomerDto } from './dto/search-customer.dto';
 import { AxiosService } from '@/axios/axios.service';
 import { externalCustomerDto } from './dto/external-customer.dto';
+import { ExternalSearchDto } from './dto/external-search.dto';
 
 @ApiBearerAuth()
 @ApiTags('customer')
@@ -87,7 +88,7 @@ export class CustomerController {
     summary: 'Search external customer infomation with account_number',
   })
   @ApiParam({
-    name: 'account_number',
+    name: 'accountNumber',
     type: String,
     description: 'The account_number of the external customer',
     example: '112233445566',
@@ -98,8 +99,8 @@ export class CustomerController {
     type: SearchCustomerDto,
   })
   @Post('/external-search')
-  async findExternalCustomer(@Body() body: any): Promise<any> {
-    return await this.axiosService.getCustomerCredential(body.account_number);
+  async findExternalCustomer(@Body() externalSearchDto: ExternalSearchDto) {
+    return await this.axiosService.getCustomerCredential(externalSearchDto.accountNumber);
   }
 
   // @Patch(':id')
