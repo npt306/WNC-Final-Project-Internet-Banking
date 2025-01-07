@@ -6,7 +6,7 @@ export const TransferExample = {
   data: {
     sender: '556677889900',
     receiver: '112233445566',
-    sender_bank: 'Sankcomba',
+    sender_bank: 'SankComBa',
     receiver_bank: 'Test Bank',
     amount: 100000,
     fee: 2000,
@@ -60,7 +60,7 @@ export const LocalTransferBodyExample = {
 export const InterbankTransferBodyExample = {
   "sender": "556677889900",
   "receiver": "73336867059848144273",
-  "sender_bank": "Sankcomba",
+  "sender_bank": "SankComBa",
   "receiver_bank": "BlueSkyBank",
   "amount": 100000,
   "payer": "556677889900",
