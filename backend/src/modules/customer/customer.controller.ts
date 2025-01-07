@@ -85,17 +85,20 @@ export class CustomerController {
   }
 
   @ApiOperation({
-    summary: 'Search external customer infomation with account_number',
+    summary: 'Search external customer infomation with accountNumber',
   })
-  @ApiParam({
-    name: 'accountNumber',
-    type: String,
-    description: 'The account_number of the external customer',
-    example: '112233445566',
+  @ApiBody({
+    description: 'The accountNumber of the external customer',
+    schema: {
+      type: 'object',
+      properties: {
+        accountNumber: { type: 'string', example: '41083885711510355544'},
+      },
+    },
   })
   @ApiResponse({
     status: 200,
-    description: 'Return external customer by account_number.',
+    description: 'Return external customer by accountNumber.',
     type: SearchCustomerDto,
   })
   @Post('/external-search')

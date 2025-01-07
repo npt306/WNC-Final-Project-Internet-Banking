@@ -157,71 +157,53 @@ export class ExternalController {
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('transfer')
   async transfer(
-    // @Headers('RequestDate') requestDate: number,
-    // @Headers('Signature') signature: string,
-    // @Headers('X-Signature') xSignature: string,
+    @Headers('RequestDate') requestDate: number,
+    @Headers('Signature') signature: string,
+    @Headers('X-Signature') xSignature: string,
     @Body() transferDto: ExternalTransferDto,
     @Response({ passthrough: true }) res: Res,
   ) {
-    let result = await this.externalService.handleTransfer(transferDto);
-    console.log(result);
-    let msg = { message: 'success' };
-    // TODO: optimize this logic
-    const rsa = await this.axiosService.getRsa();
-    const xSignature = await rsa.sign(JSON.stringify(msg));
-    const externalSalt = this.axiosService.getExternalSalt();
-    const signature = await rsa.generateSignature(
-      JSON.stringify(msg),
-      externalSalt,
+    if (!requestDate || !signature) {
+      throw new BadRequestException('Missing required headers');
+    }
+    const requestTimestamp = Number(requestDate);
+    if (isNaN(requestTimestamp)) {
+      throw new BadRequestException('Invalid RequestDate');
+    }
+
+    const checkTime = checkTimeDiff(requestTimestamp);
+    const checkSign = this.pgpService.checkSignature(
+      JSON.stringify(transferDto),
+      signature,
+      this.axiosService.getSecretSalt(),
     );
-    const requestDate = new Date().getTime();
-    res.setHeader('RequestDate', requestDate);
-    res.setHeader('Signature', signature);
-    res.setHeader('X-Signature', xSignature);
+    if (!checkTime) {
+      throw new BadRequestException(
+        'RequestDate is outside the acceptable range',
+      );
+    }
+    if (!checkSign) {
+      throw new BadRequestException('Invalid Signature');
+    }
+    const decodeXSign = Buffer.from(xSignature, 'base64').toString('ascii');
+    await this.axiosService.fetchPublicKey();
+    const result = await this.pgpService.verify(
+      JSON.stringify(transferDto),
+      decodeXSign,
+      this.axiosService.getExternalBankPublicKey(),
+    );
+
+    if (!result) {
+      throw new BadRequestException('Invalid X-Signature');
+    }
+
+    const transferResult = await this.externalService.handleTransfer(transferDto);
+    let msg = {message: "success"};
+    const timeNow = new Date().getTime();
+    res.setHeader('RequestDate', timeNow)
+    res.setHeader('Signature',
+      await this.rsaService.generateSignature(JSON.stringify(msg), this.axiosService.getExternalSalt()))
+    res.setHeader('X-Signature', await this.rsaService.sign(JSON.stringify(msg)))
     return res.json(msg);
-
-    // NEW TRANSFER HANDLE
-    // if (!requestDate || !signature) {
-    //   throw new BadRequestException('Missing required headers');
-    // }
-    // const requestTimestamp = Number(requestDate);
-    // if (isNaN(requestTimestamp)) {
-    //   throw new BadRequestException('Invalid RequestDate');
-    // }
-
-    // const checkTime = checkTimeDiff(requestTimestamp);
-    // const checkSign = this.pgpService.checkSignature(
-    //   JSON.stringify(transferDto),
-    //   signature,
-    //   this.axiosService.getSecretSalt(),
-    // );
-    // if (!checkTime) {
-    //   throw new BadRequestException(
-    //     'RequestDate is outside the acceptable range',
-    //   );
-    // }
-    // if (!checkSign) {
-    //   throw new BadRequestException('Invalid Signature');
-    // }
-    // const decodeXSign = Buffer.from(xSignature, 'base64').toString('ascii');
-    // await this.axiosService.fetchPublicKey();
-    // const result = await this.pgpService.verify(
-    //   JSON.stringify(transferDto),
-    //   decodeXSign,
-    //   this.axiosService.getExternalBankPublicKey(),
-    // );
-
-    // if (!result) {
-    //   throw new BadRequestException('Invalid X-Signature');
-    // }
-
-    // const transferResult = await this.externalService.handleTransfer(transferDto);
-    // let msg = {"message": "success"};
-    // const timeNow = new Date().getTime();
-    // res.setHeader('RequestDate', timeNow)
-    // res.setHeader('Signature',
-    //   await this.rsaService.generateSignature(JSON.stringify(msg), this.axiosService.getExternalSalt()))
-    // res.setHeader('X-Signature', await this.rsaService.sign(JSON.stringify(msg)))
-    // return res.json(msg);
   }
 }
