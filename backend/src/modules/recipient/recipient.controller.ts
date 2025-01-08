@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { RecipientService } from './recipient.service';
 import { CreateRecipientDto } from './dto/create-recipient.dto';
@@ -19,6 +20,15 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { SupportedBank } from '@/constants/supported-bank.enum';
+import { AssignRoles } from '@/decorator/assign-role';
+import { Roles } from '@/constants/roles.enum';
+import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
+import { RolesGuard } from '@/jwt/guards/role.guard';
+
+@AssignRoles(Roles.ADMIN)
+@AssignRoles(Roles.EMPLOYEE)
+@AssignRoles(Roles.CUSTOMER)
+@UseGuards(JwtAccessGuard, RolesGuard)
 
 @ApiBearerAuth()
 @ApiTags('recipient')

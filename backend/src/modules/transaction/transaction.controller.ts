@@ -8,6 +8,7 @@ import {
   BadRequestException,
   UsePipes,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { Transaction } from './entities/transaction.entity';
 import {
@@ -31,6 +32,15 @@ import { TransferDto } from './dto/transfer.dto';
 import { DepositDto } from './dto/deposit.dto';
 import { TransferLogDto } from './dto/transfer_log.dto';
 import { CheckTransferOTPDto } from './dto/check-otp.dto';
+import { AssignRoles } from '@/decorator/assign-role';
+import { Roles } from '@/constants/roles.enum';
+import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
+import { RolesGuard } from '@/jwt/guards/role.guard';
+
+@AssignRoles(Roles.ADMIN)
+@AssignRoles(Roles.EMPLOYEE)
+@AssignRoles(Roles.CUSTOMER)
+@UseGuards(JwtAccessGuard, RolesGuard)
 
 @ApiTags('transaction')
 @Controller('transaction')

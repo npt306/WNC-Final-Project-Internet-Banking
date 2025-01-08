@@ -6,6 +6,7 @@ import {
   Patch,
   Body,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { Account } from './entities/account.entity';
@@ -20,6 +21,15 @@ import {
 import { CreateAccountDto } from './dto/create-account.dto';
 import { Customer } from '../customer/entities/customer.entity';
 import { UpdateBalanceDto } from './dto/update-balance.dto';
+import { AssignRoles } from '@/decorator/assign-role';
+import { Roles } from '@/constants/roles.enum';
+import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
+import { RolesGuard } from '@/jwt/guards/role.guard';
+
+@AssignRoles(Roles.ADMIN)
+@AssignRoles(Roles.EMPLOYEE)
+@AssignRoles(Roles.CUSTOMER)
+@UseGuards(JwtAccessGuard, RolesGuard)
 
 @ApiTags('account')
 @ApiBearerAuth()

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
@@ -22,6 +23,15 @@ import { SearchCustomerDto } from './dto/search-customer.dto';
 import { AxiosService } from '@/axios/axios.service';
 import { externalCustomerDto } from './dto/external-customer.dto';
 import { ExternalSearchDto } from './dto/external-search.dto';
+import { AssignRoles } from '@/decorator/assign-role';
+import { Roles } from '@/constants/roles.enum';
+import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
+import { RolesGuard } from '@/jwt/guards/role.guard';
+
+@AssignRoles(Roles.ADMIN)
+@AssignRoles(Roles.EMPLOYEE)
+@AssignRoles(Roles.CUSTOMER)
+@UseGuards(JwtAccessGuard, RolesGuard)
 
 @ApiBearerAuth()
 @ApiTags('customer')

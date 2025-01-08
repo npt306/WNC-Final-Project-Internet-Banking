@@ -7,12 +7,22 @@ import {
   Param,
   Delete,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { DebtReminderNotificationService } from './debt-reminder-notification.service';
 import { CreateDebtReminderNotificationDto } from './dto/create-debt-reminder-notification.dto';
 import { UpdateDebtReminderNotificationDto } from './dto/update-debt-reminder-notification.dto';
 import { DebtReminderNotification } from './entities/debt-reminder-notification.entity';
 import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { AssignRoles } from '@/decorator/assign-role';
+import { Roles } from '@/constants/roles.enum';
+import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
+import { RolesGuard } from '@/jwt/guards/role.guard';
+
+@AssignRoles(Roles.ADMIN)
+@AssignRoles(Roles.EMPLOYEE)
+@AssignRoles(Roles.CUSTOMER)
+@UseGuards(JwtAccessGuard, RolesGuard)
 
 @ApiTags('Debt Reminder Notifications')
 @Controller('debt-reminder-notification')
