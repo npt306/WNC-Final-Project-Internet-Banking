@@ -30,6 +30,7 @@ import {
 import { TransferDto } from './dto/transfer.dto';
 import { DepositDto } from './dto/deposit.dto';
 import { TransferLogDto } from './dto/transfer_log.dto';
+import { CheckTransferOTPDto } from './dto/check-otp.dto';
 
 @ApiTags('transaction')
 @Controller('transaction')
@@ -246,6 +247,19 @@ export class TransactionController {
     return await this.transactionService.debtPaymentTransactionHistory(
       accountNumber,
     );
+  }
+
+  @ApiOperation({ summary: 'Check transfer OTP' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return true/false as result of checking OTP',
+    type: Boolean,
+  })
+  @Post('/check-otp')
+  async checkTransferOTP(@Body() checkTransferOTPDto: CheckTransferOTPDto) {
+    return {
+      checkOTP: await this.transactionService.checkTransferOTP(checkTransferOTPDto)
+    }
   }
 
   @ApiOperation({ summary: 'Send OTP to sender email' })

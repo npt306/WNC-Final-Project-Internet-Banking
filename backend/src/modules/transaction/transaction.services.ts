@@ -18,6 +18,7 @@ import { SupportedBank } from '@/constants/supported-bank.enum';
 import { TransactionType } from '@/constants/transaction-type.enum';
 import { CustomerService } from '../customer/customer.service';
 import { MailerCustomService } from '@/services/mail/mailer.service';
+import { CheckTransferOTPDto } from './dto/check-otp.dto';
 
 const TRANSFER_FEE = 0.02;
 
@@ -394,6 +395,15 @@ export class TransactionService {
     // Save log
     const result = await this.create(transferLogDto);
     return result;
+  }
+
+  async checkTransferOTP(checkTransferOTPDto: CheckTransferOTPDto) {
+    const {_id, codeOTP} = checkTransferOTPDto;
+    const foundCustomer = await this.customerService.findById(_id);
+    if(codeOTP === foundCustomer.code) {
+      return true;
+    }
+    return false;
   }
 
   async sendTransferEmail(_id: string) {
