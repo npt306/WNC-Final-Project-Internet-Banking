@@ -97,7 +97,7 @@ const Reconciliation = () => {
           default:
             return <Tag>{type}</Tag>;
         }
-      }
+      },
     },
     {
       title: "Người Gửi",
@@ -109,6 +109,13 @@ const Reconciliation = () => {
       title: "Ngân Hàng Gửi",
       dataIndex: "sender_bank",
       key: "sender_bank",
+      // tạo tag nếu ngân hàng là SankComBa
+      render: (sender_bank) => {
+        if (sender_bank === "SankComBa") {
+          return <Tag color="green">SankComBa</Tag>;
+        }
+        return <Tag color="red">{sender_bank}</Tag>;
+      },
     },
     {
       title: "Người Nhận",
