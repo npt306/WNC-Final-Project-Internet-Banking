@@ -26,7 +26,7 @@ const CustomerService = {
   },
 
   notification: {
-    async createNotification(customer_id, title, content, id_debt) {
+    async createNotification(customer_id, title, content, id_debt = "") {
       try {
         const response = await instance.post(
           `/api/debt-reminder-notification`,

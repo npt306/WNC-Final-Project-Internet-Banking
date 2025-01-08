@@ -55,7 +55,6 @@ const DebtReminderManager = () => {
       const responseAccount = await AccountService.getAllAccount();
       if (responseAccount.data) {
         setAccountBanking(responseAccount.data);
-
       }
     } catch (error) {
       message.error("Không thể tải danh sách tài khoản");
@@ -105,70 +104,6 @@ const DebtReminderManager = () => {
     fetchAcount();
   }, []);
 
-  const handleSearch = async (value) => {
-    if (!value) {
-      setSearchResults([]);
-      return;
-    }
-
-    try {
-      const filteredAccounts = accountBanking.filter(
-        (account) =>
-          account.account_number.toLowerCase().includes(value.toLowerCase()) ||
-          account.full_name.toLowerCase().includes(value.toLowerCase())
-      );
-
-      const formattedResults = filteredAccounts.map((account) => ({
-        value: account.account_number,
-        label: `${account.account_number} - ${account.full_name}`,
-        userData: {
-          id: account.customer_id,
-          full_name: account.full_name,
-          account_number: account.account_number,
-        },
-      }));
-
-      setSearchResults(formattedResults);
-    } catch (error) {
-      console.error("Error searching accounts:", error);
-    }
-  };
-
-  const handleSelect = (value, option) => {
-    setSelectedUser(option.userData);
-    form.setFieldsValue({
-      debtor_name: option.userData.full_name,
-    });
-  };
-
-  const handleCreateDebt = async (values) => {
-    if (!selectedUser) {
-      message.error("Vui lòng chọn người nợ!");
-      return;
-    }
-
-    try {
-      const response = await PublicService.debt.createDebtReminder(
-        mycustomerID,
-        selectedUser.id,
-        values.amount,
-        values.message
-      );
-
-      if (response.data) {
-        message.success("Tạo nhắc nợ thành công!");
-        setIsModalVisible(false);
-        form.resetFields();
-        fetchDebtReminders();
-        send(selectedUser.id);
-      } else {
-        message.error("Tạo nhắc nợ thất bại!");
-      }
-    } catch (error) {
-      message.error("Đã xảy ra lỗi khi tạo nhắc nợ");
-    }
-  };
-
   const handleDelete = async (record) => {
     try {
       await PublicService.debt.deleteDebtReminder(record._id);
@@ -179,21 +114,36 @@ const DebtReminderManager = () => {
         prev.filter((item) => item._id !== record._id)
       );
       message.success("Xóa nhắc nợ thành công");
+      await CustomerService.notification.createNotification(
+        record.debtor, // ID người nợ
+        "Thôn báo xoá nợ",
+        `${MyFullName}  đã xóa nợ với cho bạn`,
+        record._id
+      );
+
+      send(record.debtor);
     } catch (error) {
       message.error("Xóa nhắc nợ thất bại");
     }
   };
 
-  const handlePaymentClick = async (debtId) => {
+  const handlePaymentClick = async (debt) => {
     setIsProcessing(true);
-    setCurrentDebtId(debtId);
-
+    setCurrentDebtId(debt._id);
     try {
-      const response = await PublicService.debt.getCodeDebtOTP(debtId);
+      const response = await PublicService.debt.getCodeDebtOTP(debt._id);
       if (response.statusCode === 200 || response.statusCode === 201) {
         message.success("Mã OTP đã được gửi đến email của bạn");
         setIsOTPModalVisible(true);
       }
+
+      // thông báo cho người nợ
+      await CustomerService.notification.createNotification(
+        debt.creditor, // ID người nợ
+        "Nhắc Thanh Toán Nợ",
+        `${MyFullName} đã thanh toán nợ cho bạn`
+      );
+      send(debt.creditor);
     } catch (error) {
       message.error("Có lỗi xảy ra khi tạo mã OTP");
     } finally {
@@ -322,10 +272,7 @@ const DebtReminderManager = () => {
         render: (_, record) => (
           <Space>
             {record.status === "PENDING" && (
-              <Button
-                type="primary"
-                onClick={() => handlePaymentClick(record._id)}
-              >
+              <Button type="primary" onClick={() => handlePaymentClick(record)}>
                 Thanh toán
               </Button>
             )}
@@ -481,7 +428,7 @@ const DebtReminderManager = () => {
     <div className="p-4">
       <Button
         type="primary"
-        onClick={() => setIsModalVisible(true)}
+        onClick={() => setIsModalVisible(!isModalVisible)}
         className="mb-4"
       >
         Tạo Nhắc Nợ Mới
@@ -540,9 +487,8 @@ const DebtReminderManager = () => {
             label="Lời Nhắc"
             initialValue={
               selectedDebt
-                ? `Vui lòng thanh toán khoản nợ ${
-                    selectedDebt?.amount?.toLocaleString() || ""
-                  } VND cho ${MyFullName}`
+                ? `Vui lòng thanh toán khoản nợ ${selectedDebt?.amount?.toLocaleString() || ""
+                } VND cho ${MyFullName}`
                 : ""
             }
             rules={[{ required: true, message: "Vui lòng nhập lời nhắc!" }]}

@@ -21,10 +21,10 @@ const SignIn = () => {
     dispatch(setRole(role));
   };
   const handleLogin = async (values, role) => {
-    // if (!isVerified) {
-    //   message.error("Vui lòng xác thực Captcha trước khi đăng nhập!");
-    //   return;
-    // }
+    if (!isVerified) {
+      message.error("Vui lòng xác thực Captcha trước khi đăng nhập!");
+      return;
+    }
 
     setLoading(true);
     setErrorMessage(null);
@@ -151,6 +151,7 @@ const SignIn = () => {
             sitekey={
               import.meta.env.VITE_RECAPTCHA_SITE_KEY ||
               "6Lf30qkqAAAAAEQ8dVaN-zQBy4XtjP-VnlR3ZsJ6"
+              // "6Lf30qkqAAAAAEQ8dVaN-zQBy4XtjP-VnlR3ZsJ6"
             }
             onChange={(value) => onRecaptchaChange(value)}
           />
@@ -183,7 +184,7 @@ const SignIn = () => {
           className="login-form-button"
           style={{ width: "100%" }}
           loading={loading}
-          // disabled={!isVerified}
+          disabled={!isVerified}
         >
           Đăng nhập
         </Button>
@@ -219,12 +220,12 @@ const SignIn = () => {
         backgroundColor: "#f0f2f5",
       }}
     >
-      <div className=" flex  flex-col">
+      {/* <div className=" flex  flex-col">
         đăng nhập không cần mật khẩu
         <Button onClick={() => handleLogintest("ADMIN")}>Admin </Button>
         <Button onClick={() => handleLogintest("EMPLOYEE")}>employree</Button>
         <Button onClick={() => handleLogintest("CUSTOMER")}>Customer</Button>
-      </div>
+      </div> */}
       <div
         style={{
           width: 400,
