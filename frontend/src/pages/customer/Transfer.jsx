@@ -93,11 +93,12 @@ const TransferService = () => {
     setLoading(true);
     try {
       // Verify OTP
-      const otpVerification = await PublicService.CheckOPTTransaction(
+      const otpVerification = await PublicService.transaction.CheckOPTTransaction(
         profile._id,
         otp
       );
 
+      console.log(otpVerification);
       if (otpVerification.data?.checkOTP) {
         // Proceed with transfer if OTP is correct
         const response = isExternalTransfer
