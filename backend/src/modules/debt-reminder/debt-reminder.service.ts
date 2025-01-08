@@ -167,7 +167,7 @@ export class DebtReminderService {
       fee: 2000,
       payer: debtorAccountNumber,
       type: TransactionType.DEBT,
-      timestamp: new Date(),
+      timestamp: new Date()
     });
 
     if (transaction) {
@@ -176,7 +176,7 @@ export class DebtReminderService {
     } else {
       throw new BadRequestException(`Paid debt failed`);
     }
-    this.customerService.removeCode(debtorCustomer._id.toString())
+    await this.customerService.removeCode(debtorCustomer._id.toString())
 
     return await this.findOneDebtReminder(_id);
   }

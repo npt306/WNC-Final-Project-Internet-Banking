@@ -73,7 +73,7 @@ export class MailerCustomService {
 
   async sendMailTransaction(_id: string) {
     const sender = await this.customerService.findById(_id);
-    const {email} = await this.customerService.addCode(_id);
+    const {email, code} = await this.customerService.addCode(_id);
 
     this.mailerService.sendMail({
       to: email, 
@@ -81,7 +81,7 @@ export class MailerCustomService {
       template: "transfer-verification",
       context: {
         sender: sender,
-        codeOTP: sender.code,
+        codeOTP: code,
         transferDate: new Date()
       }
     })
