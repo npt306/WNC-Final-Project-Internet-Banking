@@ -247,4 +247,20 @@ export class TransactionController {
       accountNumber,
     );
   }
+
+  @ApiOperation({ summary: 'Send OTP to sender email' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return sender _id',
+    type: String,
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The _id of sender',
+    example: '67703c0246c40ffcefd94108',
+  })
+  @Get('/transfer-otp/:id')
+  async sendTransferOTP(@Param('id') id: string) {
+    return await this.transactionService.sendTransferEmail(id);
+  }
 }
