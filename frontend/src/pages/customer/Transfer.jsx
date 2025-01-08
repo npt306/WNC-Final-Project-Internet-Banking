@@ -62,7 +62,9 @@ const TransferService = () => {
     setLoading(true);
     try {
       // Get OTP first
-      const otpResponse = await PublicService.transaction.GetOTPTransaction(profile._id);
+      const otpResponse = await PublicService.transaction.GetOTPTransaction(
+        profile._id
+      );
       if (otpResponse.error) {
         throw new Error("Không thể gửi mã OTP");
       }
@@ -132,6 +134,31 @@ const TransferService = () => {
       setIsOTPModalVisible(false);
       setOTP("");
       setTransferData(null);
+    }
+  };
+
+  const handleSaveRecipient = async () => {
+    try {
+      const finalNickname = nickName.trim() || recipientToSave.full_name;
+
+      const response = await PublicService.reciept.createReciept(
+        profile._id,
+        recipientToSave.account_number,
+        finalNickname,
+        recipientToSave.bank
+      );
+
+      if (response.data) {
+        message.success("Đã lưu người nhận vào danh sách!");
+      }
+    } catch (error) {
+      message.error("Không thể lưu người nhận");
+    } finally {
+      setShowSaveRecipientModal(false);
+      setNickName("");
+      form.resetFields();
+      setAccountNumber("");
+      setFullName("");
     }
   };
 
