@@ -205,8 +205,8 @@ const PublicService = {
     async CheckOPTTransaction(customer_id, otp) {
       try {
         const response = await instance.post(`/api/transaction/check-otp`, {
-          _id:customer_id,
-          otp: otp.toString(),
+          _id: customer_id,
+          codeOTP: otp.toString(),
         });
         return response;
       } catch (error) {
