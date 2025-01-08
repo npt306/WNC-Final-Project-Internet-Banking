@@ -203,20 +203,19 @@ const PublicService = {
       }
     },
     async CheckOPTTransaction(customer_id, otp) {
-      console.log(customer_id, otp);
+      console.log("otp", typeof otp,typeof customer_id);
       try {
         const response = await instance.post(`/api/transaction/check-otp`, {
           customer_id,
-          otp,
+          // convert otp to string
+          otp: otp.toString(),
         });
         return response;
       } catch (error) {
         console.error("Error fetching data: ", error);
         return { data: null, error: error.message || "An error occurred" };
       }
-    }
-
-
+    },
   },
 
   debt: {
