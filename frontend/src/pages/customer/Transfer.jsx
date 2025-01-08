@@ -98,7 +98,7 @@ const TransferService = () => {
         otp
       );
 
-      console.log(otpVerification);
+      console.log("hhh",otpVerification);
       if (otpVerification.data?.checkOTP) {
         // Proceed with transfer if OTP is correct
         const response = isExternalTransfer

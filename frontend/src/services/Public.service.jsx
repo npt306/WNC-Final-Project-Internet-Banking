@@ -203,11 +203,9 @@ const PublicService = {
       }
     },
     async CheckOPTTransaction(customer_id, otp) {
-      console.log("otp", typeof otp,typeof customer_id);
       try {
         const response = await instance.post(`/api/transaction/check-otp`, {
-          customer_id,
-          // convert otp to string
+          _id:customer_id,
           otp: otp.toString(),
         });
         return response;
