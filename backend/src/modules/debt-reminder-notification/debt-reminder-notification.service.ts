@@ -22,6 +22,7 @@ export class DebtReminderNotificationService {
   ): Promise<DebtReminderNotification> {
     const notification = this.debtReminderNotificationRepository.create({
       ...createDto,
+      id_debt: createDto.id_debt || '',
       isRead: false,
       createdAt: new Date(),
     });
