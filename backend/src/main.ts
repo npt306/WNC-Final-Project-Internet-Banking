@@ -41,6 +41,17 @@ async function bootstrap() {
     .addTag('recipient', 'Endpoints for managing recipients')
     .addTag('transaction', 'Endpoints for transaction')
     .addTag('external', 'Endpoints for external call')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
+    )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

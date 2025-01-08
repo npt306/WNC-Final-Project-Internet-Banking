@@ -25,12 +25,12 @@ import { Roles } from '@/constants/roles.enum';
 import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
 import { RolesGuard } from '@/jwt/guards/role.guard';
 
+@ApiBearerAuth('JWT-auth')
 @AssignRoles(Roles.ADMIN)
 @AssignRoles(Roles.EMPLOYEE)
 @AssignRoles(Roles.CUSTOMER)
 @UseGuards(JwtAccessGuard, RolesGuard)
 
-@ApiBearerAuth()
 @ApiTags('recipient')
 @Controller('recipient')
 export class RecipientController {

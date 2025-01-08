@@ -13,12 +13,13 @@ import { DebtReminderNotificationService } from './debt-reminder-notification.se
 import { CreateDebtReminderNotificationDto } from './dto/create-debt-reminder-notification.dto';
 import { UpdateDebtReminderNotificationDto } from './dto/update-debt-reminder-notification.dto';
 import { DebtReminderNotification } from './entities/debt-reminder-notification.entity';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AssignRoles } from '@/decorator/assign-role';
 import { Roles } from '@/constants/roles.enum';
 import { JwtAccessGuard } from '@/jwt/guards/jwt-access.guard';
 import { RolesGuard } from '@/jwt/guards/role.guard';
 
+@ApiBearerAuth('JWT-auth')
 @AssignRoles(Roles.ADMIN)
 @AssignRoles(Roles.EMPLOYEE)
 @AssignRoles(Roles.CUSTOMER)
