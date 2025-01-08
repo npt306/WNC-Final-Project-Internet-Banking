@@ -202,6 +202,8 @@ export class TransactionService {
   ): Promise<{ transactions: Transaction[]; totalAmount: number }> {
     let whereCondition: any = {
       type: TransactionType.TRANSFER,
+      sender_bank: { $exists: true, $ne: null },
+      receiver_bank: { $exists: true, $ne: null },
     };
     if (bank && typeof bank === 'string' && bank.trim() !== '') {
       console.log(bank);
@@ -209,6 +211,7 @@ export class TransactionService {
     }
     const transactions = await this.transactionRepository.find({
       where: whereCondition,
+      order: { timestamp: 'DESC' },
     });
 
     const totalAmount = transactions.reduce((sum, transaction) => {
