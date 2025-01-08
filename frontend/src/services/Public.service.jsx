@@ -160,7 +160,7 @@ const PublicService = {
     async get_receive_trans_his_anb(account_number) {
       try {
         const response = await instance.get(
-          `/api/transaction/receive-transaction-history/${account_number}`
+          `/api/transaction/receiver-transaction-history/${account_number}`
         );
         return response;
       } catch (error) {
