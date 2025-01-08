@@ -32,6 +32,10 @@ const TransferService = () => {
   const [showSaveRecipientModal, setShowSaveRecipientModal] = useState(false);
   const [recipientToSave, setRecipientToSave] = useState(null);
   const [nickName, setNickName] = useState("");
+  const [isOTPModalVisible, setIsOTPModalVisible] = useState(false);
+  const [otp, setOTP] = useState("");
+  const [transferData, setTransferData] = useState(null);
+
   const checkExistingRecipient = async (accountNumber) => {
     try {
       const response = await PublicService.reciept.getRecieptByCustomerID(
@@ -57,78 +61,91 @@ const TransferService = () => {
 
     setLoading(true);
     try {
-      const payer =
-        values.feeType === "sender" ? myAccountNumber : values.accountNumber;
-      const amount = parseInt(values.amount, 10);
-
-      if (isNaN(amount) || amount <= 0) {
-        message.error("Số tiền không hợp lệ!");
-        return;
+      // Get OTP first
+      const otpResponse = await PublicService.transaction.GetOTPTransaction(profile._id);
+      if (otpResponse.error) {
+        throw new Error("Không thể gửi mã OTP");
       }
 
-      const response = isExternalTransfer
-        ? await PublicService.transaction.ExternalTransfer(
-            myAccountNumber,
-            values.accountNumber,
-            values.bank,
-            amount,
-            values.content || "Chuyển tiền",
-            payer
-          )
-        : await PublicService.transaction.InternalTransfer(
-            myAccountNumber,
-            values.accountNumber,
-            amount,
-            values.content || "Chuyển tiền",
-            payer
-          );
+      // Store transfer data for later use
+      setTransferData({
+        myAccountNumber,
+        recipientAccount: values.accountNumber,
+        amount: parseInt(values.amount, 10),
+        content: values.content || "Chuyển tiền",
+        payer:
+          values.feeType === "sender" ? myAccountNumber : values.accountNumber,
+        bank: isExternalTransfer ? values.bank : undefined,
+      });
 
-      if (response.data) {
-        message.success("Chuyển khoản thành công!");
-
-        const isExisting = await checkExistingRecipient(values.accountNumber);
-        if (!isExisting) {
-          setRecipientToSave({
-            account_number: values.accountNumber,
-            full_name: fullName,
-            bank: isExternalTransfer ? values.bank : "sankcomba",
-          });
-          setNickName(fullName);
-          setShowSaveRecipientModal(true);
-        } else {
-          form.resetFields();
-          setAccountNumber("");
-          setFullName("");
-        }
-      } else if (response.error) {
-        message.error("Chuyển khoản thất bại, số dư không đủ!");
-      }
+      // Show OTP modal
+      setIsOTPModalVisible(true);
     } catch (error) {
-      message.error("Có lỗi xảy ra khi chuyển khoản");
+      message.error("Có lỗi xảy ra khi gửi mã OTP");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSaveRecipient = async () => {
+  const handleOTPSubmit = async () => {
+    setLoading(true);
     try {
-      const finalNickname = nickName.trim() || recipientToSave.full_name;
-
-      const response = await PublicService.reciept.createReciept(
+      // Verify OTP
+      const otpVerification = await PublicService.CheckOPTTransaction(
         profile._id,
-        recipientToSave.account_number,
-        finalNickname,
-        recipientToSave.bank
+        otp
       );
 
-      if (response.data) {
-        message.success("Đã lưu người nhận vào danh sách!");
+      if (otpVerification.data?.checkOTP) {
+        // Proceed with transfer if OTP is correct
+        const response = isExternalTransfer
+          ? await PublicService.transaction.ExternalTransfer(
+              transferData.myAccountNumber,
+              transferData.recipientAccount,
+              transferData.bank,
+              transferData.amount,
+              transferData.content,
+              transferData.payer
+            )
+          : await PublicService.transaction.InternalTransfer(
+              transferData.myAccountNumber,
+              transferData.recipientAccount,
+              transferData.amount,
+              transferData.content,
+              transferData.payer
+            );
+
+        if (response.data) {
+          message.success("Chuyển khoản thành công!");
+          handleSuccessfulTransfer(transferData.recipientAccount);
+        } else {
+          message.error("Chuyển khoản thất bại, số dư không đủ!");
+        }
+      } else {
+        message.error("Mã OTP không chính xác!");
+        return;
       }
     } catch (error) {
-      message.error("Không thể lưu người nhận");
+      message.error("Có lỗi xảy ra khi xác thực OTP");
     } finally {
-      setShowSaveRecipientModal(false);
-      setNickName("");
+      setLoading(false);
+      setIsOTPModalVisible(false);
+      setOTP("");
+      setTransferData(null);
+    }
+  };
+
+  const handleSuccessfulTransfer = async (recipientAccount) => {
+    const isExisting = await checkExistingRecipient(recipientAccount);
+    if (!isExisting) {
+      setRecipientToSave({
+        account_number: recipientAccount,
+        full_name: fullName,
+        bank: isExternalTransfer ? transferData.bank : "sankcomba",
+      });
+      setNickName(fullName);
+      setShowSaveRecipientModal(true);
+    } else {
       form.resetFields();
       setAccountNumber("");
       setFullName("");
@@ -182,6 +199,11 @@ const TransferService = () => {
     handleSaveRecipient,
     nickName,
     setNickName,
+    isOTPModalVisible,
+    setIsOTPModalVisible,
+    otp,
+    setOTP,
+    handleOTPSubmit,
   };
 };
 
@@ -340,6 +362,11 @@ const Transfer = () => {
     nickName,
     setNickName,
     fullName,
+    isOTPModalVisible,
+    setIsOTPModalVisible,
+    otp,
+    setOTP,
+    handleOTPSubmit,
   } = TransferService();
   const location = useLocation();
   const [initialAccountNumber, setInitialAccountNumber] = useState("");
@@ -442,6 +469,25 @@ const Transfer = () => {
           {isExternalTransfer ? "Chuyển khoản liên ngân hàng" : "Chuyển khoản"}
         </Button>
       </Form>
+
+      <Modal
+        title="Xác nhận OTP"
+        open={isOTPModalVisible}
+        onOk={handleOTPSubmit}
+        onCancel={() => {
+          setIsOTPModalVisible(false);
+          setOTP("");
+        }}
+        confirmLoading={loading}
+      >
+        <p>Vui lòng nhập mã OTP đã được gửi đến email của bạn:</p>
+        <Input
+          placeholder="Nhập mã OTP"
+          value={otp}
+          onChange={(e) => setOTP(e.target.value)}
+          className="mt-4"
+        />
+      </Modal>
 
       <Modal
         title="Lưu người nhận"

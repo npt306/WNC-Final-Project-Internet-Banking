@@ -106,14 +106,6 @@ const PublicService = {
       content,
       payer
     ) {
-      console.log(
-        sender_number,
-        receiver_number,
-        receiver_bank,
-        amount,
-        content,
-        payer
-      );
       try {
         const response = await instance.post(`/api/transaction/transfer`, {
           sender: sender_number,
@@ -198,6 +190,32 @@ const PublicService = {
         return { data: null, error: error.message || "An error occurred" };
       }
     },
+
+    async GetOTPTransaction(customer_id) {
+      try {
+        const response = await instance.get(
+          `/api/transaction/transfer-otp/${customer_id}`
+        );
+        return response;
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+        return { data: null, error: error.message || "An error occurred" };
+      }
+    },
+    async CheckOPTTransaction(customer_id, otp) {
+      try {
+        const response = await instance.post(`/api/transaction/check-otp`, {
+          customer_id,
+          otp,
+        });
+        return response;
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+        return { data: null, error: error.message || "An error occurred" };
+      }
+    }
+
+
   },
 
   debt: {
