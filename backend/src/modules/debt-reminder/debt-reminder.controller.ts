@@ -131,7 +131,7 @@ export class DebtReminderController {
   @ApiResponse({
     status: 200,
     description: 'Return debtor _id',
-    type: DebtReminder,
+    type: String,
   })
   @ApiParam({
     name: 'id',

@@ -156,7 +156,7 @@ export class DebtReminderService {
     
     const debtorCustomer = await this.customerService.findById(debtReminder.debtor);
     if(codeOTP !== debtorCustomer.code) {
-      throw new BadRequestException("Wrong reset code !!!");
+      throw new BadRequestException("Wrong OTP code !!!");
     }
 
     const transaction = await this.transactionService.transfer({

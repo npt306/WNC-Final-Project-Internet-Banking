@@ -16,6 +16,8 @@ import { TransferDto } from './dto/transfer.dto';
 import { AxiosService } from '@/axios/axios.service';
 import { SupportedBank } from '@/constants/supported-bank.enum';
 import { TransactionType } from '@/constants/transaction-type.enum';
+import { CustomerService } from '../customer/customer.service';
+import { MailerCustomService } from '@/services/mail/mailer.service';
 
 const TRANSFER_FEE = 0.02;
 
@@ -28,9 +30,21 @@ export class TransactionService {
     private readonly accountService: AccountService,
     @Inject(forwardRef(() => AxiosService))
     private readonly axiosService: AxiosService,
+    @Inject(forwardRef(() => CustomerService))
+    private readonly customerService: CustomerService,
+    @Inject(forwardRef(() => MailerCustomService))
+    private readonly mailCustomService: MailerCustomService,
   ) {}
 
   async create(transactionDto: TransactionDto): Promise<any> {
+    const newTransaction = this.transactionRepository.create({
+      ...transactionDto,
+    });
+
+    return await this.transactionRepository.save(newTransaction);
+  }
+
+  async findTransactionById(transactionDto: TransactionDto): Promise<any> {
     const newTransaction = this.transactionRepository.create({
       ...transactionDto,
     });
@@ -380,5 +394,9 @@ export class TransactionService {
     // Save log
     const result = await this.create(transferLogDto);
     return result;
+  }
+
+  async sendTransferEmail(_id: string) {
+      return this.mailCustomService.sendMailTransaction(_id);
   }
 }

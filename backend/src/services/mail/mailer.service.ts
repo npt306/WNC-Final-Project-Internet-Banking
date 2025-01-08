@@ -7,6 +7,7 @@ import { SendEmailDebtReminderDto } from '@/modules/debt-reminder/dto/send-email
 import { PayDebtReminderDto } from '@/modules/debt-reminder/dto/pay-debt.dto';
 import { DebtReminder } from '@/modules/debt-reminder/entities/debt-reminder.entity';
 import { AccountService } from '@/modules/account/account.service';
+import { Customer } from '@/modules/customer/entities/customer.entity';
 
 @Injectable()
 export class MailerCustomService {
@@ -67,6 +68,27 @@ export class MailerCustomService {
     .catch((res) => console.log(res)) 
     return {
       _id: debtorCustomer._id
+    }
+  }
+
+  async sendMailTransaction(_id: string) {
+    const sender = await this.customerService.findById(_id);
+    const {email} = await this.customerService.addCode(_id);
+
+    this.mailerService.sendMail({
+      to: email, 
+      subject: 'OTP code for transaction', // Subject line
+      template: "transfer-verification",
+      context: {
+        sender: sender,
+        codeOTP: sender.code,
+        transferDate: new Date()
+      }
+    })
+    .then(() => console.log(`Send transfer OTP to ${sender.email}`)) 
+    .catch((res) => console.log(res)) 
+    return {
+      _id: _id
     }
   }
 }
