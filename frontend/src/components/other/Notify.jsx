@@ -84,24 +84,24 @@ const Notifications = () => {
     }
   };
 
-  const handlePayDebt = async (debtId) => {
+  const handlePayDebt = async (item) => {
     setIsProcessing(true);
-    setCurrentDebtId(debtId);
-
+    setCurrentDebtId(item.id_debt);
     try {
-      const response = await PublicService.debt.getCodeDebtOTP(debtId);
+      const response = await PublicService.debt.getCodeDebtOTP(item.id_debt);
       if (response.statusCode === 200 || response.statusCode === 201) {
         message.success("Mã OTP đã được gửi đến email của bạn");
         setIsOTPModalVisible(true);
       }
     } catch (error) {
-      message.error("Có lỗi xảy ra khi tạo mã OTP");
+      // message.error("Có lỗi xảy ra khi tạo mã OTP");
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleOTPSubmit = async (values) => {
+    // message.success(`currentDebtId: ${currentDebtId} ${profile.full_name}`, 10);
     setIsProcessing(true);
     try {
       const response = await PublicService.debt.payDebtReminder(
@@ -109,16 +109,21 @@ const Notifications = () => {
         values.otpCode
       );
       if (response.data) {
+        await CustomerService.notification.createNotification(
+          "677bd5dcfeb257d6d1dcc0c7",
+          "Thông báo Thanh Toán Nợ",
+          `${profile.full_name} đã thanh toán nợ cho bạn`
+        );
+        send("677bd5dcfeb257d6d1dcc0c7");
+        setCurrentDebtId(null);
         message.success("Thanh toán thành công!");
         setIsOTPModalVisible(false);
         otpForm.resetFields();
-        fetchNotifications(); // Refresh notifications
-        setCurrentDebtId(null);
       } else {
         message.error("Mã OTP không chính xác");
       }
     } catch (error) {
-      message.error("Có lỗi xảy ra khi thanh toán");
+      // message.error("Có lỗi xảy ra khi thanh toán");
     } finally {
       setIsProcessing(false);
     }
@@ -158,10 +163,7 @@ const Notifications = () => {
                   {item.isRead ? "Đã đọc" : "Đánh dấu đã đọc"}
                 </Button>,
                 item.id_debt && (
-                  <Button
-                    type="primary"
-                    onClick={() => handlePayDebt(item.id_debt)}
-                  >
+                  <Button type="primary" onClick={() => handlePayDebt(item)}>
                     Thanh toán
                   </Button>
                 ),

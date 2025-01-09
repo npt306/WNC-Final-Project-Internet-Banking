@@ -90,7 +90,13 @@ const History = () => {
       title: "Ngân hàng",
       dataIndex: "receiver_bank",
       key: "receiver_bank",
-      render: (text) => text || "SANKCOMBA",
+      render: (text) => {
+        if (text) {
+          return <Tag color="blue">{text}</Tag>;
+        } else {
+          return <Tag color="purple">SANKCOMBA</Tag>;
+        }
+      }
     },
     {
       title: "Số tiền",
@@ -130,7 +136,13 @@ const History = () => {
       title: "Ngân hàng",
       dataIndex: "sender_bank",
       key: "sender_bank",
-      render: (text) => text || "SANKCOMBA",
+      render: (text) => {
+        if (text) {
+          return <Tag color="blue">{text}</Tag>;
+        } else {
+          return <Tag color="purple">SANKCOMBA</Tag>;
+        }
+      },
     },
     {
       title: "Số tiền",

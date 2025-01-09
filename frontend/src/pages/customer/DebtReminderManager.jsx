@@ -100,9 +100,9 @@ const DebtReminderManager = () => {
 
   useEffect(() => {
     // initialize(mycustomerID);
-    fetchDebtReminders();
+    fetchDebtReminders(); //mark1
     fetchAcount();
-  }, []);
+  }, [state]);
 
   const handleDelete = async (record) => {
     try {
@@ -140,7 +140,7 @@ const DebtReminderManager = () => {
       // thông báo cho người nợ
       await CustomerService.notification.createNotification(
         debt.creditor, // ID người nợ
-        "Nhắc Thanh Toán Nợ",
+        "Thông báo Thanh Toán Nợ",
         `${MyFullName} đã thanh toán nợ cho bạn`
       );
       send(debt.creditor);
@@ -345,7 +345,7 @@ const DebtReminderManager = () => {
           localForm.resetFields();
           setLocalSelectedUser(null);
           fetchDebtReminders();
-          send(localSelectedUser.id);
+          // send(localSelectedUser.id);
         } else {
           message.error("Tạo nhắc nợ thất bại!");
         }
@@ -487,8 +487,9 @@ const DebtReminderManager = () => {
             label="Lời Nhắc"
             initialValue={
               selectedDebt
-                ? `Vui lòng thanh toán khoản nợ ${selectedDebt?.amount?.toLocaleString() || ""
-                } VND cho ${MyFullName}`
+                ? `Vui lòng thanh toán khoản nợ ${
+                    selectedDebt?.amount?.toLocaleString() || ""
+                  } VND cho ${MyFullName}`
                 : ""
             }
             rules={[{ required: true, message: "Vui lòng nhập lời nhắc!" }]}
